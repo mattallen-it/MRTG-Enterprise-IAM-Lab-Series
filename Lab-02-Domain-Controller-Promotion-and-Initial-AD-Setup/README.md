@@ -1,5 +1,11 @@
 # Lab-02 - Domain Controller Promotion and Initial Active Directory Setup
 
+![Lab](https://img.shields.io/badge/type-lab-blue)
+![Active Directory](https://img.shields.io/badge/technology-Active%20Directory-purple)
+![Windows Server](https://img.shields.io/badge/platform-Windows%20Server%202022-blue)
+![IAM](https://img.shields.io/badge/focus-IAM-green)
+![Level](https://img.shields.io/badge/level-foundation-lightgrey)
+
 ## Objective
 Install Windows Server 2022 in Hyper-V, configure the server baseline, and promote the system to a Domain Controller hosting the initial Active Directory environment.
 
