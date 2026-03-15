@@ -1,5 +1,11 @@
 # Monroe Redstone Technology Group — IAM Lab Series
 
+Purpose
+
+The goal of this project is to build hands-on experience with enterprise Identity and Access Management systems through progressive lab development.
+
+Each lab introduces operational IAM tasks commonly performed by system administrators, identity engineers, and security teams.
+
 ![Focus](https://img.shields.io/badge/Career%20Track-Identity%20and%20Access%20Management-darkgreen)
 ![Security](https://img.shields.io/badge/Certification-Security%2B-red)
 ![Platform](https://img.shields.io/badge/Environment-Windows%20Enterprise-blue)
