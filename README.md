@@ -1,4 +1,4 @@
-# IAM Lab Series
+# Monroe Redstone Technology Group — IAM Lab Series
 
 ![Focus](https://img.shields.io/badge/Career%20Track-Identity%20and%20Access%20Management-darkgreen)
 ![Security](https://img.shields.io/badge/Certification-Security%2B-red)
