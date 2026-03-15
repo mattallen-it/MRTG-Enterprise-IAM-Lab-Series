@@ -39,6 +39,10 @@ These steps establish the environment required for building and managing an Acti
 - Windows Server 2022
 - Domain Controller: **DC01**
 
+## Domain
+
+mrtg.local
+
 ---
 
 ## Architecture
