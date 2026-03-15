@@ -50,7 +50,7 @@ Domain-joined workstation used for user authentication and policy testing
 | Lab 02 | Active Directory Domain Deployment |
 | Lab 03 | Identity Lifecycle and RBAC |
 | Lab 04 | Group Policy Security Baselines |
-| Lab 05 | Domain Workstation Administration |
+| Lab 05 | Domain Workstation Management |
 | Lab 06 | Privileged Access Management |
 | Lab 07 | Hybrid Identity (Entra ID) |
 | Lab 08 | Identity Monitoring and Auditing |
