@@ -31,6 +31,19 @@ Systems
 DC01      Domain Controller  
 CLIENT01  Domain Workstation
 
+Architecture
+
+Hypervisor: Hyper-V (Windows 11 Pro)
+
+Domain Controller
+DC01 – Windows Server 2022
+Active Directory Domain Services
+DNS Server
+
+Client System
+CLIENT01 – Windows 11 Enterprise
+Domain-joined workstation used for user authentication and policy testing
+
 | Lab | Topic |
 |-----|------|
 | Lab 01 | Identity Infrastructure Foundation |
