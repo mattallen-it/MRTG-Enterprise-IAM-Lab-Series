@@ -3,9 +3,11 @@
 ## Objective
 Install Windows Server 2022 in Hyper-V, configure the server baseline, and promote the system to a Domain Controller hosting the initial Active Directory environment.
 
-## Scope
+---
 
-### Included
+# Scope
+
+## Included
 - Windows Server 2022 installation in Hyper-V
 - Initial server login and baseline configuration
 - Hostname change to DC01
@@ -16,137 +18,216 @@ Install Windows Server 2022 in Hyper-V, configure the server baseline, and promo
 - DNS validation
 - Logon server verification
 
-### Not Included
+## Not Included
 - Organizational Unit design
 - User and group provisioning
 - Client domain join
 - Group Policy creation
 
-## Environment
-- Host OS: Windows 11 Pro
-- Hypervisor: Hyper-V
-- VM Name: DC01
-- Guest OS: Windows Server 2022 Standard Evaluation (Desktop Experience)
-- VM Generation: Generation 2
-- Memory: 4 GB RAM
-- Virtual Disk: 80 GB VHDX
-- Network: Hyper-V internal switch (`LAB_INTERNAL_NETWORK`)
-- Static IP: `192.168.10.10/24`
-- Domain Name: `lab.local`
+---
 
-## Architecture
+# Environment
 
-```text
+| Component | Value |
+|---|---|
+Host OS | Windows 11 Pro |
+Hypervisor | Hyper-V |
+Virtual Machine | DC01 |
+Guest OS | Windows Server 2022 Standard Evaluation (Desktop Experience) |
+VM Generation | Generation 2 |
+Memory | 4 GB |
+Virtual Disk | 80 GB VHDX |
+Network | Hyper-V Internal Switch |
+Static IP | 192.168.10.10 |
+Domain | lab.local |
+
+---
+
+# Architecture
+
 Hyper-V Host
-└─ DC01
-   ├─ Windows Server 2022
-   ├─ Active Directory Domain Services
-   └─ DNS
+│
+└── DC01
+├ Windows Server 2022
+├ Active Directory Domain Services
+└ DNS
 
-### 1. Launched the Windows Server installer
-The virtual machine booted successfully from the Windows Server 2022 ISO, confirming that the Hyper-V boot order and installation media were configured correctly.
 
-![Windows Server Setup Launch](images/lab-02-01-windows-server-setup-launch.png)
+---
 
-### 2. Selected the Windows Server 2022 installation edition
-I reviewed the available server installation options before proceeding with the Desktop Experience edition.
+# Steps
 
-![Server 2022 Edition Selection](images/lab-02-02-server-2022-edition-selection.png)
+## 1. Launch Windows Server installer
 
-### 3. Selected Windows Server 2022 Standard Evaluation (Desktop Experience)
-I selected the Desktop Experience edition instead of Server Core so I could use graphical administration tools during the early IAM lab stages.
+The virtual machine booted successfully from the Windows Server 2022 ISO image.
 
-![Desktop Experience Selected](images/lab-02-03-desktop-experience-selected.png)
+![Windows Server Setup](images/lab-02-01-windows-server-setup-launch.png)
 
-### 4. Selected the virtual disk installation target
-I installed the operating system to the 80 GB virtual disk attached to the DC01 virtual machine.
+---
 
-![Install Target Disk Selected](images/lab-02-04-install-target-disk-selected.png)
+## 2. Select Windows Server edition
 
-### 5. Logged into Windows Server and verified Server Manager
-After installation completed, I logged into the server and confirmed that Server Manager loaded successfully.
+The Desktop Experience edition was selected to support graphical administration tools.
 
-![Server Manager First Login](images/lab-02-05-server-manager-first-login.png)
+![Edition Selection](images/lab-02-02-server-2022-edition-selection.png)
 
-### 6. Renamed the server to DC01
-I renamed the host from its default generated name to DC01 to align with standard infrastructure naming conventions.
+---
 
-![Server Renamed DC01](images/lab-02-06-server-renamed-dc01.png)
+## 3. Select Desktop Experience
 
-### 7. Configured a static IPv4 address
-I assigned DC01 a static IP address so that DNS and Active Directory services would have a stable network identity.
+Desktop Experience allows use of Server Manager, AD tools, and easier documentation.
 
-![Static IP Configuration](images/lab-02-07-static-ip-configuration.png)
+![Desktop Experience](images/lab-02-03-desktop-experience-selected.png)
 
-### 8. Verified DC01 baseline configuration in Server Manager
-I confirmed the server name and IPv4 address were correctly applied after the baseline configuration changes.
+---
 
-![Server Manager DC01 Configured](images/lab-02-08-server-manager-dc01-configured.png)
+## 4. Select installation disk
 
-### 9. Created a Hyper-V checkpoint before installing Active Directory
-I created a pre-AD checkpoint so I could safely roll back if the domain controller promotion failed or required rework.
+Windows Server was installed to the attached 80GB virtual disk.
 
-![Hyper-V Pre-AD Checkpoint](images/lab-02-09-hyperv-pre-ad-checkpoint.png)
+![Install Disk](images/lab-02-04-install-target-disk-selected.png)
 
-### 10. Selected role-based installation
-I used the Add Roles and Features Wizard and chose the role-based installation method for DC01.
+---
 
-![Role Based Installation Selected](images/lab-02-10-role-based-installation-selected.png)
+## 5. Initial login and Server Manager verification
 
-### 11. Confirmed DC01 as the destination server
-I verified that the AD DS role would be installed on the correct server.
+After installation, Server Manager automatically launched confirming the OS installed successfully.
 
-![Destination Server DC01](images/lab-02-11-destination-server-dc01.png)
+![Server Manager](images/lab-02-05-server-manager-first-login.png)
 
-### 12. Selected Active Directory Domain Services
-I selected the AD DS role, which provides the directory service and authentication foundation for enterprise Windows environments.
+---
 
-![AD DS Role Selected](images/lab-02-12-active-directory-domain-services-role.png)
+## 6. Rename server to DC01
 
-### 13. Installed the AD DS role
-The AD DS installation completed successfully and prepared the server for domain controller promotion.
+The default hostname was changed to **DC01** to follow common infrastructure naming conventions.
 
-![AD DS Installation Progress](images/lab-02-13-ad-ds-installation-progress.png)
+![Rename Server](images/lab-02-06-server-renamed-dc01.png)
 
-### 14. Started domain controller promotion
-After role installation, I launched the post-deployment configuration workflow to promote DC01 to a domain controller.
+---
 
-![Promote Server to Domain Controller](images/lab-02-14-promote-server-to-domain-controller.png)
+## 7. Configure static IP address
 
-### 15. Chose to add a new forest
-I selected the option to create a new Active Directory forest for the lab environment.
+A static IP was configured to ensure the Domain Controller maintains a consistent network identity.
 
-![AD DS New Forest Selection](images/lab-02-15-ad-ds-new-forest-selection.png)
+IP Address  
+`192.168.10.10`
 
-### 16. Configured the lab.local domain
-I entered `lab.local` as the root domain name for the initial Active Directory forest.
+Subnet Mask  
+`255.255.255.0`
 
-![Domain Name lab.local](images/lab-02-16-domain-name-lab-local.png)
+DNS Server  
+`192.168.10.10`
 
-### 17. Passed the AD DS prerequisites check
-I validated the promotion configuration and confirmed that all prerequisite checks passed successfully.
+![Static IP](images/lab-02-07-static-ip-configuration.png)
 
-![AD DS Prerequisites Check Passed](images/lab-02-17-ad-ds-prerequisites-check-passed.png)
+---
 
-### 18. Verified DNS forward lookup zones
-After promotion, I confirmed that Active Directory-integrated DNS zones were created successfully for the new domain.
+## 8. Verify server configuration
 
-![DNS Forward Lookup Zone Created](images/lab-02-18-dns-forward-lookup-zone-created.png)
+Server Manager confirmed the hostname and network configuration.
 
-### 19. Verified the DC01 host record in DNS
-I confirmed that the domain controller registered its host record in DNS as `dc01.lab.local`.
+![Server Configuration](images/lab-02-08-server-manager-dc01-configured.png)
 
-![DNS Host Record DC01](images/lab-02-19-dns-host-record-dc01.png)
+---
 
-### 20. Verified the logon server
-I ran `echo %logonserver%` to confirm the system was authenticating against `\\DC01`.
+## 9. Create pre-Active Directory checkpoint
 
-![Logon Server Verification](images/lab-02-20-logon-server-verification.png)
+A Hyper-V checkpoint was created before installing Active Directory to allow easy rollback if needed.
 
-### 21. Created a post-promotion checkpoint
-After successful domain controller promotion, I created a new baseline checkpoint for future IAM lab work.
+![Checkpoint](images/lab-02-09-hyperv-pre-ad-checkpoint.png)
 
-![Post-AD Domain Controller Checkpoint](images/lab-02-21-post-ad-domain-controller-checkpoint.png)
+---
 
-## Outcome
-At the end of this lab, DC01 was successfully installed as a Windows Server 2022 virtual machine, renamed, assigned a static IP address, and promoted to a Domain Controller for the `lab.local` Active Directory domain. DNS was installed alongside AD DS, and the new domain was validated through DNS records and logon server verification.
+## 10. Select role-based installation
+
+The **Add Roles and Features Wizard** was launched using the role-based installation option.
+
+![Role Based Install](images/lab-02-10-role-based-installation-selected.png)
+
+---
+
+## 11. Confirm destination server
+
+The Active Directory Domain Services role was installed on **DC01**.
+
+![Destination Server](images/lab-02-11-destination-server-dc01.png)
+
+---
+
+## 12. Select Active Directory Domain Services
+
+The **AD DS role** was selected to install the identity service.
+
+![AD DS Role](images/lab-02-12-active-directory-domain-services-role.png)
+
+---
+
+## 13. Install AD DS role
+
+The role installation completed successfully.
+
+![Installation Progress](images/lab-02-13-ad-ds-installation-progress.png)
+
+---
+
+## 14. Start Domain Controller promotion
+
+After installation, the server was promoted to a Domain Controller.
+
+![Promote DC](images/lab-02-14-promote-server-to-domain-controller.png)
+
+---
+
+## 15. Create a new Active Directory forest
+
+A new forest was created for the lab environment.
+
+![New Forest](images/lab-02-15-ad-ds-new-forest-selection.png)
+
+---
+
+## 16. Configure domain name
+
+The root domain was set to:
+
+lab.local
+
+
+![Domain Name](images/lab-02-16-domain-name-lab-local.png)
+
+---
+
+## 17. Validate prerequisites
+
+All prerequisite checks passed before promotion.
+
+![Prerequisites](images/lab-02-17-ad-ds-prerequisites-check-passed.png)
+
+---
+
+## 18. Verify DNS zone creation
+
+After promotion, DNS zones were automatically created.
+
+![DNS Zone](images/lab-02-18-dns-forward-lookup-zone-created.png)
+
+---
+
+## 19. Verify DC host record
+
+The Domain Controller registered itself in DNS.
+
+dc01.lab.local
+192.168.10.10
+
+
+![DNS Record](images/lab-02-19-dns-host-record-dc01.png)
+
+---
+
+## 20. Verify logon server
+
+The command below confirms authentication against the Domain Controller.
+
+echo %logonserver%
+
