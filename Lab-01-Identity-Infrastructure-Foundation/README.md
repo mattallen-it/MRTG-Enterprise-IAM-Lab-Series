@@ -9,6 +9,10 @@ Hands-on Identity and Access Management (IAM) lab series covering Hyper-V infras
 
 ---
 
+## Organization
+
+Monroe Redstone Technology Group (MRTG)
+
 ## Lab Scope
 
 This foundational lab combines three infrastructure preparation stages:
