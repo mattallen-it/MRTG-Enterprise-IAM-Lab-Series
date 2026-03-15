@@ -46,6 +46,12 @@ DC01 – Windows Server 2022
 Active Directory Domain Services
 DNS Server
 
+## Identity Architecture
+
+User → Domain Workstation → Domain Controller → Resource Authorization
+
+CLIENT01 authenticates to DC01 (Active Directory Domain Services) to access controlled resources within the mrtg.local domain.
+
 Client System
 CLIENT01 – Windows 11 Enterprise
 Domain-joined workstation used for user authentication and policy testing
