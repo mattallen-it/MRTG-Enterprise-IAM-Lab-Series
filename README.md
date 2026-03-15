@@ -9,7 +9,18 @@ Hands-on Identity and Access Management (IAM) lab series covering Hyper-V infras
 
 Organization
 
-This repository documents a hands-on Identity and Access Management lab environment simulating enterprise identity infrastructure for Monroe Redstone Technology Group (MRTG).
+This repository documents a simulated enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
+
+The lab environment models a small-to-mid enterprise identity infrastructure including:
+
+• Windows Server Active Directory
+• Domain-joined workstations
+• Identity lifecycle management
+• Role-based access control (RBAC)
+• Group Policy security baselines
+• Privileged access controls
+• Hybrid identity integration with Microsoft Entra ID
+• Identity monitoring and auditing
 
 Domain
 
