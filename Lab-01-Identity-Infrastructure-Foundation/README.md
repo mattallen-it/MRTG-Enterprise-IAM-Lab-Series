@@ -19,7 +19,7 @@ This foundational lab combines three infrastructure preparation stages:
 
 • Host virtualization readiness  
 • Hyper-V infrastructure configuration  
-• Windows Server domain controller deployment  
+• Windows Server preparation for domain controller deployment
 
 These steps establish the environment required for building and managing an Active Directory identity infrastructure.
 
@@ -41,8 +41,15 @@ These steps establish the environment required for building and managing an Acti
 
 ### Domain (Planned)
 
-- Domain Name: mrtg.local  
-- Domain Controller: MRTG-DC01 (to be promoted in Lab 02)  
+### Virtual Machine
+
+- Name: MRTG-DC01  
+- Operating System: Windows Server 2022 Standard (Desktop Experience)  
+- Generation: Gen 2  
+- Memory: 8 GB (8192 MB)  
+- vCPU: 2  
+- Disk: 80 GB dynamically expanding VHDX  
+- Network: MRTG-Internal (Internal Virtual Switch) 
 
 ---
 
@@ -192,7 +199,7 @@ This configuration establishes the baseline system that will later be promoted t
 
 ---
 
-### 14. Created the DC01 Virtual Machine
+### 14. Created the MRTG-DC01 Virtual Machine
 
 The MRTG-DC01 virtual machine was successfully created within the Hyper-V environment and is ready for Windows Server installation.
 
