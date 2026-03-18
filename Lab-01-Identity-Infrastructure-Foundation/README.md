@@ -56,9 +56,8 @@ These steps establish the environment required for building and managing an Acti
   - Hyper-V Manager
   - Internal Virtual Switch (for isolated lab network)
 
-- Virtual Machine
-  - MRTG-DC01 (Windows Server 2022)
-  - Intended Role: Domain Controller (AD DS, DNS)
+- Intended Role: Domain Controller (Active Directory Domain Services, DNS)
+- Will serve as centralized identity provider for MRTG environment
 
 This architecture establishes an isolated identity boundary for MRTG’s Active Directory infrastructure.
 
