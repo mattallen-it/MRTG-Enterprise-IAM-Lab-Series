@@ -186,6 +186,8 @@ A new virtual machine named **MRTG-DC01** was created with the following configu
 - 80 GB dynamically expanding VHDX
 - Windows Server 2022 ISO attached for installation
 
+This configuration establishes the baseline system that will later be promoted to a Domain Controller for centralized identity management.
+
 ![DC01 Config](screenshots/13_DC01_VM_Configuration.png)
 
 ---
