@@ -35,10 +35,6 @@ These steps establish the environment required for building and managing an Acti
 ### Virtualization Platform
 - Hyper-V
 
-### Virtual Machine
-- Windows Server 2022
-- Domain Controller: **MRTG-DC01**
-
 ### Domain (Planned)
 
 ### Virtual Machine
