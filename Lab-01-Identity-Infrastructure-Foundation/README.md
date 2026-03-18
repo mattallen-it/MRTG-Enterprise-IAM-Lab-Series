@@ -19,7 +19,7 @@ This foundational lab combines three infrastructure preparation stages:
 
 • Host virtualization readiness  
 • Hyper-V infrastructure configuration  
-• Windows Server preparation for domain controller deployment
+• Windows Server preparation for Active Directory Domain Controller deployment
 
 These steps establish the environment required for building and managing an Active Directory identity infrastructure.
 
