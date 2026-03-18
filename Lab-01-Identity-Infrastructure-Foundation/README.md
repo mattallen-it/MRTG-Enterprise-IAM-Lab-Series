@@ -55,6 +55,13 @@ This virtual machine will serve as the **Active Directory Domain Controller** fo
 
 ---
 
+## Security Considerations
+
+- Enforced separation between host system and lab environment to prevent privilege crossover
+- Hyper-V used as an isolation boundary for identity infrastructure testing
+- BitLocker verified to ensure host-level data protection
+- Standard user account configured for daily operations, with administrative access reserved for privileged tasks
+
 # Lab Steps and Evidence
 
 ### 1. Verified Host Hardware Specifications
