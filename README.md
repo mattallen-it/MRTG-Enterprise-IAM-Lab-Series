@@ -55,6 +55,8 @@ CLIENT01 → Domain-Joined Workstation (Windows 11 Enterprise)
 
 Identity authentication and authorization are enforced through a centralized Active Directory Domain Services (AD DS) model, utilizing domain-joined systems, Kerberos-based authentication, and role-based access control (RBAC) via security groups.
 
+Authentication requests from domain-joined systems are processed by the domain controller using Kerberos, establishing trust and enabling secure access to domain resources.
+
 Access to resources is governed through:
 - Organizational Unit (OU) structure for policy scoping
 - Group Policy Objects (GPO) for configuration enforcement
