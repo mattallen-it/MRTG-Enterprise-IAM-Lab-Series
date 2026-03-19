@@ -73,72 +73,64 @@ This system acts as the centralized identity provider, responsible for:
 - Access control enforcement
 
 ---
+## Deployment Phases
 
-## Deployment Steps
-
-### 1. Install AD DS Role
+### Phase 1 — AD DS Installation
 ![AD DS Role Installation](./screenshots/01-ad-ds-role-installation.png)
 
-Active Directory Domain Services role installed using Server Manager.
+Active Directory Domain Services (AD DS) role installed using Server Manager.
 
 ---
 
-### 2. Validate Prerequisites
+### Phase 2 — Prerequisite Validation
 ![Prerequisites Check](./screenshots/02-ad-ds-prerequisites-check.png)
 
-Prerequisite validation completed successfully prior to promotion.
+Prerequisite checks completed successfully prior to domain controller promotion.
 
 ---
 
-### 3. Create New Forest
+### Phase 3 — Forest & Domain Creation
 ![New Forest Creation](./screenshots/03-new-forest-mrtg-local.png)
 
-New Active Directory forest created with root domain `mrtg.local`.
+A new Active Directory forest was created with the root domain `mrtg.local`.
 
 ---
 
-### 4. Verify DNS Zones
+### Phase 4 — DNS Configuration
 ![DNS Zones](./screenshots/04-dns-zones-mrtg-local.png)
 
-Forward lookup zones created and integrated with Active Directory.
+AD-integrated DNS zones were automatically created during promotion.
 
----
-
-### 5. Verify _msdcs Records
 ![MSDCS Records](./screenshots/05-dns-msdcs-service-records.png)
 
-Critical service records (`_msdcs`) confirm domain controller service discovery.
+Critical `_msdcs` service records confirm proper domain controller registration.
+
+![DNS Records](./screenshots/06-dns-host-and-service-records.png)
+
+Host and service records validated within DNS.
 
 ---
 
-### 6. Verify DNS Records
-![DNS Records](./screenshots/06-dns-host-and-service-record.png)
-
-Host and service records registered correctly in DNS.
-
----
-
-### 7. Validate Network Configuration
+### Phase 5 — Network Configuration Validation
 ![IP Configuration](./screenshots/07-ipconfig-domain-controller.png)
 
-Static IP configuration verified, with DNS pointing to the domain controller.
+Static IP configuration verified with DNS pointing to the domain controller.
 
 ---
 
-### 8. Validate Authentication & Name Resolution
+### Phase 6 — Authentication & Name Resolution Validation
 ![Authentication Validation](./screenshots/08-domain-authentication-validation.png)
 
-Successful domain authentication and DNS resolution:
-- `whoami` confirms domain context
-- `ping mrtg.local` resolves correctly
+Successful authentication and DNS resolution confirmed:
+- Domain context verified (`whoami`)
+- Domain name resolves correctly (`ping mrtg.local`)
 
 ---
 
-### 9. Create Post-Promotion Checkpoint
+### Phase 7 — Infrastructure Baseline Checkpoint
 ![Checkpoint](./screenshots/09-post-dc-promotion-checkpoint.png)
 
-Hyper-V checkpoint created to preserve a stable domain controller baseline.
-
+A Hyper-V checkpoint was created to preserve a stable domain controller baseline.
 ---
 
 ## Outcome
