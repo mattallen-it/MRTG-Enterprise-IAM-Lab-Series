@@ -269,15 +269,11 @@ A new Hyper-V checkpoint was created to serve as the **baseline state for future
 
 ## Outcome
 
-At the end of this lab:
-
-- Windows Server 2022 was successfully deployed
-- The server was renamed to **DC01**
-- A **static IP address** was configured
-- **Active Directory Domain Services (AD DS)** was installed
-- A new forest **lab.local** was created
-- DNS zones were automatically configured
-- The server now functions as the **Domain Controller**
+- Successfully deployed a functional Active Directory domain (mrtg.local)
+- Established MRTG-DC01 as the primary domain controller
+- Enabled centralized authentication and identity management
+- Configured DNS to support domain-based name resolution
+- Created a foundational identity platform for subsequent IAM labs
 
 This environment now serves as the **identity infrastructure foundation** for future IAM labs.
 
