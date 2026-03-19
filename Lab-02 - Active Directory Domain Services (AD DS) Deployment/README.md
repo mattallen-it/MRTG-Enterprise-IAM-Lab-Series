@@ -13,7 +13,7 @@ To support this requirement, the organization is deploying an Active Directory d
 mrtg.local
 
 ## Objective
-Install Windows Server 2022 in Hyper-V, configure the server baseline, and promote the system to a Domain Controller hosting the initial Active Directory environment.
+Deploy and configure Active Directory Domain Services (AD DS) to establish a centralized identity authority for the mrtg.local domain, enabling authentication, authorization, and directory-based access control across the enterprise environment.
 
 ---
 
