@@ -36,7 +36,7 @@ mrtg.local
 
 | System | Role |
 |------|------|
-| DC01 | Domain Controller |
+| MRTG-DC01 | Domain Controller |
 | CLIENT01 | Domain Workstation |
 
 ---
@@ -46,7 +46,7 @@ mrtg.local
 | Component | Description |
 |----------|-------------|
 | Hypervisor | Hyper-V (Windows 11 Pro) |
-| Domain Controller | **DC01** — Windows Server 2022 |
+| Domain Controller | **MRTG-DC01** — Windows Server 2022 |
 | Services | Active Directory Domain Services, DNS |
 | Client System | **CLIENT01** — Windows 11 Enterprise |
 
@@ -68,7 +68,7 @@ CLIENT01 authenticates to **DC01 (Active Directory Domain Services)** to access 
 
 | Lab | Topic |
 |-----|------|
-| Lab 01 | Identity Infrastructure Foundation |
+| Lab 01 | Virtualization and Identity Infrastructure |
 | Lab 02 | Active Directory Domain Deployment |
 | Lab 03 | Identity Lifecycle and RBAC |
 | Lab 04 | Group Policy Security Baselines |
