@@ -1,4 +1,4 @@
-# Lab-02 - Domain Controller Promotion and Initial Active Directory Setup
+# Lab-02 — Active Directory Domain Services (AD DS) Deployment
 
 ![Lab](https://img.shields.io/badge/type-lab-blue)
 ![Active Directory](https://img.shields.io/badge/technology-Active%20Directory-purple)
@@ -18,6 +18,8 @@ Deploy and configure Active Directory Domain Services (AD DS) to establish a cen
 This lab establishes the domain controller as the central identity authority within the environment. 
 
 By deploying AD DS, all authentication requests, user identities, and access control decisions are managed centrally, forming the foundation for role-based access control (RBAC), Group Policy enforcement, and future identity lifecycle management.
+
+The domain controller acts as the authoritative identity source for the mrtg.local environment, handling authentication requests and enforcing access control policies.
 
 ---
 
@@ -66,13 +68,9 @@ Future labs standardize the environment to mrtg.local for the Monroe Redstone Te
 
 # Architecture
 
-Hyper-V Host
-│
-└── MRTG-DC01
-├ Windows Server 2022
-├ Active Directory Domain Services
-└ DNS
+The MRTG-DC01 system is deployed as the primary domain controller within the mrtg.local domain, hosting Active Directory Domain Services (AD DS) and DNS.
 
+This system serves as the centralized identity provider, responsible for authenticating users and systems, managing directory objects, and enforcing access control across the environment.
 ---
 
 # Steps
@@ -117,7 +115,7 @@ After installation, Server Manager automatically launched confirming the OS inst
 
 ---
 
-## 6. Rename server to DC01
+## 6. Rename server to MRTG-DC01
 
 The default hostname was changed to **DC01** to follow common infrastructure naming conventions.
 
@@ -127,7 +125,7 @@ The default hostname was changed to **DC01** to follow common infrastructure nam
 
 ## 7. Configure static IP address
 
-A static IP was configured to ensure the Domain Controller maintains a consistent network identity.
+A static IP is required to ensure the domain controller maintains a consistent network identity, which is critical for DNS resolution and authentication services within the domain.
 
 IP Address  
 `192.168.10.10`
