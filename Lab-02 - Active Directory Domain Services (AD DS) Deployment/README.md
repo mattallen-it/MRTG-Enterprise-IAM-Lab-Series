@@ -15,6 +15,10 @@ mrtg.local
 ## Objective
 Deploy and configure Active Directory Domain Services (AD DS) to establish a centralized identity authority for the mrtg.local domain, enabling authentication, authorization, and directory-based access control across the enterprise environment.
 
+This lab establishes the domain controller as the central identity authority within the environment. 
+
+By deploying AD DS, all authentication requests, user identities, and access control decisions are managed centrally, forming the foundation for role-based access control (RBAC), Group Policy enforcement, and future identity lifecycle management.
+
 ---
 
 # Scope
