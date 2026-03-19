@@ -23,22 +23,13 @@ By deploying AD DS, all authentication requests, user identities, and access con
 
 # Scope
 
-## Included
-- Windows Server 2022 installation in Hyper-V
-- Initial server login and baseline configuration
-- Hostname change to MRTG-DC01
-- Static IPv4 configuration
-- Hyper-V checkpoint creation
-- Active Directory Domain Services installation
-- Domain Controller promotion
-- DNS validation
-- Logon server verification
-
-## Not Included
-- Organizational Unit design
-- User and group provisioning
-- Client domain join
-- Group Policy creation
+- Windows Server 2022 deployment in a virtualized environment
+- Host configuration and system hardening
+- Static IP configuration and network setup
+- Active Directory Domain Services (AD DS) installation
+- Domain controller promotion and forest creation (mrtg.local)
+- DNS configuration and validation
+- Hyper-V checkpoint creation for environment recovery
 
 ---
 
