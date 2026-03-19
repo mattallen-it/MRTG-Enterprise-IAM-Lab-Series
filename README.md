@@ -71,10 +71,10 @@ This model aligns with enterprise IAM principles of least privilege, centralized
 | Lab | Topic |
 |-----|------|
 | Lab 01 | Virtualization and Identity Infrastructure |
-| Lab 02 | Active Directory Domain Deployment |
-| Lab 03 | Identity Lifecycle and RBAC |
+| Lab 02 | Active Directory Domain Services (AD DS) Deployment |
+| Lab 03 | Identity Lifecycle Management and RBAC |
 | Lab 04 | Group Policy Security Baselines |
-| Lab 05 | Domain Workstation Management |
+| Lab 05 | Domain-Joined Workstation Management |
 | Lab 06 | Privileged Access Management |
 | Lab 07 | Hybrid Identity (Microsoft Entra ID) |
 | Lab 08 | Identity Monitoring and Auditing |
