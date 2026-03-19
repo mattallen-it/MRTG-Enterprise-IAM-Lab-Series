@@ -35,6 +35,7 @@ mrtg.local
 ## Systems
 
 MRTG-DC01 → Primary Domain Controller (AD DS, DNS)
+
 CLIENT01 → Domain-Joined Workstation
 
 ---
