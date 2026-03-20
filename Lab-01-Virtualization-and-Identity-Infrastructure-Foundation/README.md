@@ -1,9 +1,6 @@
 # Lab-01 — Virtualization and Identity Infrastructure Foundation
 
-![Type](https://img.shields.io/badge/type-lab-blue)
-![Focus](https://img.shields.io/badge/focus-infrastructure-lightgrey)
-![Platform](https://img.shields.io/badge/platform-hyper--v-blue)
-![OS](https://img.shields.io/badge/os-windows%2011-blue)
+![type: lab](https://img.shields.io/badge/type-lab-blue) ![focus: identity infrastructure](https://img.shields.io/badge/focus-identity%20infrastructure-green) ![platform: Hyper-V](https://img.shields.io/badge/platform-Hyper--V-0078D6) ![os: Windows 11](https://img.shields.io/badge/os-Windows%2011-lightgrey) ![domain: identity](https://img.shields.io/badge/domain-identity-informational) ![level: foundation](https://img.shields.io/badge/level-foundation-lightgrey)
 
 Establish a secure and scalable identity infrastructure foundation by preparing a virtualization environment to support Active Directory Domain Services for MRTG.
 
