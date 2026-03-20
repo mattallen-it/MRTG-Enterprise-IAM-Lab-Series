@@ -68,10 +68,10 @@ This model aligns with enterprise IAM principles of least privilege, centralized
 
 ## Lab Series Progression
 
-| Lab | Topic |
-|-----|------|
-| Lab 01 | Virtualization and Identity Infrastructure Foundation |
-| Lab 02 | Active Directory Domain Services (AD DS) Deployment |
+| Lab   | Topic |
+|------|------|
+| Lab-01 | Virtualization and Identity Infrastructure Foundation |
+| Lab-02 | Active Directory Domain Services (AD DS) Deployment |
 | Lab 03 | Identity Lifecycle Management and RBAC |
 | Lab 04 | Group Policy Security Baselines |
 | Lab 05 | Domain-Joined Workstation Management |
