@@ -68,16 +68,16 @@ This model aligns with enterprise IAM principles of least privilege, centralized
 
 ## Lab Series Progression
 
-| Lab   | Topic |
-|------|------|
+| Lab | Topic |
+|-----|------|
 | Lab-01 | Virtualization and Identity Infrastructure Foundation |
 | Lab-02 | Active Directory Domain Services (AD DS) Deployment |
-| Lab 03 | Identity Lifecycle Management and RBAC |
-| Lab 04 | Group Policy Security Baselines |
-| Lab 05 | Domain-Joined Workstation Management |
-| Lab 06 | Privileged Access Management |
-| Lab 07 | Hybrid Identity (Microsoft Entra ID) |
-| Lab 08 | Identity Monitoring and Auditing |
+| Lab-03 | Active Directory Domain Setup (Identity Authority Foundation) |
+| Lab-04 | Organizational Units (OU) Design and Group Policy |
+| Lab-05 | User and Group Lifecycle Management |
+| Lab-06 | NTFS Permissions vs Share Permissions |
+| Lab-07 | Service Accounts and Delegation |
+| Lab-08 | Identity Monitoring and Auditing |
 
 ---
 
