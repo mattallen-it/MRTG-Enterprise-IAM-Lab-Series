@@ -6,6 +6,8 @@ Monroe Redstone Technology Group (MRTG) established its centralized identity sys
 
 This lab builds directly on Lab 02 by activating identity services, enabling authentication, authorization, and service discovery within the environment.
 
+This marks the transition from infrastructure preparation to active identity enforcement within the environment.
+
 ---
 
 ## Objective
@@ -69,8 +71,6 @@ This establishes the identity control plane for MRTG.
 
 The server was promoted to a domain controller by creating a new Active Directory forest (`mrtg.local`).
 
-This action establishes the Active Directory forest, which defines the security boundary and identity namespace for the environment.
-
 This defines the Active Directory forest as the primary security boundary and identity namespace for MRTG.
 
 ---
@@ -105,7 +105,7 @@ DNS service records confirm proper domain controller registration and enable ser
 
 ![IP Configuration](./screenshots/07-ipconfig-domain-controller.png)
 
-Verified static IP configuration and confirmed the domain controller is using itself for DNS resolution.
+Validated static IP configuration and confirmed the domain controller is configured to use itself for DNS resolution.
 
 ---
 
