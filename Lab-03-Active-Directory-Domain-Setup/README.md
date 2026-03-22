@@ -97,7 +97,7 @@ DNS service records confirm proper domain controller registration and enable ser
 
 ### Phase 5 — Network Configuration Validation
 
-![Checkpoint](./screenshots/09-post-dc-promotion-checkpoint.png)
+![IP Configuration](./screenshots/07-ipconfig-domain-controller.png)
 
 Verified static IP configuration and confirmed the domain controller is using itself for DNS resolution.
 
@@ -105,7 +105,7 @@ Verified static IP configuration and confirmed the domain controller is using it
 
 ### Phase 6 — Authentication and Name Resolution Validation
 
-![Authentication Validation](./08-domain-authentication-validation.png)
+![Authentication Validation](./screenshots/08-domain-authentication-validation.png)
 
 Validated domain authentication and DNS resolution:
 
@@ -117,7 +117,7 @@ Validated domain authentication and DNS resolution:
 
 ### Phase 7 — Infrastructure Baseline Checkpoint
 
-![Checkpoint](./09-post-dc-promotion-checkpoint.png)
+![Checkpoint](./screenshots/09-post-dc-promotion-checkpoint.png)
 
 A Hyper-V checkpoint was created to preserve a stable domain controller baseline for future labs.
 
