@@ -53,19 +53,13 @@ Deploy Active Directory Domain Services (AD DS) to prepare Windows Server for do
 ---
 ## Architecture
 
-The MRTG-DC01 server functions as the primary domain controller within the `mrtg.local` domain, hosting:
+The MRTG-DC01 server is prepared to function as a domain controller within the future `mrtg.local` domain, hosting:
 
 - Active Directory Domain Services (AD DS)
-- Active Directory-integrated DNS
 
-This system serves as the centralized identity provider, responsible for:
+At this stage, the server is configured with the necessary role and management tools required to support identity services.
 
-- Authentication (Kerberos)
-- Authorization and access control
-- Directory object management
-- Service discovery via DNS
-
-This architecture establishes the foundation for identity and access management (IAM) within the enterprise environment.
+Domain creation, authentication, and DNS integration are completed in Lab 03.
 
 ---
 ## Deployment Phases
