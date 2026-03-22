@@ -17,7 +17,7 @@ Establish a secure and scalable identity infrastructure foundation by preparing 
 
 Monroe Redstone Technology Group (MRTG)
 
-## Lab Scope
+## Scope
 
 This foundational lab combines three infrastructure preparation stages:
 
