@@ -92,3 +92,7 @@ Key focus areas include:
 - Group Policy-based security enforcement
 - Hybrid identity integration (Active Directory + Microsoft Entra ID)
 - Identity monitoring, logging, and auditing
+
+## Quick Access
+
+- [Start with Lab 01](./Lab-01-Virtualization-and-Identity-Infrastructure-Foundation)
