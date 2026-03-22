@@ -1,6 +1,6 @@
 # Monroe Redstone Technology Group — IAM Lab Series
 
-This project simulates a real-world enterprise identity environment for Monroe Redstone Technology Group (MRTG), focusing on Active Directory, access control, and 
+This project represents a real-world enterprise identity environment for Monroe Redstone Technology Group (MRTG), focusing on Active Directory, access control, and 
 identity security.
 
 Hands-on Identity and Access Management (IAM) lab series covering Hyper-V infrastructure, Active Directory identity services, authentication workflows, role-based access control (RBAC), and hybrid identity with Microsoft Entra ID.
