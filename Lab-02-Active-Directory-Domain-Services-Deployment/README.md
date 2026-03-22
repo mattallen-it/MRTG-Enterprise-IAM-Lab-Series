@@ -1,6 +1,11 @@
 # Lab-02 — Active Directory Domain Services (AD DS) Deployment
 
-![type: lab](https://img.shields.io/badge/type-lab-blue) ![technology: Active Directory](https://img.shields.io/badge/technology-Active%20Directory-darkblue) ![platform: Windows Server 2022](https://img.shields.io/badge/platform-Windows%20Server%202022-0078D6) ![focus: IAM](https://img.shields.io/badge/focus-IAM-green) ![domain: identity](https://img.shields.io/badge/domain-identity-informational) ![level: foundation](https://img.shields.io/badge/level-foundation-lightgrey)
+!![Type](https://img.shields.io/badge/type-lab-1f2937?style=flat-square)
+![Technology](https://img.shields.io/badge/technology-Active%20Directory-1f2937?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-Windows%20Server%202022-1f2937?style=flat-square)
+![Focus](https://img.shields.io/badge/focus-IAM-065f46?style=flat-square)
+![Domain](https://img.shields.io/badge/domain-Identity-4c1d95?style=flat-square)
+![Level](https://img.shields.io/badge/level-Foundation-6b7280?style=flat-square)
 
 ## Overview
 Monroe Redstone Technology Group (MRTG) deployed a centralized identity infrastructure using Active Directory Domain Services (AD DS) to support authentication, access control, and identity management.
