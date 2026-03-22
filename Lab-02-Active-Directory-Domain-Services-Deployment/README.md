@@ -9,6 +9,8 @@ This lab establishes a domain controller for the internal domain `mrtg.local`, f
 
 This lab focuses on infrastructure preparation, with domain creation and identity activation completed in the next phase.
 
+This staged approach aligns with enterprise identity deployment practices, where infrastructure preparation and identity activation are handled as separate operational phases.
+
 ---
 
 ## Objective
@@ -61,8 +63,7 @@ At this stage, the server is configured with the necessary role and management t
 
 Domain creation, authentication, and DNS integration are completed in Lab 03.
 
----
-## Deployment Phases
+This phase represents infrastructure readiness, with identity services activated during domain promotion in Lab 03.
 
 ### Phase 1 — AD DS Installation
 
