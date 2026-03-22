@@ -10,13 +10,8 @@ This lab establishes a domain controller for the internal domain `mrtg.local`, f
 ---
 
 ## Objective
-Deploy and configure Active Directory Domain Services (AD DS) to establish a centralized identity authority.
 
-This includes:
-- Installing AD DS
-- Promoting a domain controller
-- Configuring DNS
-- Validating authentication and name resolution
+Deploy Active Directory Domain Services (AD DS) to prepare Windows Server for domain controller promotion and centralized identity management.
 
 ---
 
