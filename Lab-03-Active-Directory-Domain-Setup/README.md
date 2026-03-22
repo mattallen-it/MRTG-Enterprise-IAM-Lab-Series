@@ -1,5 +1,12 @@
 # Lab 03 — Active Directory Domain Setup (Identity Authority Foundation)
 
+![Type](https://img.shields.io/badge/type-lab-1f2937?style=flat-square)
+![Technology](https://img.shields.io/badge/technology-Active%20Directory-1f2937?style=flat-square)
+![Platform](https://img.shields.io/badge/platform-Windows%20Server%202022-1f2937?style=flat-square)
+![Focus](https://img.shields.io/badge/focus-IAM-065f46?style=flat-square)
+![Domain](https://img.shields.io/badge/domain-Identity-4c1d95?style=flat-square)
+![Level](https://img.shields.io/badge/level-Foundation-6b7280?style=flat-square)
+
 ## Overview
 
 Monroe Redstone Technology Group (MRTG) established its centralized identity system by promoting Windows Server to a Domain Controller and creating the internal domain `mrtg.local`.
