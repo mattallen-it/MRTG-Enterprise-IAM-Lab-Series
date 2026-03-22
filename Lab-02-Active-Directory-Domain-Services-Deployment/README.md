@@ -21,10 +21,8 @@ Deploy Active Directory Domain Services (AD DS) to prepare Windows Server for do
 - Windows Server 2022 deployment (Hyper-V)
 - Server configuration and initial hardening
 - Static IP assignment
-- AD DS installation and domain controller promotion
-- DNS configuration (AD-integrated zones)
-- Authentication and DNS validation
-- Hyper-V checkpoint creation
+- AD DS role installation
+- Installation of AD DS management tools
 
 ### Not Included
 - Organizational Unit (OU) design
