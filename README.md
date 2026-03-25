@@ -75,10 +75,10 @@ This model aligns with enterprise IAM principles of least privilege, centralized
 
 | Lab | Topic |
 |-----|------|
-| [Lab-01](./Lab-01-Virtualization-and-Identity-Infrastructure-Foundation) | Virtualization and Identity Infrastructure Foundation |
-| [Lab-02](./Lab-02-Active-Directory-Domain-Services-AD-DS-Deployment) | Active Directory Domain Services (AD DS) Deployment |
-| [Lab-03](./Lab-03-Active-Directory-Domain-Setup) | Active Directory Domain Setup (Identity Authority Foundation) |
-| Lab-04 | Organizational Units (OU) Design and Group Policy |
+[Lab-01 — Virtualization and Identity Infrastructure Foundation](./Lab-01-Virtualization/README.md)
+[Lab-02 — Active Directory Domain Services (AD DS) Deployment](./Lab-02-AD-DS-Deployment/README.md)
+[Lab-03 — Active Directory Domain Setup (Identity Authority Foundation)](./Lab-03-AD-Setup/README.md)
+[Lab-04 — Organizational Unit (OU) Design and Group Policy](./Lab-04-OU-and-GPO/README.md)
 | Lab-05 | User and Group Lifecycle Management |
 | Lab-06 | NTFS Permissions vs Share Permissions |
 | Lab-07 | Service Accounts and Delegation |
