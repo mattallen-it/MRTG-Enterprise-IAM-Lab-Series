@@ -56,6 +56,8 @@ The environment is structured to reflect real-world enterprise identity architec
 | Services | Active Directory Domain Services (AD DS), DNS |
 | Client System | **CLIENT01** — Windows 11 Enterprise |
 
+This architecture reflects enterprise IAM design principles used in government and regulated environments, emphasizing centralized identity control, policy enforcement, and auditability.
+
 ---
 
 ## Identity Architecture
