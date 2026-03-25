@@ -1,4 +1,4 @@
-# Lab-01 — Virtualization and Identity Infrastructure Foundation
+# Lab-01 — Virtualization Foundation
 
 ## Overview
 
