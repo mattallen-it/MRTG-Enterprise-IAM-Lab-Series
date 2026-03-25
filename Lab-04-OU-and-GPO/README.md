@@ -221,11 +221,3 @@ In government and enterprise environments, Group Policy is a critical mechanism 
 
 ## Next Lab
 
-[Lab 05 — Hybrid Identity and Entra ID Integration](#)
-
-The next lab will cover:
-
-- Introduction to Microsoft Entra ID (Azure AD)
-- Synchronizing on-prem Active Directory with cloud identity
-- Implementing Hybrid Identity architecture
-- Enforcing Conditional Access policies
