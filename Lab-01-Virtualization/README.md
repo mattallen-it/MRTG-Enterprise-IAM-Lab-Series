@@ -4,6 +4,8 @@
 
 Establish a secure and scalable identity infrastructure foundation by preparing a virtualization environment to support Active Directory Domain Services for the MRTG environment.
 
+This lab establishes the infrastructure layer required for future identity and access management implementation.
+
 ---
 
 ## Why This Matters
