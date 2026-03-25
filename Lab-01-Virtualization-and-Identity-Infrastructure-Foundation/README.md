@@ -1,15 +1,8 @@
 # Lab-01 — Virtualization and Identity Infrastructure Foundation
 
-![Type](https://img.shields.io/badge/type-lab-1f2937?style=flat-square)
-![Technology](https://img.shields.io/badge/technology-Virtualization-1f2937?style=flat-square)
-![Platform](https://img.shields.io/badge/platform-Hyper--V-1f2937?style=flat-square)
-![Focus](https://img.shields.io/badge/focus-Identity%20Infrastructure-065f46?style=flat-square)
-![Domain](https://img.shields.io/badge/domain-Identity-4c1d95?style=flat-square)
-![Level](https://img.shields.io/badge/level-Foundation-6b7280?style=flat-square)
-
 ## Overview
 
-Establish a secure and scalable identity infrastructure foundation by preparing a virtualization environment to support Active Directory Domain Services for MRTG.
+Establish a secure and scalable identity infrastructure foundation by preparing a virtualization environment to support Active Directory Domain Services for the MRTG environment.
 
 ---
 
@@ -25,13 +18,13 @@ This lab lays the groundwork for centralized identity management, which will be 
 
 ## Environment
 
-| Component | Value |
-|----------|------|
-| Host OS | Windows 11 Pro |
-| Hypervisor | Hyper-V |
-| Domain Controller | Windows Server 2022 |
-| VM Count | 2 |
-| Network | Internal Virtual Switch |
+| Component           | Value                  |
+|--------------------|-----------------------|
+| Host OS            | Windows 11 Pro        |
+| Hypervisor         | Hyper-V               |
+| Domain Controller  | Windows Server 2022   |
+| VM Count           | 2                     |
+| Network            | Internal Virtual Switch |
 
 ---
 
@@ -57,33 +50,33 @@ This architecture establishes an isolated identity boundary for the MRTG Active 
 - Hyper-V used as an isolation boundary to separate host and lab environments  
 - BitLocker enabled to ensure host-level data protection  
 - Standard user account used for daily operations; administrative access restricted  
-- Lab environment isolated to simulate enterprise trust boundaries and reduce attack surface
+- Lab environment isolated to simulate enterprise trust boundaries and reduce attack surface  
 
 ---
 
-# Lab Steps and Evidence
+## Lab Steps and Evidence
 
 ### 1. Verified Host Hardware
 
-The host system hardware was validated to ensure sufficient CPU and memory resources for running virtualization workloads.
+The host system hardware was validated to ensure sufficient CPU and memory resources for virtualization workloads.
 
-![Hardware Specs](screenshots/01_host_hardware_specs.png)
+![Host Hardware](images/host_hardware_verified.png)
 
 ---
 
-### 2. Confirmed System Architecture
+### 2. Verified System Architecture
 
 The system architecture was verified to ensure a 64-bit operating system capable of supporting Hyper-V virtualization.
 
-![System Architecture](screenshots/02_host_system_architecture.png)
+![System Architecture](images/system_architecture_verified.png)
 
 ---
 
-### 3. Verified Host Operating System Version
+### 3. Verified Host Operating System
 
-The host system is running **Windows 11 Pro**, which supports Hyper-V virtualization and enterprise security features.
+The host system is running Windows 11 Pro, which supports Hyper-V virtualization and enterprise security features.
 
-![Host OS](screenshots/03_host_os_version.png)
+![OS Version](images/os_version_verified.png)
 
 ---
 
@@ -91,15 +84,15 @@ The host system is running **Windows 11 Pro**, which supports Hyper-V virtualiza
 
 Trusted Platform Module (TPM) availability was confirmed to support hardware-based security features such as BitLocker.
 
-![TPM Ready](screenshots/04_tpm_ready.png)
+![TPM](images/tpm_verified.png)
 
 ---
 
-### 5. Confirmed BitLocker Encryption
+### 5. Verified BitLocker Encryption
 
-BitLocker encryption was verified on the operating system drive to ensure the host system meets basic security requirements for infrastructure hosting.
+BitLocker encryption was verified on the operating system drive to ensure host system data protection.
 
-![BitLocker Enabled](screenshots/05_bitlocker_enabled.png)
+![BitLocker](images/bitlocker_verified.png)
 
 ---
 
@@ -107,15 +100,15 @@ BitLocker encryption was verified on the operating system drive to ensure the ho
 
 CPU virtualization support was confirmed to ensure the processor can support Hyper-V virtual machines.
 
-![CPU Virtualization](screenshots/06_cpu_virtualization_enabled.png)
+![CPU Virtualization](images/cpu_virtualization_verified.png)
 
 ---
 
-### 7. Confirmed Hyper-V Installation
+### 7. Verified Hyper-V Installation
 
-Hyper-V was verified as installed with both the **Hyper-V platform** and **management tools** enabled.
+Hyper-V was verified as installed with both the platform and management tools enabled.
 
-![HyperV Installed](screenshots/07_hyperv_installed.png)
+![Hyper-V Installed](images/hyperv_installed.png)
 
 ---
 
@@ -123,27 +116,27 @@ Hyper-V was verified as installed with both the **Hyper-V platform** and **manag
 
 Hyper-V Manager was launched to begin configuring the virtualization environment.
 
-![HyperV Manager](screenshots/08_hyperv_manager_console.png)
+![Hyper-V Manager](images/hyperv_manager_opened.png)
 
 ---
 
 ### 9. Created Internal Lab Network
 
-A dedicated **internal virtual switch** was created to isolate the lab network from the host network environment.
+A dedicated internal virtual switch was created to isolate the lab network from the host network.
 
-This allows domain services and authentication testing without affecting external systems.
+This allows domain services and authentication testing without impacting external systems.
 
-![Internal Network](screenshots/09_internal_network_created.png)
+![Internal Switch](images/internal_network_created.png)
 
 ---
 
-### 10. Created Hyper-V Lab Folder Structure
+### 10. Created Lab Folder Structure
 
-A dedicated folder structure was created on the **LABS drive** to organize virtual machine files and virtual hard disks.
+A dedicated folder structure was created on the LABS drive to organize virtual machine files and virtual hard disks.
 
 This structure separates infrastructure resources from the host operating system.
 
-![Folder Structure](screenshots/10_HyperV_Folder_Structure.png)
+![Folder Structure](images/lab_folder_structure.png)
 
 ---
 
@@ -153,7 +146,7 @@ Hyper-V default storage locations were configured to use the dedicated lab direc
 
 This ensures consistent storage management for future virtual machines.
 
-![Storage Paths](screenshots/11_HyperV_Default_Storage_Paths.png)
+![Storage Paths](images/hyperv_storage_paths.png)
 
 ---
 
@@ -161,7 +154,7 @@ This ensures consistent storage management for future virtual machines.
 
 The Windows Server 2022 ISO image was downloaded and staged for deployment as the domain controller.
 
-![Windows Server ISO](screenshots/12_Windows_Server_ISO_Ready.png)
+![ISO](images/windows_server_iso.png)
 
 ---
 
@@ -169,24 +162,24 @@ The Windows Server 2022 ISO image was downloaded and staged for deployment as th
 
 A new virtual machine named **MRTG-DC01** was created with the following configuration:
 
-- Generation 2
-- 8192 MB RAM (8 GB)
-- 2 vCPU
-- Internal virtual network (MRTG-Internal)
-- 80 GB dynamically expanding VHDX
-- Windows Server 2022 ISO attached for installation
+- Generation 2  
+- 8192 MB RAM  
+- 2 vCPU  
+- Internal virtual network (MRTG-Internal)  
+- 80 GB dynamically expanding VHDX  
+- Windows Server 2022 ISO attached  
 
-This configuration establishes the baseline system that will later be promoted to a Domain Controller for centralized identity management.
+This configuration establishes the baseline system that will later be promoted to a Domain Controller.
 
-![DC01 Config](screenshots/13_DC01_VM_Configuration.png)
+![VM Config](images/dc_vm_configured.png)
 
 ---
 
-### 14. Created the MRTG-DC01 Virtual Machine
+### 14. Created MRTG-DC01 Virtual Machine
 
 The MRTG-DC01 virtual machine was successfully created within the Hyper-V environment and is ready for Windows Server installation.
 
-![DC01 Created](screenshots/14_MRTG_DC01_Created.png)
+![VM Created](images/dc_vm_created.png)
 
 ---
 
@@ -202,11 +195,11 @@ The environment now supports the deployment of Active Directory Domain Services 
 
 ## Next Lab
 
-[Lab 02 — Active Directory Domain Services (AD DS) Deployment](../Lab-02-Active-Directory-Domain-Services-Deployment/README.md)
+[Lab-02 — Active Directory Domain Services (AD DS) Deployment](../Lab-02-AD-DS-Deployment/README.md)
 
 The next lab will cover:
 
-- Installing the Active Directory Domain Services (AD DS) role
-- Creating a new domain forest
-- Configuring DNS for the domain environment
-- Promoting the server to a Domain Controller
+- Installing the Active Directory Domain Services (AD DS) role  
+- Creating a new domain forest  
+- Configuring DNS for the domain environment  
+- Promoting the server to a Domain Controller  
