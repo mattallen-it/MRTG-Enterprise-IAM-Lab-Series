@@ -14,21 +14,20 @@ To design, implement, and secure an enterprise identity environment that reflect
 
 ## Organization
 
-This repository documents a simulated enterprise Identity and Access Management environment for:
+This repository represents a simulated enterprise Identity and Access Management (IAM) environment for:
 
 **Monroe Redstone Technology Group (MRTG)**
 
-The lab environment models a small-to-mid enterprise identity infrastructure including:
+The environment is structured to reflect real-world enterprise identity architecture, including:
 
-- Windows Server Active Directory
-- Domain-joined workstations
-- Identity lifecycle management
-- Role-based access control (RBAC)
-- Group Policy security baselines
-- Privileged access administration
-- Hybrid identity integration with Microsoft Entra ID
-- Identity monitoring and auditing
-
+- Centralized Active Directory (AD DS)
+- Domain-joined endpoints
+- Organizational Unit (OU) hierarchy aligned to business functions
+- Role-Based Access Control (RBAC) using security groups
+- Group Policy-based configuration enforcement
+- Privileged access separation and administrative tiering
+- Hybrid identity integration (future state)
+- Identity monitoring, auditing, and policy validation
 ---
 
 ## Domain
