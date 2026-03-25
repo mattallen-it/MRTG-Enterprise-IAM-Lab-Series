@@ -8,6 +8,8 @@ In this lab, I implemented Group Policy Objects (GPOs) within the Monroe Redston
 
 This lab demonstrates how identity-driven policy enforcement is used to control user and device behavior, a critical component of Identity and Access Management (IAM) in enterprise and government environments.
 
+This approach aligns with enterprise security frameworks by ensuring consistent, auditable control over user sessions and endpoint configurations.
+
 ---
 
 ## Objective
