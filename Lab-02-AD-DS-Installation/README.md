@@ -1,4 +1,4 @@
-# Lab-02 — AD DS Installation
+# Lab-02 — Active Directory Domain Services (AD DS) Installation
 
 ---
 
