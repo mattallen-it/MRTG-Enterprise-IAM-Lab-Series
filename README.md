@@ -111,7 +111,7 @@ Key focus areas include:
 
 ## Quick Access
 
-- [Start with Lab-01](../Lab-01-Virtualization-Foundation/README.md)
-- [Lab-02 — AD DS Installation](../Lab-02-AD-DS-Installation/README.md)
-- [Lab-03 — Domain Controller Promotion](../Lab-03-Domain-Controller-Promotion/README.md)
-- [Lab-04 — OU and GPO Implementation](../Lab-04-OU-and-GPO-Implementation/README.md)
+- [Start with Lab-01](./Lab-01-Virtualization-Foundation/README.md)
+- [Lab-02 — AD DS Installation](./Lab-02-AD-DS-Installation/README.md)
+- [Lab-03 — Domain Controller Promotion](./Lab-03-Domain-Controller-Promotion/README.md)
+- [Lab-04 — OU and GPO Implementation](./Lab-04-OU-and-GPO-Implementation/README.md)
