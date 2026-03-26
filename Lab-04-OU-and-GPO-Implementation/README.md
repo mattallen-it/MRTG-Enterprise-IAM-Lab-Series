@@ -8,20 +8,22 @@ This lab focuses on implementing policy-based identity control within the MRTG A
 
 This phase introduces centralized policy enforcement, enabling standardized configuration, security controls, and scalable identity management across the domain.
 
+This lab demonstrates how identity transitions from static objects to controlled and governed entities.
+
 ---
 
 ## Why This Matters
 
-In enterprise and government environments, identity alone is not enough — it must be controlled.
+In enterprise and government environments, identity must be controlled through policy.
 
 Group Policy enables:
 
 - Centralized configuration management
 - Enforcement of security baselines
-- Standardization across systems and users
-- Scalable policy application through OU structure
+- Identity-based targeting through OU structure
+- Scalable and repeatable access control
 
-Without proper policy enforcement, identity systems become inconsistent, insecure, and difficult to manage.
+Without policy enforcement, identity systems become inconsistent and insecure.
 
 ---
 
@@ -42,179 +44,149 @@ Without proper policy enforcement, identity systems become inconsistent, insecur
 
 mrtg.local
 │
-├── IT
-├── Security
-├── HR
-├── Finance
-├── Operations
-├── Engineering
-├── Executives
-
----
-
-### Policy Model
-
-- Policies linked at the OU level
-- Inheritance used to propagate configurations
-- Targeting based on identity (users and groups)
-
----
-
-## Security Considerations
-
-- Policies applied using least privilege principles
-- Separation of OUs enables scoped policy enforcement
-- Reduces risk of domain-wide misconfiguration
-- Establishes baseline for compliance and auditing
+└── _MRTG
+├── Users
+├── Computers
+│ ├── Workstations
+│ └── Servers
+├── Groups
+├── Admin Accounts
+└── Service Accounts
 
 ---
 
 ## Lab Steps and Evidence
 
-### 1. Created Organizational Unit (OU) Structure
-OUs were structured to align with MRTG business departments and support targeted policy application.
+### 1. Designed Organizational Unit Structure
+
+OUs were structured to align with business functions and enable targeted policy enforcement.
 
 ![OU Structure](./images/step01_ou_structure.png)
 
 ---
 
-### 2. Opened Group Policy Management Console (GPMC)
-The GPMC tool was used to manage and deploy Group Policy across the domain.
+### 2. Segmented Computer Objects
 
-![GPMC Console](./images/step02_gpmc_console.png)
+Workstations and servers were separated into dedicated OUs to support policy targeting.
 
----
-
-### 3. Created Group Policy Object (GPO)
-A new GPO was created to enforce baseline system configurations.
-
-![GPO Creation](./images/step03_gpo_creation.png)
+![Computer OU Structure](./images/step02_computer_ou_structure.png)
 
 ---
 
-### 4. Linked GPO to Organizational Unit
-The GPO was linked to a specific OU to apply policy to targeted users and systems.
+### 3. Placed Client System into Workstations OU
 
-![GPO Link](./images/step04_gpo_link.png)
+CLIENT01 was joined to the domain and placed into the Workstations OU for policy application.
 
----
-
-### 5. Configured Policy Settings
-Baseline security configurations were applied, such as:
-
-- Password policy
-- Account lockout policy
-- System configuration settings
-
-![GPO Settings](./images/step05_gpo_settings.png)
+![Workstation OU Membership](./images/step03_workstation_ou_membership.png)
 
 ---
 
-### 6. Applied and Verified Group Policy
-Group Policy was applied and validated to ensure correct enforcement.
+### 4. Configured Password Policy
 
-- gpupdate executed
-- gpresult used to confirm policy application
+A password policy was configured to enforce baseline security requirements.
 
-![GPO Verification](./images/step06_gpo_verification.png)
+![Password Policy](./images/step04_password_policy.png)
 
 ---
 
+### 5. Configured Account Lockout Policy
+
+Account lockout settings were configured to protect against brute-force attempts.
+
+![Account Lockout Policy](./images/step05_account_lockout_policy.png)
 
 ---
 
-### Policy Model
+### 6. Configured User Session Lock Policy
 
-- Policies linked at the OU level
-- Inheritance used to propagate configurations
-- Targeting based on identity (users and groups)
+A session lock policy was applied to enforce workstation security.
 
----
-
-## Security Considerations
-
-- Policies applied using least privilege principles
-- Separation of OUs enables scoped policy enforcement
-- Reduces risk of domain-wide misconfiguration
-- Establishes baseline for compliance and auditing
+![User Session Lock](./images/step06_user_session_lock.png)
 
 ---
 
-## Lab Steps and Evidence
+### 7. Linked GPO to Workstations OU
 
-### 1. Created Organizational Unit (OU) Structure
-OUs were structured to align with MRTG business departments and support targeted policy application.
+The MRTG-Workstation-Baseline GPO was linked to the Workstations OU to target domain-joined systems.
 
-![OU Structure](./images/step01_ou_structure.png)
-
----
-
-### 2. Opened Group Policy Management Console (GPMC)
-The GPMC tool was used to manage and deploy Group Policy across the domain.
-
-![GPMC Console](./images/step02_gpmc_console.png)
+![GPO Linked](./images/step07_gpo_linked_to_ou.png)
 
 ---
 
-### 3. Created Group Policy Object (GPO)
-A new GPO was created to enforce baseline system configurations.
+### 8. Configured GPO Scope and Filtering
 
-![GPO Creation](./images/step03_gpo_creation.png)
+Policy scope was controlled using security filtering to ensure correct targeting.
 
----
-
-### 4. Linked GPO to Organizational Unit
-The GPO was linked to a specific OU to apply policy to targeted users and systems.
-
-![GPO Link](./images/step04_gpo_link.png)
+![GPO Scope Filtering](./images/step08_gpo_scope_filtering.png)
 
 ---
 
-### 5. Configured Policy Settings
-Baseline security configurations were applied, such as:
+### 9. Verified Computer Policy Application
 
-- Password policy
-- Account lockout policy
-- System configuration settings
+Group Policy was applied and verified using `gpresult`.
 
-![GPO Settings](./images/step05_gpo_settings.png)
+![Computer Policy Applied](./images/step09_computer_policy_applied.png)
 
 ---
 
-### 6. Applied and Verified Group Policy
-Group Policy was applied and validated to ensure correct enforcement.
+### 10. Verified User Policy Application
 
-- gpupdate executed
-- gpresult used to confirm policy application
+User-level policies were confirmed to be successfully applied.
 
-![GPO Verification](./images/step06_gpo_verification.png)
+![User Policy Applied](./images/step10_user_policy_applied.png)
+
+---
+
+### 11. Tested Access Control (RDP Denied)
+
+A user without proper group membership was denied Remote Desktop access.
+
+![RDP Access Denied](./images/step11_rdp_access_denied.png)
+
+---
+
+### 12. Assigned User to Remote Access Group
+
+The user was added to the appropriate security group to grant access.
+
+![RDP Group Membership](./images/step12_rdp_group_membership.png)
+
+---
+
+### 13. Validated Access Control (RDP Allowed)
+
+After group assignment and policy update, access was successfully granted.
+
+![RDP Access Granted](./images/step13_rdp_access_granted.png)
 
 ---
 
 ## Outcome
 
-Policy-based identity control was successfully implemented within the MRTG domain.
+Policy-based identity control was successfully implemented.
 
-- Organizational Units structured for targeted policy application
-- Group Policy Objects created and linked to OUs
-- Security baseline configurations enforced
-- Policy application validated through system tools
+- OUs structured for targeted policy application
+- Security baseline policies enforced via GPO
+- Policy application validated at both computer and user levels
+- Access control enforced through group-based permissions
 
-This environment now supports centralized configuration management and scalable access control.
+This environment now supports scalable, policy-driven identity and access management.
 
 ---
 
 ## IAM / Security Perspective
 
-This lab demonstrates how identity systems are controlled through policy enforcement.
+This lab demonstrates how identity is governed through policy enforcement.
 
-By applying Group Policy at the OU level:
+Key concepts implemented:
 
-- Identity is no longer static — it is governed
-- Access control becomes scalable and repeatable
-- Security baselines can be enforced across the environment
+- OU-based policy targeting
+- Role-based access control (RBAC)
+- Security baseline enforcement
+- Validation through system tools (`gpresult`)
+- Access control through group membership
 
-This mirrors real-world enterprise IAM practices, where policy drives consistency, compliance, and security.
+This reflects real-world enterprise IAM practices, where identity, policy, and access are tightly integrated.
 
 ---
 
@@ -224,9 +196,9 @@ This mirrors real-world enterprise IAM practices, where policy drives consistenc
 
 The next lab will cover:
 
-- User provisioning (Joiner process)  
-- Role changes (Mover process)  
-- Account deactivation (Leaver process)  
-- Identity lifecycle governance  
+- User provisioning (Joiner process)
+- Role changes (Mover process)
+- Account deactivation (Leaver process)
+- Identity lifecycle governance
 
 ---
