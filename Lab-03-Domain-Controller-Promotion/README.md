@@ -1,4 +1,4 @@
-# Lab 03 — Domain Controller Promotion
+# Lab 03 — Domain Controller Promotion (Identity Activation)
 
 ![Type](https://img.shields.io/badge/type-lab-1f2937?style=flat-square)
 ![Technology](https://img.shields.io/badge/technology-Active%20Directory-1f2937?style=flat-square)
