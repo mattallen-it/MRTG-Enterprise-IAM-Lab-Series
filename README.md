@@ -17,6 +17,8 @@ The focus is on practical IAM operations aligned with government and enterprise 
 
 To design, implement, and secure an enterprise identity environment that reflects real-world IAM responsibilities in government and regulated IT environments.
 
+This environment demonstrates the ability to design, implement, and validate identity systems that enforce secure access control in enterprise environments.
+
 ---
 
 ## Organization
