@@ -37,6 +37,7 @@ The environment is structured to reflect real-world enterprise identity architec
 - Privileged access separation and administrative tiering
 - Hybrid identity integration (future state)
 - Identity monitoring, auditing, and policy validation
+
 ---
 
 ## Domain
@@ -53,7 +54,7 @@ The environment is structured to reflect real-world enterprise identity architec
   - Roles: Active Directory, DNS, Group Policy Management  
 
 - **CLIENT01** — Domain-Joined Workstation  
-  - Role: Endpoint used for policy enforcement and access validation  
+  - Role: Used to validate authentication, Group Policy enforcement, and access control scenarios
 ---
 
 ## Infrastructure Architecture
@@ -75,7 +76,7 @@ Identity authentication and authorization are enforced through a centralized Act
 
 Authentication requests from domain-joined systems are processed by the domain controller using Kerberos, establishing trust and enabling secure access to domain resources.
 
-Access to resources is governed through identity-based policy enforcement, including:
+Access to resources is governed through centralized identity-based policy enforcement, including:
 - Organizational Unit (OU) structure for policy scoping
 - Group Policy Objects (GPO) for configuration enforcement
 - Security groups for role-based access assignments
