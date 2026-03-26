@@ -88,10 +88,10 @@ This model aligns with enterprise IAM principles of least privilege, centralized
 
 | Lab | Topic |
 |-----|------|
-| Lab-01 — Virtualization Foundation | Environment Buildout |
-| Lab-02 — AD DS Installation | Identity Platform Deployment |
-| Lab-03 — Domain Controller Promotion | Identity Activation |
-| Lab-04 — OU and GPO Implementation | Policy & Access Control |
+| Lab-01 — Virtualization Foundation | Environment Buildout (Identity Infrastructure Foundation) |
+| Lab-02 — AD DS Installation | Identity Platform Deployment (Active Directory) |
+| Lab-03 — Domain Controller Promotion | Identity Activation (Domain Services) |
+| Lab-04 — OU and GPO Implementation | Policy & Access Control (GPO Enforcement) |
 | Lab-05 — Identity Lifecycle Management | User & Group Management |
 | Lab-06 — NTFS and Share Permissions | Resource Access Control |
 | Lab-07 — Service Accounts and Delegation | Privileged Identity Management |
