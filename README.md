@@ -122,6 +122,6 @@ Key focus areas include:
 ## Quick Access
 
 - 🔹 [Lab-01 — Virtualization and Identity Infrastructure Foundation](./Lab-01-Virtualization-Foundation/README.md)
-- 🔹 [Lab-02 — Active Directory Domain Services (AD DS) Installation](./Lab-02-AD-DS-Installation/README.md)
+- 🔹 [Lab-02 — AD DS Deployment](./Lab-02-AD-DS-Installation/README.md)
 - 🔹 [Lab-03 — Domain Controller Promotion](./Lab-03-Domain-Controller-Promotion/README.md)
 - 🔹 [Lab-04 — OU and GPO Implementation](./Lab-04-OU-and-GPO-Implementation/README.md)
