@@ -1,233 +1,161 @@
-# Lab 04 — Organizational Unit (OU) Design and Group Policy
+# Lab-04 — OU and GPO Implementation
 
 ---
 
 ## Overview
 
-In this lab, I implemented Group Policy Objects (GPOs) within the Monroe Redstone Technology Group (MRTG) environment to enforce centralized security configurations across domain-joined systems.
+This lab focuses on implementing policy-based identity control within the MRTG Active Directory environment using Organizational Units (OUs) and Group Policy Objects (GPOs).
 
-This lab demonstrates how identity-driven policy enforcement is used to control user and device behavior, a critical component of Identity and Access Management (IAM) in enterprise and government environments.
-
-The approach aligns with enterprise security frameworks by ensuring consistent, auditable control over user sessions and endpoint configurations.
-
-This lab introduces policy-based identity control through Organizational Units (OUs) and Group Policy Objects (GPOs).
-
----
-
-## Objective
-
-- Deploy and configure Group Policy Objects (GPOs)
-- Enforce security controls on domain-joined endpoints
-- Validate policy application using `gpresult`
-- Understand how Group Policy supports IAM governance and compliance
-
----
-
-## Environment
-
-| Component         | Details                              |
-|------------------|--------------------------------------|
-| Organization     | Monroe Redstone Technology Group     |
-| Domain           | mrtg.local                           |
-| Domain Controller| Windows Server 2019 (DC01)           |
-| Client Machine   | Windows 11 (CLIENT01)                |
-| Virtualization   | Hyper-V                              |
-
----
-
-## Architecture
-
-### Core Systems
-- **DC01** — Domain Controller (AD DS, DNS, Group Policy)
-- **CLIENT01** — Domain-joined workstation
-
-### Organizational Unit Structure
-- Users
-- Groups
-- Computers
-- Admin Accounts
-- Service Accounts
-
-### Departmental Segmentation
-- IT
-- Security
-- HR
-- Finance
-- Operations
-- Engineering
-- Executives
-
----
-
-## Lab Steps and Evidence
-
-### 1. Created Top-Level OU Structure
-A structured OU hierarchy was created to separate users, groups, computers, and privileged accounts, aligning with enterprise identity management practices.
-
-![Top Level OU](images/mrtg_ou_top_level_structure.png)
-
----
-
-### 2. Implemented Departmental OU Segmentation
-Department-based OUs were created to logically group users and enable targeted policy application.
-
-![Departmental OU](images/departmental_ou_structure.png)
-
----
-
-### 3. Configured Computer OU Segmentation
-Workstations and servers were separated into dedicated OUs to support device-based policy enforcement.
-
-![Computers OU](images/computers_ou_segmentation.png)
-
----
-
-### 4. Verified Client Placement in Workstations OU
-The domain-joined client (CLIENT01) was placed into the Workstations OU to ensure correct GPO targeting.
-
-![Client OU Placement](images/client01_in_workstations_ou.png)
-
----
-
-### 5. Created Department-Based Security Groups
-Security groups were created for each department to support role-based access control (RBAC).
-
-![Security Groups](images/security_groups_departmental.png)
-
----
-
-### 6. Implemented Admin Account Separation
-Dedicated administrative accounts were created to enforce privilege separation and reduce risk.
-
-![Admin Accounts](images/admin_accounts_separation.png)
-
----
-
-### 7. Configured Service Accounts
-Service accounts were created for application and operational use, following enterprise identity practices.
-
-![Service Accounts](images/service_accounts_configured.png)
-
----
-
-### 8. Created and Linked Workstation GPO
-A baseline GPO was created and linked to the Workstations OU to enforce standardized security configurations.
-
-![GPO Link](images/gpo_linked_to_workstations_ou.png)
-
----
-
-### 9. Configured Password Policy
-Password complexity, length, and history settings were configured to align with security standards.
-
-![Password Policy](images/gpo_password_policy_configured.png)
-
----
-
-### 10. Configured Account Lockout Policy
-Account lockout thresholds were implemented to protect against brute-force attacks.
-
-![Lockout Policy](images/gpo_account_lockout_policy_configured.png)
-
----
-
-### 11. Verified GPO Scope and Security Filtering
-GPO scope and filtering were validated to ensure correct targeting of users and devices.
-
-![GPO Scope](images/gpo_scope_and_security_filtering.png)
-
----
-
-### 12. Forced Group Policy Update and Verified Computer Policy
-Group Policy was updated and validated using gpresult to confirm computer-level policy application.
-
-![GPResult Computer](images/gpresult_gpo_applied.png)
-
----
-
-### 13. Verified User Policy Application
-User-level policies were validated to confirm identity-based enforcement.
-
-![GPResult User](images/gpresult_user_policy_applied.png)
-
----
-
-### 14. Simulated Access Denied Scenario (RDP)
-A failed remote login attempt demonstrated lack of proper group membership.
-
-![Access Denied](images/rdp_access_denied_user_not_authorized.png)
-
----
-
-### 15. Implemented Group-Based Access Control
-User access was granted by adding the user to the Remote Desktop Users security group.
-
-![Group Membership](images/remote_desktop_users_group_membership.png)
-
----
-
-### 16. Applied Policy Update and Remediation
-Group membership changes were applied and policies refreshed to enforce access.
-
-![Remediation](images/rdp_group_assignment_and_gpupdate.png)
-
----
-
-### 17. Final Policy Validation
-Final validation confirmed that both computer and user policies were successfully applied.
-
-![Final Validation](images/gpresult_final_validation.png)
----
-
-## Security & IAM Considerations
-
-### Identity-Based Policy Enforcement
-- Group Policy applied through Organizational Units (OUs) to enforce centralized control over users and devices
-- Separation of users, computers, and administrative accounts reduces risk and improves manageability
-
-### Access Control
-- Role-based access control (RBAC) implemented using security groups
-- Access to Remote Desktop was restricted and granted through group membership
-
-### Least Privilege
-- Standard user accounts used for daily operations
-- Administrative accounts separated to limit privilege escalation risk
-
-### Audit and Validation
-- Policy enforcement verified using `gpresult`
-- Visibility into applied and filtered policies ensures accountability and compliance
-
----
-
-## Outcome
-
-- Successfully deployed and linked Group Policy Objects
-- Enforced security configurations on domain-joined systems
-- Implemented identity-based access control using security groups
-- Validated policy enforcement using `gpresult`
-- Demonstrated troubleshooting and remediation of access issues
+This phase introduces centralized policy enforcement, enabling standardized configuration, security controls, and scalable identity management across the domain.
 
 ---
 
 ## Why This Matters
 
-Organizational Unit (OU) design and Group Policy enforcement form the foundation of identity-driven security in enterprise environments.
+In enterprise and government environments, identity alone is not enough — it must be controlled.
 
-By structuring identities through OUs and applying policies centrally, organizations can enforce consistent security controls, reduce administrative overhead, and minimize the risk of misconfigured systems.
+Group Policy enables:
 
-This model supports key IAM principles such as least privilege, role-based access control (RBAC), and centralized governance.
+- Centralized configuration management
+- Enforcement of security baselines
+- Standardization across systems and users
+- Scalable policy application through OU structure
 
-In government and enterprise environments, Group Policy is a critical mechanism for enforcing security baselines, controlling user behavior, and ensuring compliance with regulatory standards.
+Without proper policy enforcement, identity systems become inconsistent, insecure, and difficult to manage.
+
+---
+
+## Environment
+
+| Component           | Value              |
+|--------------------|-------------------|
+| Domain Name        | mrtg.local        |
+| Domain Controller  | MRTG-DC01         |
+| Tools Used         | Group Policy Management Console (GPMC) |
+| Platform           | Windows Server 2022 |
+
+---
+
+## Architecture
+
+### Organizational Unit Structure
+
+mrtg.local
+│
+├── IT
+├── Security
+├── HR
+├── Finance
+├── Operations
+├── Engineering
+├── Executives
+
+---
+
+### Policy Model
+
+- Policies linked at the OU level
+- Inheritance used to propagate configurations
+- Targeting based on identity (users and groups)
+
+---
+
+## Security Considerations
+
+- Policies applied using least privilege principles
+- Separation of OUs enables scoped policy enforcement
+- Reduces risk of domain-wide misconfiguration
+- Establishes baseline for compliance and auditing
+
+---
+
+## Lab Steps and Evidence
+
+### 1. Created Organizational Unit (OU) Structure
+OUs were structured to align with MRTG business departments and support targeted policy application.
+
+![OU Structure](./images/step01_ou_structure.png)
+
+---
+
+### 2. Opened Group Policy Management Console (GPMC)
+The GPMC tool was used to manage and deploy Group Policy across the domain.
+
+![GPMC Console](./images/step02_gpmc_console.png)
+
+---
+
+### 3. Created Group Policy Object (GPO)
+A new GPO was created to enforce baseline system configurations.
+
+![GPO Creation](./images/step03_gpo_creation.png)
+
+---
+
+### 4. Linked GPO to Organizational Unit
+The GPO was linked to a specific OU to apply policy to targeted users and systems.
+
+![GPO Link](./images/step04_gpo_link.png)
+
+---
+
+### 5. Configured Policy Settings
+Baseline security configurations were applied, such as:
+
+- Password policy
+- Account lockout policy
+- System configuration settings
+
+![GPO Settings](./images/step05_gpo_settings.png)
+
+---
+
+### 6. Applied and Verified Group Policy
+Group Policy was applied and validated to ensure correct enforcement.
+
+- gpupdate executed
+- gpresult used to confirm policy application
+
+![GPO Verification](./images/step06_gpo_verification.png)
+
+---
+
+## Outcome
+
+Policy-based identity control was successfully implemented within the MRTG domain.
+
+- Organizational Units structured for targeted policy application
+- Group Policy Objects created and linked to OUs
+- Security baseline configurations enforced
+- Policy application validated through system tools
+
+This environment now supports centralized configuration management and scalable access control.
+
+---
+
+## IAM / Security Perspective
+
+This lab demonstrates how identity systems are controlled through policy enforcement.
+
+By applying Group Policy at the OU level:
+
+- Identity is no longer static — it is governed
+- Access control becomes scalable and repeatable
+- Security baselines can be enforced across the environment
+
+This mirrors real-world enterprise IAM practices, where policy drives consistency, compliance, and security.
 
 ---
 
 ## Next Lab
 
-[Lab 05 — Hybrid Identity and Entra ID Integration](#)
+[Lab-05 — Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management)
 
 The next lab will cover:
 
-- Introduction to Microsoft Entra ID (Azure AD)
-- Synchronizing on-prem Active Directory with cloud identity
-- Implementing Hybrid Identity architecture
-- Enforcing Conditional Access policies
+- User provisioning (Joiner process)  
+- Role changes (Mover process)  
+- Account deactivation (Leaver process)  
+- Identity lifecycle governance  
+
+---
