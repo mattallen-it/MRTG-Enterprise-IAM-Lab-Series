@@ -86,28 +86,30 @@ A new Active Directory forest was created using the root domain `mrtg.local`.
 ---
 
 ### 4. Verified DNS Zones
-DNS zones were created and integrated with Active Directory.
+DNS zones were validated to ensure proper domain name resolution required for Kerberos authentication and domain service discovery.
 
 ![DNS Zones mrtg.local](./images/04-dns-zones-mrtg-local.png)
 
 ---
 
 ### 5. Verified AD-Integrated DNS Records
-Service records were automatically created within the `_msdcs.mrtg.local` zone.
+Service (SRV) records were verified to confirm that domain-joined systems can locate domain controllers for authentication.
 
 ![DNS msdcs Service Records](./images/05-dns-msdcs-service-records.png)
 
 ---
 
 ### 6. Verified Host and Service Records
-DNS records confirm proper name resolution and domain controller registration.
+Host and service records were validated to ensure reliable name resolution between systems, supporting authentication and access to domain resources.
 
 ![DNS Host and Service Record](./images/06-dns-host-and-service-record.png)
 
 ---
 
 ### 7. Verified Network Configuration
-The domain controller was configured with a static IP and pointed to itself for DNS resolution.
+The domain controller was configured with a static IP and pointed to itself for DNS resolution to ensure consistent identity services and authentication reliability.
+
+DNS configuration was verified using ipconfig /all to confirm the domain controller is using itself for name resolution, ensuring proper authentication flow.
 
 ![IPConfig Domain Controller](./images/07-ipconfig-domain-controller.png)
 
@@ -129,7 +131,7 @@ A fully functional Active Directory Domain Services environment was successfully
 - DNS integrated with Active Directory
 - Core identity infrastructure established
 
-This environment now supports authentication, authorization, and future IAM policy enforcement.
+This environment now functions as the centralized identity authority, enabling Kerberos-based authentication, directory-backed authorization, and policy enforcement across domain-joined systems.
 
 ---
 
