@@ -1,12 +1,21 @@
 # Lab-02 — AD DS Deployment
 
+![Type](https://img.shields.io/badge/type-lab-blue)
+![Track](https://img.shields.io/badge/track-IAM-green)
+![Technology](https://img.shields.io/badge/technology-Active%20Directory-blue)
+![Platform](https://img.shields.io/badge/platform-Windows%20Server%202022-lightgrey)
+![Focus](https://img.shields.io/badge/focus-Identity%20Deployment-orange)
+![Domain](https://img.shields.io/badge/domain-mrtg.local-purple)
+![Auth](https://img.shields.io/badge/auth-Kerberos-yellow)
+![Level](https://img.shields.io/badge/level-Foundation-darkblue)
+
 ---
 
 ## Overview
 
 This lab focuses on deploying Active Directory Domain Services (AD DS) within the MRTG environment by promoting a Windows Server to a Domain Controller.
 
-This establishes centralized identity management, enabling authentication, authorization, and directory-based access control across the environment.
+This establishes a centralized identity authority, enabling authentication, authorization, and directory-based access control across the environment.
 
 ---
 
