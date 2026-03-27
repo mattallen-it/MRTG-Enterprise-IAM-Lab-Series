@@ -175,7 +175,7 @@ Administrative access to domain controllers should be restricted to dedicated pr
 
 ## Next Lab
 
-[Lab-04 — OU Design and GPO Enforcement (Access Control)](../Lab-04-OU-and-GPO/README.md)
+[Lab-04 — OU Design and GPO Enforcement (Access Control)](../Lab-04-OU-and-GPO-Implementation/README.md)
 
 Planned focus:
 
