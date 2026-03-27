@@ -98,7 +98,7 @@ This design reflects real-world enterprise IAM environments where identity is th
 | Lab-01 — Virtualization and Identity Infrastructure Foundation | Environment Buildout (Identity Infrastructure Foundation) |
 | Lab-02 — AD DS Deployment | Identity Platform Deployment (Active Directory) |
 | Lab-03 — Domain Controller Promotion | Identity Activation (Domain Services) |
-| Lab-04 — OU and GPO Enforcement| Policy & Access Control (GPO Enforcement) |
+| Lab-04 — OU Design and GPO Enforcement | Policy & Access Control |
 | Lab-05 — Identity Lifecycle Management | User & Group Management |
 | Lab-06 — NTFS and Share Permissions | Resource Access Control |
 | Lab-07 — Service Accounts and Delegation | Privileged Identity Management |
