@@ -1,6 +1,12 @@
 Lab-04 — OU Design and GPO Enforcement (Access Control)
 ---
 
+![IAM](https://img.shields.io/badge/IAM-Active%20Directory-blue)
+![GPO](https://img.shields.io/badge/Policy-Group%20Policy%20Objects-green)
+![Access Control](https://img.shields.io/badge/Security-Access%20Control-red)
+![Windows Server](https://img.shields.io/badge/Platform-Windows%20Server%202022-lightgrey)
+![RBAC](https://img.shields.io/badge/Model-RBAC-purple)
+
 ## Overview
 
 This lab focuses on implementing policy-based identity control within the MRTG Active Directory environment using Organizational Units (OUs) and Group Policy Objects (GPOs).
