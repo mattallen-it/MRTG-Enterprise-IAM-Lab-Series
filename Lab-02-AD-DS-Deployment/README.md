@@ -19,7 +19,7 @@ Proper deployment of AD DS enables:
 - Centralized authentication using Kerberos
 - Structured identity management through directory services
 - Secure access control across systems and resources
-- Foundation for Group Policy, RBAC, and auditing
+- Foundation for policy enforcement (GPO), role-based access control (RBAC), and identity auditing
 
 This lab establishes the identity authority that all future access control and policy enforcement will depend on.
 
@@ -65,7 +65,7 @@ This deployment establishes the centralized identity authority for the MRTG envi
 ## Lab Steps and Evidence
 
 ### 1. Installed AD DS Role
-The Active Directory Domain Services role was installed on MRTG-DC01.
+The Active Directory Domain Services role was installed to establish the identity infrastructure required for centralized authentication and directory-based access control.
 
 ![AD DS Role Installation](./images/01-ad-ds-role-installation.png)
 
@@ -79,7 +79,7 @@ All prerequisite checks passed before promoting the server to a Domain Controlle
 ---
 
 ### 3. Created New Forest
-A new Active Directory forest was created using the root domain `mrtg.local`.
+A new Active Directory forest was created to establish a dedicated identity boundary for the MRTG environment, serving as the root of trust for authentication and authorization.
 
 ![New Forest mrtg.local](./images/03-new-forest-mrtg-local.png)
 
