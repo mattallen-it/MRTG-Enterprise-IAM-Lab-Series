@@ -1,5 +1,4 @@
-# Lab-04 — OU and GPO Implementation (Policy Enforcement)
-
+Lab-04 — OU Design and GPO Enforcement (Access Control)
 ---
 
 ## Overview
