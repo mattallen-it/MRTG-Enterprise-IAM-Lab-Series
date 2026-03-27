@@ -166,6 +166,8 @@ All administrative access to domain controllers should be restricted, monitored,
 
 Domain controllers should be isolated, hardened, and monitored as part of a privileged access management strategy.
 
+Administrative access to domain controllers should be restricted to dedicated privileged accounts and never performed from standard user contexts.
+
 ---
 
 ## Next Lab
