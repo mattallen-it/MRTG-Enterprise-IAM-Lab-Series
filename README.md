@@ -1,8 +1,11 @@
 # Monroe Redstone Technology Group — IAM Lab Series
 
-![Career Track](https://img.shields.io/badge/career%20track-IAM-065f46?style=flat-square)
-![Certification](https://img.shields.io/badge/certification-Security%2B-b91c1c?style=flat-square)
-![Environment](https://img.shields.io/badge/environment-Windows%20Enterprise-1f2937?style=flat-square)
+![Career Track](https://img.shields.io/badge/career%20track-IAM-green)
+![Focus](https://img.shields.io/badge/focus-Identity%20%26%20Access%20Management-blue)
+![Environment](https://img.shields.io/badge/environment-Windows%20Enterprise-lightgrey)
+![Directory](https://img.shields.io/badge/directory-Active%20Directory-blue)
+![Auth](https://img.shields.io/badge/auth-Kerberos-orange)
+![Security](https://img.shields.io/badge/security-Least%20Privilege-red)
 
 This project simulates a real-world enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
 
