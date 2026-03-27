@@ -56,112 +56,119 @@ mrtg.local
 
 ## Lab Steps and Evidence
 
-### 1. Designed Organizational Unit Structure
+### 1. Designed Organizational Unit (OU) Structure
 
-OUs were structured to align with business functions and enable targeted policy enforcement.
+A structured OU hierarchy was created to reflect enterprise business functions and enable policy targeting.
 
-![OU Structure](./images/step01_ou_structure.png)
-
----
-
-### 2. Segmented Computer Objects
-
-Workstations and servers were separated into dedicated OUs to support policy targeting.
-
-![Computer OU Structure](./images/step02_computer_ou_structure.png)
+![OU Structure](images/step01_ou_structure.png)
 
 ---
 
-### 3. Placed Client System into Workstations OU
+### 2. Implemented Computer OU Segmentation
 
-CLIENT01 was joined to the domain and placed into the Workstations OU for policy application.
+Dedicated OUs were created for Servers and Workstations to allow device-specific policy enforcement.
 
-![Workstation OU Membership](./images/step03_workstation_ou_membership.png)
+![Computer OU Structure](images/step02_computer_ou_structure.png)
+
+---
+
+### 3. Joined Client Machine to Domain and Placed in Workstations OU
+
+CLIENT01 was domain-joined and moved into the Workstations OU for policy application.
+
+![Workstation OU Membership](images/step03_workstation_ou_membership.png)
 
 ---
 
 ### 4. Configured Password Policy
 
-A password policy was configured to enforce baseline security requirements.
+A baseline password policy was implemented to enforce credential security:
 
-![Password Policy](./images/step04_password_policy.png)
+- Password history enforced  
+- Minimum length configured  
+- Complexity requirements enabled  
+
+![Password Policy](images/step04_password_policy.png)
 
 ---
 
 ### 5. Configured Account Lockout Policy
 
-Account lockout settings were configured to protect against brute-force attempts.
+Account lockout settings were applied to protect against brute-force attacks:
 
-![Account Lockout Policy](./images/step05_account_lockout_policy.png)
+- Lockout threshold defined  
+- Lockout duration configured  
+- Reset counter configured  
+
+![Account Lockout Policy](images/step05_account_lockout_policy.png)
 
 ---
 
 ### 6. Configured User Session Lock Policy
 
-A session lock policy was applied to enforce workstation security.
+A user-based GPO was created to enforce automatic session locking:
 
-![User Session Lock](./images/step06_user_session_lock.png)
+- Screen saver enabled  
+- Password protection enforced  
+- Idle timeout configured  
+
+![User Session Lock](images/step06_user_session_lock.png)
 
 ---
 
 ### 7. Linked GPO to Workstations OU
 
-The MRTG-Workstation-Baseline GPO was linked to the Workstations OU to target domain-joined systems.
+The workstation baseline GPO was linked to the Workstations OU to enforce policy at the device level.
 
-Policies were applied based on OU membership, demonstrating identity-based policy targeting.
-
-![GPO Linked](./images/step07_gpo_linked_to_ou.png)
+![GPO Linked](images/step07_gpo_linked_to_ou.png)
 
 ---
 
-### 8. Configured GPO Scope and Filtering
+### 8. Configured GPO Scope and Security Filtering
 
-Policy scope was controlled using security filtering to ensure correct targeting.
+Security filtering was configured to ensure policies applied only to intended users and systems.
 
-![GPO Scope Filtering](./images/step08_gpo_scope_filtering.png)
-
----
-
-### 9. Verified Computer Policy Application
-
-Group Policy was applied and verified using `gpresult`.
-
-![Computer Policy Applied](./images/step09_computer_policy_applied.png)
+![GPO Scope](images/step08_gpo_scope_filtering.png)
 
 ---
 
-### 10. Verified User Policy Application
+### 9. Validated Computer Policy Application
 
-User-level policies were confirmed to be successfully applied.
+Group Policy results confirmed that workstation-level policies were successfully applied.
 
-![User Policy Applied](./images/step10_user_policy_applied.png)
-
----
-
-### 11. Tested Access Control Enforcement (RDP Denied)
-
-A user without proper group membership was denied Remote Desktop access.
-
-![RDP Access Denied](./images/step11_rdp_access_denied.png)
+![Computer Policy Applied](images/step09_computer_policy_applied.png)
 
 ---
 
-### 12. Assigned User to Remote Access Group
+### 10. Validated User Policy Application
 
-The user was added to the appropriate security group to grant access.
+User-level policies were verified using gpresult to confirm correct GPO enforcement.
 
-![RDP Group Membership](./images/step12_rdp_group_membership.png)
+![User Policy Applied](images/step10_user_policy_applied.png)
 
 ---
 
-### 13. Validated Access Control Enforcement (RDP Allowed)
+### 11. Simulated Access Control Issue (RDP Denied)
 
-After group assignment and policy update, the user successfully authenticated and accessed the system via Remote Desktop.
+An RDP login attempt failed due to missing group-based access permissions.
 
-The `whoami` command confirms the security context of the logged-in user.
+![RDP Denied](images/step11_rdp_access_denied.png)
 
-![RDP Successful Login](./images/step13_rdp_successful_login.png)
+---
 
+### 12. Implemented Group-Based Access Control
+
+User was added to the Remote Desktop Users group to grant appropriate access.
+
+![Group Membership](images/step12_rdp_group_membership.png)
+
+---
+
+### 13. Validated Access Remediation
+
+After group assignment and policy update, RDP access was successfully granted.
+
+![RDP Success](images/step13_rdp_access_granted.png)
 ---
 
 ## Outcome
