@@ -116,7 +116,7 @@ This deployment establishes the centralized identity authority for the MRTG envi
 ### 8. Post-Deployment Checkpoint Creation
 A Hyper-V checkpoint was created to preserve the post-promotion state for controlled rollback and testing.
 
-![Post Promotion Checkpoint](images/09-post-dc-promotion-checkpoint.png)
+![Post Promotion Checkpoint](images/08-post-dc-promotion-checkpoint.png)
 
 ---
 
