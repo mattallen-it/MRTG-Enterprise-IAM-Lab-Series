@@ -1,35 +1,37 @@
 # Monroe Redstone Technology Group — IAM Lab Series
 
 ![IAM](https://img.shields.io/badge/IAM-Enterprise-blue)
-![Active Directory](https://img.shields.io/badge/Directory-AD%20DS-green)
-![Security](https://img.shields.io/badge/Security-Policy%20%26%20Access-red)
-![Platform](https://img.shields.io/badge/Platform-Windows%20Enterprise-lightgrey)
-![Focus](https://img.shields.io/badge/Focus-Identity%20Governance-purple)
+![Active Directory](https://img.shields.io/badge/Directory-Active_Directory-2A628C)
+![Security](https://img.shields.io/badge/Security-Policy_&_Access_Control-red)
+![Platform](https://img.shields.io/badge/Platform-Windows_Enterprise-lightgrey)
+![Focus](https://img.shields.io/badge/Focus-Identity_Governance-purple)
 
 ---
 
 This project simulates a structured enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
 
-The implementation demonstrates how identity infrastructure is deployed, governed, and secured using Active Directory, with emphasis on policy enforcement, role-based access control (RBAC), and auditability in regulated environments.
+The lab series demonstrates how identity infrastructure is deployed, governed, and secured using Active Directory, with emphasis on policy enforcement, role-based access control (RBAC), and auditability within regulated environments.
 
-- Role-based access control (RBAC)
+Core implementation areas:
+
+- Role-Based Access Control (RBAC)
 - Organizational Unit (OU) design
 - Group Policy enforcement
 - Access control via security groups
 - Identity lifecycle governance
 - Monitoring and auditing
 
-The focus is on practical IAM operations aligned with enterprise and government environments, emphasizing least privilege, access control, and auditability.
+The focus is on practical IAM operations aligned with enterprise and government environments, emphasizing least privilege, centralized access control, and auditability.
 
 ---
 
 ## Objectives
 
-- Design, implement, and secure an enterprise identity environment
-- Deploy Active Directory Domain Services (AD DS)
-- Enforce identity-based access control
-- Validate policy enforcement across domain systems
-- Align identity operations with government-regulated IT practices
+- Design, implement, and secure an enterprise identity environment  
+- Deploy Active Directory Domain Services (AD DS)  
+- Enforce identity-based access control  
+- Validate policy enforcement across domain systems  
+- Align identity operations with governance-oriented IT practices  
 
 ---
 
@@ -41,46 +43,46 @@ This repository represents a structured IAM implementation for:
 
 Core identity components include:
 
-- Active Directory Domain Services (AD DS)
-- Domain-joined endpoints
-- Organizational Unit (OU) hierarchy
-- Role-Based Access Control (RBAC)
-- Group Policy-based security enforcement
-- Hybrid identity preparation (future Entra ID integration)
-- Identity monitoring and validation
+- Active Directory Domain Services (AD DS)  
+- Domain-joined endpoints  
+- Organizational Unit (OU) hierarchy  
+- Role-Based Access Control (RBAC)  
+- Group Policy-based security enforcement  
+- Hybrid identity preparation (future Entra ID integration)  
+- Identity monitoring and validation  
 
 ---
 
 ## Domain
 
-- Domain Name: `mrtg.local`
-- Directory Services: Active Directory Domain Services (AD DS)
-- Authentication Model: Kerberos-based domain authentication
+- **Domain Name:** mrtg.local  
+- **Directory Services:** Active Directory Domain Services (AD DS)  
+- **Authentication Model:** Kerberos-based domain authentication  
 
 ---
 
 ## Systems
 
 ### MRTG-DC01 — Domain Controller
-- Active Directory
-- DNS
-- Group Policy Management
+- Active Directory  
+- DNS  
+- Group Policy Management  
 
 ### CLIENT01 — Domain-Joined Workstation
-- Policy enforcement validation
-- Authentication testing
-- Access control validation
+- Policy enforcement validation  
+- Authentication testing  
+- Access control validation  
 
 ---
 
 ## Infrastructure Architecture
 
-| Component        | Description                            |
-|------------------|----------------------------------------|
-| Hypervisor       | Hyper-V (Windows 11 Pro Host)         |
-| Domain Controller| MRTG-DC01 — Windows Server 2022       |
-| Services         | AD DS, DNS, Group Policy              |
-| Client System    | CLIENT01 — Windows 11 Enterprise       |
+| Component        | Description                      |
+|-----------------|----------------------------------|
+| Hypervisor       | Hyper-V (Windows 11 Pro Host)   |
+| Domain Controller| MRTG-DC01 — Windows Server 2022 |
+| Services         | AD DS, DNS, Group Policy        |
+| Client System    | CLIENT01 — Windows 11 Enterprise|
 
 ---
 
@@ -99,14 +101,14 @@ This architecture supports:
 - Least privilege  
 - Centralized identity governance  
 - Policy-driven enforcement  
-- Auditability
+- Auditability  
 
 ---
 
 ## Lab Series Progression
 
 | Lab | Topic |
-|------|--------|
+|-----|--------|
 | Lab-01 — Virtualization and Identity Infrastructure Foundation | Environment Buildout |
 | Lab-02 — AD DS Deployment | Identity Platform Deployment |
 | Lab-03 — Domain Controller Promotion | Identity Activation |
@@ -129,8 +131,8 @@ Core focus areas:
 - Role-based access control (RBAC)  
 - Group Policy configuration and enforcement  
 - Hybrid identity preparation (future Entra ID integration)  
-- Identity monitoring, logging, and auditing
-- 
+- Identity monitoring, logging, and auditing  
+
 ---
 
 ## Quick Access
