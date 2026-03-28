@@ -2,43 +2,45 @@
 
 ![Type](https://img.shields.io/badge/type-lab-blue)
 ![Track](https://img.shields.io/badge/track-IAM-green)
-![Platform](https://img.shields.io/badge/platform-Windows%2011%20Pro-lightgrey)
+![Platform](https://img.shields.io/badge/platform-Windows_11_Pro-lightgrey)
 ![Hypervisor](https://img.shields.io/badge/hypervisor-Hyper--V-blue)
 ![Focus](https://img.shields.io/badge/focus-Infrastructure-orange)
 ![Level](https://img.shields.io/badge/level-Foundation-purple)
 
+---
+
 ## Overview
 
-This lab establishes the identity infrastructure foundation for the MRTG enterprise IAM environment.
+This lab establishes the foundational identity infrastructure for the MRTG enterprise IAM environment.
 
-A controlled virtualization platform was prepared to support Active Directory Domain Services (AD DS), ensuring secure, isolated deployment and policy-based identity management.
+A controlled virtualization boundary was prepared to support Active Directory Domain Services (AD DS), enabling secure, isolated deployment and policy-driven identity management.
 
 ---
 
 ## Why This Matters
 
-Enterprise identity systems require controlled infrastructure boundaries.
+Enterprise identity systems depend on clearly defined infrastructure boundaries.
 
-A properly configured virtualization host ensures:
+A properly configured virtualization host provides:
 
 - Isolation between host and domain environment  
 - Secure deployment of Active Directory  
-- Controlled authentication and access control testing  
-- Expansion capability for future IAM services  
+- Controlled authentication and access control validation  
+- Scalability for future IAM services  
 
-This foundation establishes the security boundary for centralized identity management.
+This foundation defines the security boundary for centralized identity governance.
 
 ---
 
 ## Environment
 
-| Component           | Value                  |
-|--------------------|-----------------------|
-| Host OS            | Windows 11 Pro        |
-| Hypervisor         | Hyper-V               |
-| Domain Controller  | Windows Server 2022   |
-| VM Count           | 2                     |
-| Network            | Internal Virtual Switch |
+| Component         | Value                   |
+|------------------|------------------------|
+| Host OS           | Windows 11 Pro         |
+| Hypervisor        | Hyper-V                |
+| Domain Controller | Windows Server 2022    |
+| VM Count          | 2                      |
+| Network           | Internal Virtual Switch|
 
 ---
 
@@ -65,146 +67,97 @@ This foundation establishes the security boundary for centralized identity manag
 - Standard user model enforced (administrative tasks restricted)  
 - Internal virtual switch to prevent external exposure  
 
-These controls establish a secure boundary for enterprise identity deployment.
-
 ---
 
 ## Implementation & Validation
 
 ### 1. Host Resource Validation
-
-The host system hardware was validated to ensure sufficient CPU and memory resources for virtualization workloads.
-
 ![Host Hardware](images/01_host_hardware_specs.png)
 
 ---
 
 ### 2. Platform Architecture Validation
-
-The system architecture was verified to ensure a 64-bit operating system capable of supporting Hyper-V virtualization.
-
 ![System Architecture](images/02_host_system_architecture.png)
 
 ---
 
-### 3. Verified Host Operating System
-
-The host system is running Windows 11 Pro, which supports Hyper-V virtualization and enterprise security features.
-
+### 3. Host Operating System Validation
 ![OS Version](images/03_host_os_version.png)
 
 ---
 
-### 4. Verified TPM Availability
-
-Trusted Platform Module (TPM) availability was confirmed to support hardware-based security features such as BitLocker.
-
+### 4. TPM Validation
 ![TPM](images/04_tpm_ready.png)
 
 ---
 
-### 5. Verified BitLocker Encryption
-
-BitLocker encryption was verified on the operating system drive to ensure host system data protection.
-
+### 5. BitLocker Encryption Validation
 ![BitLocker](images/05_bitlocker_enabled.png)
 
 ---
 
-### 6. Verified CPU Virtualization Support
-
-CPU virtualization support was confirmed to ensure the processor can support Hyper-V virtual machines.
-
+### 6. CPU Virtualization Capability Validation
 ![CPU Virtualization](images/06_cpu_virtualization_enabled.png)
 
 ---
 
 ### 7. Hyper-V Feature Validation
-
-Hyper-V was verified as installed with both the platform and management tools enabled.
-
 ![Hyper-V Installed](images/07_hyperv_installed.png)
 
 ---
 
-### 8. Opened Hyper-V Manager
-
-Hyper-V Manager was launched to begin configuring the virtualization environment.
-
+### 8. Hyper-V Management Console Initialization
 ![Hyper-V Manager](images/08_hyperv_manager_console.png)
 
 ---
 
-### 9. Created Internal Lab Network
-
-A dedicated internal virtual switch was created to isolate the lab network from the host network.
-
-This allows domain services and authentication testing without impacting external systems.
-
+### 9. Internal Virtual Switch Configuration
 ![Internal Network](images/09_internal_network_created.png)
 
 ---
 
-### 10. Created Lab Folder Structure
-
-A dedicated folder structure was created on the LABS drive to organize virtual machine files and virtual hard disks.
-
-This structure separates infrastructure resources from the host operating system.
-
+### 10. Lab Storage Structure Configuration
 ![Folder Structure](images/10_hyperv_folder_structure.png)
 
 ---
 
-### 11. Configured Hyper-V Storage Paths
-
-Hyper-V default storage locations were configured to use the dedicated lab directories.
-
-This ensures consistent storage management for future virtual machines.
-
-![Storage Paths](images/11_hyperv_default_storage_paths.png)
+### 11. Hyper-V Storage Path Configuration
+![Storage Paths](images/11_hyperv_storage_paths.png)
 
 ---
 
-### 12. Prepared Windows Server 2022 Installation Media
-
-The Windows Server 2022 ISO image was downloaded and staged for deployment as the domain controller.
-
+### 12. Windows Server 2022 Installation Media Preparation
 ![ISO](images/12_windows_server_iso_ready.png)
 
 ---
 
-### 13. Configured Domain Controller Virtual Machine
+### 13. Domain Controller Virtual Machine Configuration
 
-A new virtual machine named **MRTG-DC01** was created with the following configuration:
+Virtual machine **MRTG-DC01** was provisioned with:
 
 - Generation 2  
-- 8192 MB RAM  
+- 8 GB RAM  
 - 2 vCPU  
 - Internal virtual network (MRTG-Internal)  
 - 80 GB dynamically expanding VHDX  
 - Windows Server 2022 ISO attached  
 
-This configuration establishes the baseline system that will later be promoted to a Domain Controller.
-
 ![VM Config](images/13_dc01_vm_configuration.png)
 
 ---
 
-### 14. Created MRTG-DC01 Virtual Machine
-
-The MRTG-DC01 virtual machine was successfully created within the Hyper-V environment and is ready for Windows Server installation.
-
+### 14. MRTG-DC01 Virtual Machine Provisioning
 ![VM Created](images/14_mrtg_dc01_created.png)
 
 ---
 
 ## Outcome
 
-A secure virtualization boundary was successfully established to support enterprise Active Directory deployment.
+A secure virtualization boundary was established to support enterprise Active Directory deployment.
 
 The MRTG-DC01 virtual machine was provisioned and prepared for Domain Controller promotion.
 
-This environment now serves as the controlled identity boundary for authentication, authorization, and policy enforcement within the MRTG IAM architecture.
+This environment now functions as the controlled identity boundary for authentication, authorization, and policy enforcement within the MRTG IAM architecture.
 
 ---
 
