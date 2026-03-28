@@ -75,32 +75,32 @@ This deployment establishes the centralized identity authority for the MRTG envi
 ## Implementation & Validation
 
 ### 1. AD DS Role Installation
-![AD DS Role Installation](01-ad-ds-role-installation.png)
+![AD DS Role Installation](images/01-ad-ds-role-installation.png)
 
 ---
 
 ### 2. Prerequisites Validation
-![AD DS Prerequisites Check](02-ad-ds-prerequisites-check.png)
+![AD DS Prerequisites Check](images/02-ad-ds-prerequisites-check.png)
 
 ---
 
 ### 3. New Forest Creation — mrtg.local
-![New Forest](03-new-forest-mrtg-local.png)
+![New Forest](images/03-new-forest-mrtg-local.png)
 
 ---
 
 ### 4. DNS Zone Validation
-![DNS Zone](04-dns-zones-mrtg-local.png)
+![DNS Zone](images/04-dns-zones-mrtg-local.png)
 
 ---
 
 ### 5. SRV Record Validation
-![SRV Records](05-dns-msdcs-service-records.png)
+![SRV Records](images/05-dns-msdcs-service-records.png)
 
 ---
 
 ### 6. Host and Service Record Validation
-![DNS Host Records](06-dns-host-and-service-record.png)
+![DNS Host Records](images/06-dns-host-and-service-record.png)
 
 ---
 
@@ -108,14 +108,15 @@ This deployment establishes the centralized identity authority for the MRTG envi
 - Static IP configured  
 - DNS pointed to self for authoritative resolution  
 
-![IP Configuration](07-ipconfig-domain-controller.png)
+![IP Configuration](images/07-ipconfig-domain-controller.png)
+
 
 ---
 
 ### 8. Post-Deployment Checkpoint Creation
 A Hyper-V checkpoint was created to preserve the post-promotion state for controlled rollback and testing.
 
-![Post Promotion Checkpoint](09-post-dc-promotion-checkpoint.png)
+![Post Promotion Checkpoint](images/09-post-dc-promotion-checkpoint.png)
 
 ---
 
