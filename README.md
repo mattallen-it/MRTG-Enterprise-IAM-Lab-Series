@@ -10,7 +10,7 @@
 
 This project simulates a structured enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
 
-The lab series demonstrates how identity infrastructure is deployed, governed, and secured using Active Directory, with emphasis on policy enforcement, role-based access control (RBAC), and auditability in regulated environments.
+The implementation demonstrates how identity infrastructure is deployed, governed, and secured using Active Directory, with emphasis on policy enforcement, role-based access control (RBAC), and auditability in regulated environments.
 
 - Role-based access control (RBAC)
 - Organizational Unit (OU) design
@@ -129,7 +129,8 @@ Core focus areas:
 - Role-based access control (RBAC)  
 - Group Policy configuration and enforcement  
 - Hybrid identity preparation (future Entra ID integration)  
-- Identity monitoring, logging, and auditing  
+- Identity monitoring, logging, and auditing
+- 
 ---
 
 ## Quick Access
