@@ -164,7 +164,7 @@ Compromise of a domain controller equates to compromise of the entire identity d
 
 ## Next Lab
 
-[Lab-04 — OU Design and GPO Enforcement (Access Control)](../Lab-04-OU-and-GPO-Implementation/)
+[Lab-04 — OU Design and GPO Enforcement (Access Control)](../Lab-04-OU-and-GPO-Enforcement/)
 
 Next phase will introduce:
 
