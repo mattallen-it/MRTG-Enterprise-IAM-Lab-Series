@@ -9,21 +9,24 @@
 
 ## Overview
 
-Establish a secure and scalable identity infrastructure foundation by preparing a virtualization environment to support Active Directory Domain Services for the MRTG environment.
+This lab establishes the identity infrastructure foundation for the MRTG enterprise IAM environment.
 
-This lab establishes the infrastructure layer required for future identity and access management implementation.
+A controlled virtualization platform was prepared to support Active Directory Domain Services (AD DS), ensuring secure, isolated deployment and policy-based identity management.
 
 ---
 
 ## Why This Matters
 
-Establishing a properly configured virtualization and infrastructure foundation is critical for secure identity system deployment.
+Enterprise identity systems require controlled infrastructure boundaries.
 
-In enterprise environments, identity services such as Active Directory must be deployed in controlled, isolated environments to prevent misconfiguration, reduce risk, and support consistent policy enforcement.
+A properly configured virtualization host ensures:
 
-This lab lays the groundwork for centralized identity management, which will be expanded through domain services, access control, and policy enforcement in subsequent labs.
+- Isolation between host and domain environment  
+- Secure deployment of Active Directory  
+- Controlled authentication and access control testing  
+- Expansion capability for future IAM services  
 
-This foundation ensures that identity services such as Active Directory can be deployed in a controlled, secure environment where authentication and access control can be reliably enforced.
+This foundation establishes the security boundary for centralized identity management.
 
 ---
 
@@ -41,33 +44,34 @@ This foundation ensures that identity services such as Active Directory can be d
 
 ## Architecture
 
-- **Host System:** Windows 11 Pro  
-  - Hyper-V enabled  
-  - BitLocker enabled  
+### Host Layer
+- Windows 11 Pro  
+- Hyper-V enabled  
+- BitLocker encryption enforced  
 
-- **Virtualization Layer:**  
-  - Hyper-V Manager  
-  - Internal Virtual Switch (isolated lab network)  
+### Virtualization Layer
+- Hyper-V Manager  
+- Internal Virtual Switch (isolated network)  
 
-- **Planned Role:**  
-  - Domain Controller (AD DS, DNS)  
-
-This architecture establishes an isolated identity boundary for the MRTG Active Directory environment.
+### Planned Identity Role
+- Domain Controller (AD DS, DNS)  
 
 ---
 
-## Security Considerations
+## Security Controls Implemented
 
-- Hyper-V used as an isolation boundary to separate host and lab environments  
-- BitLocker enabled to ensure host-level data protection  
-- Standard user account used for daily operations; administrative access restricted  
-- Lab environment isolated to simulate enterprise trust boundaries and reduce attack surface  
+- Hyper-V used to isolate host and lab environments  
+- BitLocker enabled on host system  
+- Standard user model enforced (administrative tasks restricted)  
+- Internal virtual switch to prevent external exposure  
+
+These controls establish a secure boundary for enterprise identity deployment.
 
 ---
 
 ## Lab Steps and Evidence
 
-### 1. Verified Host Hardware
+### 1. Host Resource Validation
 
 The host system hardware was validated to ensure sufficient CPU and memory resources for virtualization workloads.
 
@@ -75,7 +79,7 @@ The host system hardware was validated to ensure sufficient CPU and memory resou
 
 ---
 
-### 2. Verified System Architecture
+### 2. Platform Architecture Validation
 
 The system architecture was verified to ensure a 64-bit operating system capable of supporting Hyper-V virtualization.
 
@@ -115,7 +119,7 @@ CPU virtualization support was confirmed to ensure the processor can support Hyp
 
 ---
 
-### 7. Verified Hyper-V Installation
+### 7. Hyper-V Feature Validation
 
 Hyper-V was verified as installed with both the platform and management tools enabled.
 
@@ -196,13 +200,11 @@ The MRTG-DC01 virtual machine was successfully created within the Hyper-V enviro
 
 ## Outcome
 
-A Windows Server 2022 virtual machine (**MRTG-DC01**) was successfully deployed within an isolated Hyper-V environment.
+A secure virtualization environment was successfully established to support enterprise Active Directory deployment.
 
-This system establishes the foundational identity infrastructure layer and will be promoted to a Domain Controller in the next phase.
+The domain controller virtual machine (MRTG-DC01) was provisioned and prepared for identity services installation.
 
-The environment now supports the deployment of Active Directory Domain Services and centralized authentication within a controlled internal network.
-
-This environment now supports secure deployment of centralized identity services, forming the foundation for authentication, authorization, and policy enforcement in subsequent labs.
+This infrastructure now serves as the controlled boundary for authentication, authorization, and policy enforcement within the MRTG IAM environment.
 
 ---
 
