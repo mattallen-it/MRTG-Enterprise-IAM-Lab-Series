@@ -96,14 +96,14 @@ Reviewed `john.smith.admin` group membership and confirmed that the account was 
 ## Validation / Verification
 - Confirmed named administrative accounts were separated into the `_MRTG/Admin Accounts` OU
 - Confirmed service accounts were separated into the `_MRTG/Service Accounts` OU
-- Verified that `GG_IT_HelpDesk_Admins` existed as a dedicated delegated administration group
-- Verified that `john.smith.admin` was a member of `GG_IT_HelpDesk_Admins`
-- Verified that password reset rights were delegated over `_MRTG/Users`
-- Confirmed that delegated scope was limited to user-management tasks rather than broad domain administration
-- Confirmed that `john.smith.admin` was not a member of `Domain Admins`
+- Verified `GG_IT_HelpDesk_Admins` existed as a delegated support group
+- Verified `john.smith.admin` was assigned to `GG_IT_HelpDesk_Admins`
+- Verified password reset rights were delegated over `_MRTG/Users`
+- Confirmed `john.smith.admin` was not a member of `Domain Admins`
+- Confirmed delegated scope was narrower than broad domain-wide administrative privilege
 
 ## Outcome
-This lab established a foundational privileged identity model inside the MRTG Active Directory environment by separating human admin identities, service accounts, and delegated support roles. It reinforced the principle that routine administrative tasks should be assigned through scoped delegation rather than broad domain-wide privilege. The lab also strengthened the overall IAM series by showing how privileged access can be controlled through identity structure and delegated scope, not just through account creation or group membership alone.
+This lab established a foundational privileged identity model inside the MRTG Active Directory environment by separating human administrative accounts, service accounts, and delegated support roles. It reinforced the principle that routine administrative tasks should be assigned through scoped delegation rather than broad domain-wide privilege. This lab also highlighted that delegated Active Directory rights and interactive logon rights are separate control layers, reinforcing the need to manage privileged access boundaries carefully in enterprise environments.
 
 ## Next Lab
 ➡️ [Lab-08 - Identity Monitoring and Auditing](../Lab-08-Identity-Monitoring-and-Auditing/README.md)
