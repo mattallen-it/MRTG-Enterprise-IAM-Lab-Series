@@ -1,4 +1,4 @@
-# Lab-08: Identity Monitoring and Auditing
+# Lab-08-Identity Monitoring and Auditing
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
