@@ -3,7 +3,6 @@
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
 ![Focus](https://img.shields.io/badge/Focus-Identity%20Monitoring%20%26%20Auditing-purple)
-![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 
 ## Overview
 
