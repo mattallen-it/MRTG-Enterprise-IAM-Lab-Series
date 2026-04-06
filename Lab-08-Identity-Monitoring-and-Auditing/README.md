@@ -199,7 +199,9 @@ This prepared the OU for object-level auditing so changes to descendant user obj
 
 ### 10. Added an Auditing Entry for Descendant User Objects
 
-I created a new auditing entry with the following settings:
+I created a new auditing entry for **Everyone**, set the audit type to **Success**, and scoped it to **Descendant User objects**. I selected change-related permissions so the environment would capture meaningful identity modifications instead of passive directory reads.
+
+This step was critical because enabling **Audit Directory Service Changes** alone is not enough. The target OU also needs an auditing entry so object-level changes generate the expected security events.
 
 - **Principal:** `Everyone`
 - **Type:** `Success`
@@ -278,7 +280,7 @@ This validated that audit policy configuration activity itself was also being lo
 After the delegated actions were completed, I reviewed the **Security** log in **Event Viewer** on **MRTG-DC01** and confirmed the expected identity-related events.
 
 - **Event ID 4724** - Password reset attempt  
-  Confirmed that a password reset operation occurred for the target account.
+  Confirmed that an attempt was made to reset the target account password.
 
 - **Event ID 4738** - User account changed  
   Confirmed that the user object was modified.
