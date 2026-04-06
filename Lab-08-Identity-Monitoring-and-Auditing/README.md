@@ -207,8 +207,6 @@ This step was critical because enabling **Audit Directory Service Changes** alon
 - **Type:** `Success`
 - **Applies to:** `Descendant User objects`
 
-I scoped the entry toward change activity rather than passive read activity. This step was critical because enabling directory service change auditing alone is not enough. The relevant OU or object must also have an auditing entry configured to generate object-modification events.
-
 ![Lab-08-10 - Users OU Auditing Entry](images/Lab-08-10-Users-OU-Auditing-Entry.png)
 
 ---
