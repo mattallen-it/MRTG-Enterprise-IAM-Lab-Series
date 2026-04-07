@@ -335,7 +335,6 @@ By the end of this lab, I had successfully:
 This lab moved the MRTG environment beyond basic user administration and into auditable identity operations, which is a core control in enterprise IAM and security-focused IT environments.
 
 ---
-
 ## Next Lab
 
-**Lab-09** will build on this auditing foundation by extending identity control, visibility, or governance deeper into the MRTG environment.
+Lab-09 will build on this auditing foundation by implementing **Password Policy and Account Lockout Hardening** in the MRTG environment, strengthening identity control through domain-level policy enforcement and failed logon protection.
