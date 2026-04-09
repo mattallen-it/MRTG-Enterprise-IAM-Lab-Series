@@ -138,12 +138,12 @@ Core focus areas:
 
 ## Quick Access
 
-- [Lab-01 — Virtualization and Identity Infrastructure Foundation](../Lab-01-Virtualization-and-Identity-Infrastructure-Foundation)
-- [Lab-02 — AD DS Deployment](../Lab-02-AD-DS-Deployment)
-- [Lab-03 — Domain Controller Promotion](../Lab-03-Domain-Controller-Promotion)
-- [Lab-04 — OU Design and GPO Enforcement](../Lab-04-OU-Design-and-GPO-Enforcement)
-- [Lab-05 — Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management)
-- [Lab-06 — NTFS and Share Permissions](../Lab-06-NTFS-and-Share-Permissions)
-- [Lab-07 — Service Accounts and Delegation](../Lab-07-Service-Accounts-and-Delegation)
-- [Lab-08 — Identity Monitoring and Auditing](../Lab-08-Identity-Monitoring-and-Auditing)
-- [Lab-09 — Password Policy and Account Lockout Hardening](../Lab-09-Password-Policy-and-Account-Lockout-Hardening)
+- [Lab-01 — Virtualization and Identity Infrastructure Foundation](./Lab-01-Virtualization-and-Identity-Infrastructure-Foundation/README.md)
+- [Lab-02 — AD DS Deployment](./Lab-02-AD-DS-Deployment/README.md)
+- [Lab-03 — Domain Controller Promotion](./Lab-03-Domain-Controller-Promotion/README.md)
+- [Lab-04 — OU Design and GPO Enforcement](./Lab-04-OU-Design-and-GPO-Enforcement/README.md)
+- [Lab-05 — Identity Lifecycle Management](./Lab-05-Identity-Lifecycle-Management/README.md)
+- [Lab-06 — NTFS and Share Permissions](./Lab-06-NTFS-and-Share-Permissions/README.md)
+- [Lab-07 — Service Accounts and Delegation](./Lab-07-Service-Accounts-and-Delegation/README.md)
+- [Lab-08 — Identity Monitoring and Auditing](./Lab-08-Identity-Monitoring-and-Auditing/README.md)
+- [Lab-09 — Password Policy and Account Lockout Hardening](./Lab-09-Password-Policy-and-Account-Lockout-Hardening/README.md)
