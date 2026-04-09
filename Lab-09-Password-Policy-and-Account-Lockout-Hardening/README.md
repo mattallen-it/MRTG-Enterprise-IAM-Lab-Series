@@ -258,7 +258,7 @@ The effective policy should reflect the configured password and lockout settings
 The effective policy showed the expected values for complexity, password length, password history, lockout threshold, lockout duration, and observation window.
 
 **Evidence:**  
-![Test User Ready](images/lab-09-07-test-user-ready.png)
+![Password Policy Validation](images/lab-09-06-password-policy-validation.png)
 
 **Why This Matters:**  
 This confirms the domain is actually using the configured policy values rather than just storing them in the editor.
