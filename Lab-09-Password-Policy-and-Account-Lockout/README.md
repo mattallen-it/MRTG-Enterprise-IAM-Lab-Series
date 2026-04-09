@@ -190,7 +190,7 @@ gpupdate /force
 The configured settings needed to be applied so the environment would use the updated password and lockout policy values.
 
 **Evidence:**  
-![GPUpdate Force](images/lab-09-05-gpupdate-force.png)
+![GPUpdate Success](images/lab-09-05-gpupdate-success.png)
 
 **What This Proves:**  
 This confirms the updated Group Policy settings were applied successfully.
@@ -210,7 +210,7 @@ Get-ADDefaultDomainPasswordPolicy
 This provides stronger validation than the GPO editor alone by showing the effective password and lockout values the domain is actually using.
 
 **Evidence:**  
-![Effective Domain Password Policy](images/lab-09-06-effective-domain-password-policy.png)
+![Password Policy Validation](images/lab-09-06-password-policy-validation.png)
 
 **What This Proves:**  
 This validates the effective domain policy values, including:
@@ -234,7 +234,7 @@ Opened **Active Directory Users and Computers** and reviewed the `Kevin Carter` 
 A normal, active domain user account was needed to test real sign-in behavior and confirm the policy was affecting authentication as intended.
 
 **Evidence:**  
-![Test User Preparation](images/lab-09-07-test-user-preparation.png)
+![Test User Ready](images/lab-09-07-test-user-ready.png)
 
 **What This Proves:**  
 This shows the selected test identity and confirms the account was ready for validation.
@@ -258,7 +258,7 @@ The effective policy should reflect the configured password and lockout settings
 The effective policy showed the expected values for complexity, password length, password history, lockout threshold, lockout duration, and observation window.
 
 **Evidence:**  
-![Effective Domain Password Policy](images/lab-09-06-effective-domain-password-policy.png)
+![Test User Ready](images/lab-09-07-test-user-ready.png)
 
 **Why This Matters:**  
 This confirms the domain is actually using the configured policy values rather than just storing them in the editor.
@@ -280,7 +280,7 @@ After 5 failed sign-in attempts, the account should become locked and authentica
 The sign-in screen displayed the message: **"The referenced account is currently locked out and may not be logged on to."**
 
 **Evidence:**  
-![Client Lockout Message](images/lab-09-08-client-lockout-message.png)
+![Account Lockout Triggered](images/lab-09-08-account-lockout-triggered.png)
 
 **Why This Matters:**  
 This proves the lockout policy is enforced from the user side and is not just a configured value on paper.
@@ -306,7 +306,7 @@ The locked-out test account should appear in the results with `LockedOut : True`
 Kevin Carter appeared in the results and the account state showed `LockedOut : True`.
 
 **Evidence:**  
-![Locked Out Account PowerShell](images/lab-09-09-lockedout-account-powershell.png)
+![Locked Account Verification](images/lab-09-09-locked-account-verification.png)
 
 **Why This Matters:**  
 This provides administrative verification that the domain account entered a locked state and can be validated operationally by IT staff.
