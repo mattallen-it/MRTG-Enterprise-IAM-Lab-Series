@@ -345,4 +345,4 @@ This lab moved the environment from basic authentication hardening into **tiered
 
 ## Next Lab
 
-Lab-11 should build on this identity-tiering foundation by implementing **Privileged Group Governance and Access Review** so the MRTG environment continues progressing toward more mature IAM administration.
+Lab-11 will build on this identity-tiering foundation by implementing **LAPS and Local Administrator Management** so the MRTG environment can better control, rotate, and recover local privileged access on domain-joined systems.
