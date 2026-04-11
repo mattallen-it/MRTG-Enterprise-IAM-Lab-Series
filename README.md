@@ -148,3 +148,4 @@ Core focus areas:
 - [Lab-07 — Service Accounts and Delegation](./Lab-07-Service-Accounts-and-Delegation/README.md)
 - [Lab-08 — Identity Monitoring and Auditing](./Lab-08-Identity-Monitoring-and-Auditing/README.md)
 - [Lab-09 — Password Policy and Account Lockout Hardening](./Lab-09-Password-Policy-and-Account-Lockout-Hardening/README.md)
+- [Lab-10 — Fine-Grained Password Policies for Tiered Identity Control](./Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control/README.md)
