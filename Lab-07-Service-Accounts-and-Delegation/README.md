@@ -1,4 +1,4 @@
-# Lab-07 - Service Accounts and Delegation
+# Lab-07 — Service Accounts and Delegation
 
 ![Windows Server](https://img.shields.io/badge/Windows%20Server-Privileged%20Administration-blue)
 ![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
