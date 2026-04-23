@@ -1,4 +1,4 @@
-# Lab-10: Fine-Grained Password Policies for Tiered Identity Control
+# Lab-10 — Fine-Grained Password Policies for Tiered Identity Control
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
