@@ -1,4 +1,4 @@
-# Lab-06 - NTFS and Share Permissions
+# Lab-06 — NTFS and Share Permissions
 
 ![Windows Server](https://img.shields.io/badge/Windows%20Server-File%20Services-blue)
 ![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
