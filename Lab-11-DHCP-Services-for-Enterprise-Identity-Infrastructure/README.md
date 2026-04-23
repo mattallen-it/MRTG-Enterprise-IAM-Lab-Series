@@ -466,12 +466,6 @@ I confirmed that:
 
 This proved that DHCP infrastructure was deployed and trusted for use in the MRTG domain.
 
-**Supporting screenshots:**
-
-- `Lab-11-07-DHCP-Installation-Success.png`
-- `Lab-11-10-DHCP-Authorization-Success.png`
-- `Lab-11-11-DHCP-Console-Server-Visible.png`
-
 ---
 
 ### Validation Scenario 2 - Active Scope Configuration
@@ -488,14 +482,6 @@ I confirmed that:
 
 This proved that the DHCP server had a usable and active client scope.
 
-**Supporting screenshots:**
-
-- `Lab-11-12-New-Scope-Wizard-Name.png`
-- `Lab-11-13-New-Scope-IP-Range.png`
-- `Lab-11-14-New-Scope-Exclusions.png`
-- `Lab-11-16-New-Scope-DNS-Option.png`
-- `Lab-11-18-DHCP-IPv4-Scope-Active.png`
-
 ---
 
 ### Validation Scenario 3 - Client Transition to DHCP
@@ -510,12 +496,6 @@ I confirmed that:
 - `DHCP Enabled` changed from `No` to `Yes`
 
 This proved that the workstation successfully transitioned from static addressing to DHCP-managed configuration.
-
-**Supporting screenshots:**
-
-- `Lab-11-19-Client-IPv4-Set-to-Automatic.png`
-- `Lab-11-20-Client-ipconfig-Renew-DHCP-Lease.png`
-- `Lab-11-21-Client-ipconfig-all-DHCP-Assigned.png`
 
 ---
 
@@ -543,13 +523,6 @@ I confirmed that after DHCP assignment:
 - the session remained inside the MRTG domain user context
 
 This proved that DHCP assignment did not break basic domain communication or identity context.
-
-**Supporting screenshots:**
-
-- `Lab-11-23-Client-Ping-DC-After-DHCP.png`
-- `Lab-11-24-Client-NSLookup-Domain-After-DHCP.png`
-- `Lab-11-25-Client-LogonServer-After-DHCP.png`
-- `Lab-11-26-Client-Domain-User-Session-After-DHCP.png`
 
 ---
 
