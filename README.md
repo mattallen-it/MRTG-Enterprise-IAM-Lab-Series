@@ -119,6 +119,17 @@ This architecture supports:
 | Lab-08 — Identity Monitoring and Auditing | Security & Compliance |
 | Lab-09 — Password Policy and Account Lockout Hardening | Authentication Hardening |
 | Lab-10 — Fine-Grained Password Policies for Tiered Identity Control | Tiered Authentication Control |
+| Lab-11 — DHCP Services for Enterprise Identity Infrastructure | Identity-Supporting Network Services |
+| Lab-12 — Additional Domain Controller and AD Replication | Directory Resilience |
+| Lab-13 — Centralized Logging and Syslog for Identity Events | Visibility & Audit Collection |
+| Lab-14 — Active Directory Sites and Services | Replication Topology |
+| Lab-15 — Group Policy Security Baselines for Workstations and Servers | Endpoint Security Control |
+| Lab-16 — Delegation of Control and Tiered Administrative Boundaries | Least Privilege Administration |
+| Lab-17 — Windows LAPS and Local Administrator Control | Privileged Endpoint Protection |
+| Lab-18 — Group-Based Access Control for File and Department Resources | Authorization Design |
+| Lab-19 — Active Directory Certificate Services | Enterprise Trust Services |
+| Lab-20 — Identity Lifecycle Automation with PowerShell | Identity Automation |
+| Lab-21 — Directory Recovery, Backup, and Operational Resilience | Identity Recovery & Continuity |
 
 ---
 
@@ -149,3 +160,4 @@ Core focus areas:
 - [Lab-08 — Identity Monitoring and Auditing](./Lab-08-Identity-Monitoring-and-Auditing/README.md)
 - [Lab-09 — Password Policy and Account Lockout Hardening](./Lab-09-Password-Policy-and-Account-Lockout-Hardening/README.md)
 - [Lab-10 — Fine-Grained Password Policies for Tiered Identity Control](./Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control/README.md)
+- [Lab-11 — DHCP Services for Enterprise Identity Infrastructure](./Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure/README.md)
