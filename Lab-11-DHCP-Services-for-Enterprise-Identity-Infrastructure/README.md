@@ -150,7 +150,7 @@ The key design point is that DHCP is not just a convenience service. In an Activ
 
 Before making DHCP changes, I created a Hyper-V checkpoint to preserve the clean post-Lab 10 environment.
 
-![Lab-11-01-Pre-DHCP-Checkpoint](Lab-11-01-Pre-DHCP-Checkpoint.png)
+![Lab-11-01-Pre-DHCP-Checkpoint](./images/Lab-11-01-Pre-DHCP-Checkpoint.png)
 
 ---
 
@@ -160,7 +160,7 @@ I ran `ipconfig /all` on `MRTG-DC01` to record the domain controller’s baselin
 
 This confirmed that the server was using the expected static IPv4 address of `192.168.10.10`.
 
-![Lab-11-02-DC-ipconfig-all-Baseline](Lab-11-02-DC-ipconfig-all-Baseline.png)
+![Lab-11-02-DC-ipconfig-all-Baseline](./images/Lab-11-02-DC-ipconfig-all-Baseline.png)
 
 ---
 
@@ -170,7 +170,7 @@ In Server Manager, I verified that the environment already had Active Directory 
 
 This established the pre-change infrastructure baseline.
 
-![Lab-11-03-Server-Manager-AD-DNS-Baseline](Lab-11-03-Server-Manager-AD-DNS-Baseline.png)
+![Lab-11-03-Server-Manager-AD-DNS-Baseline](./images/Lab-11-03-Server-Manager-AD-DNS-Baseline.png)
 
 ---
 
@@ -180,7 +180,7 @@ I ran `ipconfig /all` on `CLIENT01` to record the client’s pre-DHCP network st
 
 This confirmed that the client was still statically configured and that **DHCP Enabled** was set to **No**.
 
-![Lab-11-04-Client-ipconfig-all-Baseline](Lab-11-04-Client-ipconfig-all-Baseline.png)
+![Lab-11-04-Client-ipconfig-all-Baseline](./images/Lab-11-04-Client-ipconfig-all-Baseline.png)
 
 ---
 
@@ -197,7 +197,7 @@ nslookup mrtg.local
 
 This confirmed that the client could already reach domain infrastructure before the DHCP rollout.
 
-![Lab-11-05-Client-Ping-and-NSLookup-Baseline](Lab-11-05-Client-Ping-and-NSLookup-Baseline.png)
+![Lab-11-05-Client-Ping-and-NSLookup-Baseline](./images/Lab-11-05-Client-Ping-and-NSLookup-Baseline.png)
 
 ---
 
@@ -207,7 +207,7 @@ On `MRTG-DC01`, I opened the Add Roles and Features Wizard and selected the **DH
 
 This added the service required to centrally manage IPv4 address assignment for MRTG client systems.
 
-![Lab-11-06-Add-Roles-Wizard-DHCP-Selected](Lab-11-06-Add-Roles-Wizard-DHCP-Selected.png)
+![Lab-11-06-Add-Roles-Wizard-DHCP-Selected](./images/Lab-11-06-Add-Roles-Wizard-DHCP-Selected.png)
 
 ---
 
@@ -217,7 +217,7 @@ After installation completed, I verified that the DHCP Server role and managemen
 
 The installation results also showed that post-installation configuration was still required.
 
-![Lab-11-07-DHCP-Installation-Success](Lab-11-07-DHCP-Installation-Success.png)
+![Lab-11-07-DHCP-Installation-Success](./images/Lab-11-07-DHCP-Installation-Success.png)
 
 ---
 
@@ -225,7 +225,7 @@ The installation results also showed that post-installation configuration was st
 
 In Server Manager, I opened the notification flag and selected **Complete DHCP configuration** to finish the required post-deployment setup.
 
-![Lab-11-08-DHCP-Post-Install-Configuration](Lab-11-08-DHCP-Post-Install-Configuration.png)
+![Lab-11-08-DHCP-Post-Install-Configuration](./images/Lab-11-08-DHCP-Post-Install-Configuration.png)
 
 ---
 
@@ -235,7 +235,7 @@ In the DHCP Post-Install Configuration Wizard, I used the displayed domain admin
 
 This step matters because domain environments are designed to trust only approved DHCP infrastructure.
 
-![Lab-11-09-DHCP-Configuration-Credentials](Lab-11-09-DHCP-Configuration-Credentials.png)
+![Lab-11-09-DHCP-Configuration-Credentials](./images/Lab-11-09-DHCP-Configuration-Credentials.png)
 
 ---
 
@@ -243,7 +243,7 @@ This step matters because domain environments are designed to trust only approve
 
 I completed the wizard and verified that the post-installation summary showed both security group creation and DHCP authorization as complete.
 
-![Lab-11-10-DHCP-Authorization-Success](Lab-11-10-DHCP-Authorization-Success.png)
+![Lab-11-10-DHCP-Authorization-Success](./images/Lab-11-10-DHCP-Authorization-Success.png)
 
 ---
 
@@ -251,7 +251,7 @@ I completed the wizard and verified that the post-installation summary showed bo
 
 After authorization, I opened the DHCP console and verified that `MRTG-DC01.mrtg.local` appeared in the management tree with both IPv4 and IPv6 containers visible.
 
-![Lab-11-11-DHCP-Console-Server-Visible](Lab-11-11-DHCP-Console-Server-Visible.png)
+![Lab-11-11-DHCP-Console-Server-Visible](./images/Lab-11-11-DHCP-Console-Server-Visible.png)
 
 ---
 
@@ -259,7 +259,7 @@ After authorization, I opened the DHCP console and verified that `MRTG-DC01.mrtg
 
 Inside the New Scope Wizard, I named the first IPv4 scope `MRTG-Client-Scope` and documented its purpose for domain client systems on the `192.168.10.0/24` network.
 
-![Lab-11-12-New-Scope-Wizard-Name](Lab-11-12-New-Scope-Wizard-Name.png)
+![Lab-11-12-New-Scope-Wizard-Name](./images/Lab-11-12-New-Scope-Wizard-Name.png)
 
 ---
 
@@ -269,7 +269,7 @@ I configured the scope to distribute addresses from `192.168.10.100` through `19
 
 This created the usable dynamic address range for client systems.
 
-![Lab-11-13-New-Scope-IP-Range](Lab-11-13-New-Scope-IP-Range.png)
+![Lab-11-13-New-Scope-IP-Range](./images/Lab-11-13-New-Scope-IP-Range.png)
 
 ---
 
@@ -279,7 +279,7 @@ I configured an exclusion range of `192.168.10.150` through `192.168.10.160`.
 
 This reserved part of the scope so those addresses would not be distributed dynamically.
 
-![Lab-11-14-New-Scope-Exclusions](Lab-11-14-New-Scope-Exclusions.png)
+![Lab-11-14-New-Scope-Exclusions](./images/Lab-11-14-New-Scope-Exclusions.png)
 
 ---
 
@@ -289,7 +289,7 @@ The Router (Default Gateway) step was left unconfigured in this isolated single-
 
 That was intentional. This lab did not require routed outbound connectivity, so the scope focused on internal client-to-directory communication rather than internet or multi-subnet routing.
 
-![Lab-11-15-New-Scope-Gateway-Option](Lab-11-15-New-Scope-Gateway-Option.png)
+![Lab-11-15-New-Scope-Gateway-Option](./images/Lab-11-15-New-Scope-Gateway-Option.png)
 
 ---
 
@@ -304,7 +304,7 @@ I configured the scope to distribute the MRTG domain name and internal DNS serve
 
 These settings are the identity-critical part of the scope because they allow clients to locate internal domain services through the correct DNS infrastructure.
 
-![Lab-11-16-New-Scope-DNS-Option](Lab-11-16-New-Scope-DNS-Option.png)
+![Lab-11-16-New-Scope-DNS-Option](./images/Lab-11-16-New-Scope-DNS-Option.png)
 
 ---
 
@@ -312,7 +312,7 @@ These settings are the identity-critical part of the scope because they allow cl
 
 I selected the option to activate the scope immediately so the DHCP server could begin issuing leases to eligible clients.
 
-![Lab-11-17-New-Scope-Activation-Summary](Lab-11-17-New-Scope-Activation-Summary.png)
+![Lab-11-17-New-Scope-Activation-Summary](./images/Lab-11-17-New-Scope-Activation-Summary.png)
 
 ---
 
@@ -325,7 +325,7 @@ After completing the wizard, I confirmed that the active IPv4 scope appeared in 
 - Scope Options
 - Policies
 
-![Lab-11-18-DHCP-IPv4-Scope-Active](Lab-11-18-DHCP-IPv4-Scope-Active.png)
+![Lab-11-18-DHCP-IPv4-Scope-Active](./images/Lab-11-18-DHCP-IPv4-Scope-Active.png)
 
 ---
 
@@ -338,7 +338,7 @@ On `CLIENT01`, I changed the IPv4 adapter settings to:
 
 This transitioned the workstation from static client configuration to DHCP-managed configuration.
 
-![Lab-11-19-Client-IPv4-Set-to-Automatic](Lab-11-19-Client-IPv4-Set-to-Automatic.png)
+![Lab-11-19-Client-IPv4-Set-to-Automatic](./images/Lab-11-19-Client-IPv4-Set-to-Automatic.png)
 
 ---
 
@@ -355,7 +355,7 @@ ipconfig /renew
 
 The client successfully received a new IPv4 address from the MRTG DHCP scope.
 
-![Lab-11-20-Client-ipconfig-Renew-DHCP-Lease](Lab-11-20-Client-ipconfig-Renew-DHCP-Lease.png)
+![Lab-11-20-Client-ipconfig-Renew-DHCP-Lease](./images/Lab-11-20-Client-ipconfig-Renew-DHCP-Lease.png)
 
 ---
 
@@ -373,7 +373,7 @@ I ran `ipconfig /all` again on `CLIENT01` and confirmed that the client had tran
 
 This proved that the client was now receiving its network configuration dynamically from DHCP.
 
-![Lab-11-21-Client-ipconfig-all-DHCP-Assigned](Lab-11-21-Client-ipconfig-all-DHCP-Assigned.png)
+![Lab-11-21-Client-ipconfig-all-DHCP-Assigned](./images/Lab-11-21-Client-ipconfig-all-DHCP-Assigned.png)
 
 ---
 
@@ -383,7 +383,7 @@ Back on `MRTG-DC01`, I opened **Address Leases** and confirmed that the DHCP ser
 
 This provided server-side proof that the lease had been issued and tracked successfully.
 
-![Lab-11-22-DHCP-Address-Lease-Visible](Lab-11-22-DHCP-Address-Lease-Visible.png)
+![Lab-11-22-DHCP-Address-Lease-Visible](./images/Lab-11-22-DHCP-Address-Lease-Visible.png)
 
 ---
 
@@ -399,7 +399,7 @@ ping MRTG-DC01
 
 The ping succeeded, which showed that basic connectivity to internal domain infrastructure remained intact after DHCP assignment.
 
-![Lab-11-23-Client-Ping-DC-After-DHCP](Lab-11-23-Client-Ping-DC-After-DHCP.png)
+![Lab-11-23-Client-Ping-DC-After-DHCP](./images/Lab-11-23-Client-Ping-DC-After-DHCP.png)
 
 ---
 
@@ -415,7 +415,7 @@ nslookup mrtg.local
 
 The result resolved `mrtg.local` to `192.168.10.10`. The screenshot also shows `Server: Unknown` and an initial timeout, which is consistent with missing reverse lookup information for the DNS server address. The forward lookup still succeeded, which is the important validation point for this lab.
 
-![Lab-11-24-Client-NSLookup-Domain-After-DHCP](Lab-11-24-Client-NSLookup-Domain-After-DHCP.png)
+![Lab-11-24-Client-NSLookup-Domain-After-DHCP](./images/Lab-11-24-Client-NSLookup-Domain-After-DHCP.png)
 
 ---
 
@@ -431,7 +431,7 @@ nltest /dsgetdc:mrtg.local
 
 This confirmed that the client could still locate the domain controller and identify core directory service roles after moving to DHCP.
 
-![Lab-11-25-Client-LogonServer-After-DHCP](Lab-11-25-Client-LogonServer-After-DHCP.png)
+![Lab-11-25-Client-LogonServer-After-DHCP](./images/Lab-11-25-Client-LogonServer-After-DHCP.png)
 
 ---
 
@@ -447,7 +447,7 @@ whoami
 
 The result showed `mrtg\kevin.carter`, which confirmed that the client was still operating inside the MRTG domain context after switching to DHCP.
 
-![Lab-11-26-Client-Domain-User-Session-After-DHCP](Lab-11-26-Client-Domain-User-Session-After-DHCP.png)
+![Lab-11-26-Client-Domain-User-Session-After-DHCP](./images/Lab-11-26-Client-Domain-User-Session-After-DHCP.png)
 
 ---
 
