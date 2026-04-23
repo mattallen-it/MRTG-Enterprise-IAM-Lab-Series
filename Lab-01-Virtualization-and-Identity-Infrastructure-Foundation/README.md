@@ -1,4 +1,4 @@
-# Lab-01 — Virtualization and Identity Infrastructure Foundation
+# Lab-01 - Virtualization and Identity Infrastructure Foundation
 
 ![Type](https://img.shields.io/badge/type-lab-blue)
 ![Track](https://img.shields.io/badge/track-IAM-green)
