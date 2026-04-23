@@ -1,4 +1,4 @@
-# Lab-05 - Identity Lifecycle Management
+# Lab-05 — Identity Lifecycle Management
 
 ![Windows Server](https://img.shields.io/badge/Windows%20Server-Active%20Directory-blue)
 ![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
