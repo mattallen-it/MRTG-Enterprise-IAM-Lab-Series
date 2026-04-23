@@ -527,7 +527,7 @@ I confirmed that the DHCP console displayed an address lease for `CLIENT01.mrtg.
 
 This proved that the lease was not only received by the client, but also visible and tracked from the server side.
 
-![Lab-11-22-DHCP-Address-Lease-Visible](Lab-11-22-DHCP-Address-Lease-Visible.png)
+![Lab-11-22-DHCP-Address-Lease-Visible](./images/Lab-11-22-DHCP-Address-Lease-Visible.png)
 
 ---
 
