@@ -260,37 +260,39 @@ This allowed the client to continue using DHCP while still receiving a predictab
 **Screenshot Placeholder:** Reservation object for `MRTG-CLIENT-01`
 
 ---
-
 ### 11. Renewed the Client Lease
 
 On `MRTG-CLIENT-01`, I renewed the DHCP lease so the client would request fresh configuration from the DHCP server.
 
-Commands used:
+**Commands used:**
 
 ```powershell
 ipconfig /release
 ipconfig /renew
 ipconfig /all
-
-----
+```
 
 This allowed me to verify that the client received an address from the MRTG scope along with the correct supporting options.
 
-Screenshot Placeholder: ipconfig /all on MRTG-CLIENT-01
+**Screenshot Placeholder:** `ipconfig /all` on `MRTG-CLIENT-01`
 
-12. Validated DNS Resolution and Domain Communication
+---
+
+### 12. Validated DNS Resolution and Domain Communication
 
 After renewing the lease, I validated that the client could resolve internal names and communicate correctly with domain infrastructure.
 
-Commands used:
+**Commands used:**
 
+```powershell
 nslookup mrtg-dc01.mrtg.local
 ping mrtg-dc01
 ping mrtg.local
+```
 
 This confirmed that the DHCP-delivered configuration was supporting proper directory-aware communication.
 
-Screenshot Placeholder: Successful nslookup and ping results from the DHCP client
+**Screenshot Placeholder:** Successful `nslookup` and `ping` results from the DHCP client
 
 13. Reviewed Active Leases
 
