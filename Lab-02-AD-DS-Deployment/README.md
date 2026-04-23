@@ -1,4 +1,4 @@
-# Lab-02 - Active Directory Domain Services (AD DS) Deployment
+# Lab-02 — Active Directory Domain Services (AD DS) Deployment
 
 ![Type](https://img.shields.io/badge/type-lab-blue)
 ![Track](https://img.shields.io/badge/track-IAM-green)
