@@ -150,7 +150,7 @@ The key design point is that DHCP is not just a convenience service. In an Activ
 
 Before making DHCP changes, I created a Hyper-V checkpoint to preserve the clean post-Lab 10 environment.
 
-![Lab-11-01-Pre-DHCP-Checkpoint](Lab-11-01-Pre-DHCP-Checkpoint.png)
+![Lab-11-01-Pre-DHCP-Checkpoint](./Lab-11-01-Pre-DHCP-Checkpoint.png)
 
 ---
 
