@@ -271,3 +271,131 @@ Commands used:
 ipconfig /release
 ipconfig /renew
 ipconfig /all
+
+----
+
+This allowed me to verify that the client received an address from the MRTG scope along with the correct supporting options.
+
+Screenshot Placeholder: ipconfig /all on MRTG-CLIENT-01
+
+12. Validated DNS Resolution and Domain Communication
+
+After renewing the lease, I validated that the client could resolve internal names and communicate correctly with domain infrastructure.
+
+Commands used:
+
+nslookup mrtg-dc01.mrtg.local
+ping mrtg-dc01
+ping mrtg.local
+
+This confirmed that the DHCP-delivered configuration was supporting proper directory-aware communication.
+
+Screenshot Placeholder: Successful nslookup and ping results from the DHCP client
+
+13. Reviewed Active Leases
+
+I returned to the DHCP console and confirmed that the lease was visible under Address Leases and that the reservation behavior matched the expected client assignment.
+
+This provided administrative proof that the DHCP server was actively issuing and tracking leases.
+
+Screenshot Placeholder: Address Leases showing the client assignment
+
+Validation / Proof
+Validation Scenario 1 - DHCP Server Authorization
+
+System tested: MRTG-DC01
+
+I opened the DHCP console and confirmed that:
+
+the server appeared in the DHCP console without authorization errors
+the server was authorized in Active Directory
+the IPv4 scope was visible and active
+
+This confirmed that the DHCP service was approved for use in the MRTG domain environment.
+
+Screenshot Placeholder: Authorized server and active scope
+
+Validation Scenario 2 - Client Lease Assignment
+
+System tested: MRTG-CLIENT-01
+
+I opened Command Prompt on the client and confirmed that:
+
+the system received an IPv4 address from the configured scope
+the subnet mask matched the intended network
+the default gateway was correct
+the DNS server pointed to the internal domain controller / DNS server
+
+This confirmed that the client was receiving the intended network configuration through DHCP.
+
+Screenshot Placeholder: ipconfig /all showing DHCP-provided settings
+
+Validation Scenario 3 - Reservation Validation
+
+System tested: MRTG-CLIENT-01
+
+I renewed the client lease and confirmed that:
+
+the client received the reserved IP address
+the reservation appeared in the DHCP console
+the lease aligned with the intended reserved assignment
+
+This confirmed that MRTG could use DHCP reservations for predictable address control without fully static host configuration.
+
+Screenshot Placeholder: Reservation and matching client lease
+
+Validation Scenario 4 - DNS and Domain Connectivity
+
+System tested: MRTG-CLIENT-01
+
+I tested name resolution and domain communication and confirmed that:
+
+nslookup resolved the domain controller correctly
+ping mrtg-dc01 succeeded
+the client could communicate with domain infrastructure using DHCP-provided settings
+
+This confirmed that the DHCP configuration was supporting directory-dependent operations rather than just assigning an IP address.
+
+Screenshot Placeholder: Successful DNS resolution and connectivity tests
+
+Security Relevance
+
+This lab strengthens the MRTG environment by moving beyond manual per-device network settings and into centralized infrastructure control that supports directory services.
+
+Key security benefits include:
+
+reduced risk of client misconfiguration
+more consistent DNS settings for domain-connected systems
+Active Directory authorization of DHCP infrastructure
+better support for authentication, policy processing, and administrative access
+improved visibility into lease assignment and address usage
+predictable IP control through reservation-based management
+
+This matters because identity systems do not operate in isolation. Active Directory depends heavily on proper DNS and stable network configuration. If a client receives the wrong DNS settings or inconsistent addressing, authentication issues, failed policy processing, and administrative troubleshooting problems can follow. DHCP gives Active Directory a more reliable foundation by standardizing how systems receive those settings.
+
+Key Skills Demonstrated
+DHCP Server role installation
+DHCP post-installation configuration
+Active Directory-integrated DHCP authorization
+IPv4 scope creation
+DHCP exclusion range configuration
+DHCP reservation management
+Scope option configuration
+Lease renewal and client troubleshooting
+DNS-aware network validation
+Identity-supporting infrastructure administration
+Outcome
+
+By the end of this lab, the MRTG environment was able to:
+
+centrally assign IPv4 addresses to domain-connected client systems
+deliver consistent gateway, DNS, and domain-name configuration through DHCP
+reserve address space through exclusions and reservations
+validate lease assignment from the server side and client side
+confirm that DHCP-delivered settings supported internal DNS resolution and domain communication
+
+This lab moved the environment beyond static client networking and into centralized infrastructure management, which is a more realistic enterprise model for supporting Active Directory-connected systems.
+
+Next Lab
+
+Lab-12 will build on this infrastructure foundation by deploying an additional domain controller and validating Active Directory replication so the MRTG environment can improve resilience, service availability, and directory consistency.
