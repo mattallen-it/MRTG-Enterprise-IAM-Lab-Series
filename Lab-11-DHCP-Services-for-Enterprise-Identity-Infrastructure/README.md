@@ -1,4 +1,4 @@
-# Lab-11: DHCP Services for Enterprise Identity Infrastructure
+# Lab-11 — DHCP Services for Enterprise Identity Infrastructure
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-1f6feb)
 ![Directory](https://img.shields.io/badge/Directory-Active%20Directory-0e8a16)
