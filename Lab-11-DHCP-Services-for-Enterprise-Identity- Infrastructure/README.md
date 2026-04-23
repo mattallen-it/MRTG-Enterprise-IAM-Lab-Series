@@ -1,260 +1,273 @@
-Lab 11 – DHCP Services for Enterprise Identity Infrastructure
-Objective
+# Lab-11: DHCP Services for Enterprise Identity Infrastructure
 
-Deploy and validate Windows DHCP in the MRTG lab so domain clients automatically receive the correct IP configuration, DNS settings, and domain-aware network options required for Active Directory communication, authentication, and reliable identity infrastructure.
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-1f6feb)
+![Directory](https://img.shields.io/badge/Directory-Active%20Directory-0e8a16)
+![Focus](https://img.shields.io/badge/Focus-DHCP%20Services-7a3cff)
+![Service](https://img.shields.io/badge/Service-Enterprise%20Identity%20Infrastructure-bd561d)
 
-Scope
+---
 
-This lab focused on installing and authorizing the DHCP Server role on MRTG-DC01, creating and activating an IPv4 scope, configuring DHCP scope options for the mrtg.local domain, and validating that CLIENT01 could successfully move from static addressing to DHCP while maintaining full domain functionality.
+## Overview
 
-This lab did not include:
+In this lab, I implemented DHCP Services in the Monroe Redstone Technology Group (MRTG) Active Directory environment to centralize IPv4 address assignment for domain-connected systems and support reliable identity infrastructure. The objective was to move beyond static-only client networking and show that workstations can automatically receive the correct IP configuration, default gateway, DNS settings, and domain context needed for authentication and management.
 
-multiple scopes
-VLAN segmentation
-DHCP failover
-routed gateway design
-advanced reservations or policies beyond baseline validation
-Environment
-Infrastructure
-Host Platform: Hyper-V
-Domain Controller: MRTG-DC01
-Client Workstation: CLIENT01
-Domain: mrtg.local
-Server Roles in Use
-Active Directory Domain Services
-DNS
-DHCP
-Baseline Addressing
-MRTG-DC01: 192.168.10.10
-CLIENT01 (before DHCP): 192.168.10.20
-DHCP Scope Range: 192.168.10.100 - 192.168.10.200
-Scope Exclusion: 192.168.10.150 - 192.168.10.160
-Important Design Note
+Unlike manual static addressing, DHCP is not just a convenience feature. It is a centrally managed infrastructure service that ensures clients receive consistent network configuration at scale. That distinction matters because Active Directory authentication, DNS name resolution, Group Policy processing, remote administration, and general domain communication all depend on stable and predictable client addressing.
 
-This lab network was operating as an isolated same-subnet environment with no default gateway configured. That was acceptable for this stage because the focus was validating DHCP support for AD and DNS-based identity services, not routed network access.
+This lab builds directly on the authentication hardening work from Lab 10. Lab 10 established differentiated password controls across identity tiers. Lab 11 extends that foundation by introducing the supporting network service that helps domain-joined systems consistently locate and communicate with identity services.
 
-Architecture
-Identity Infrastructure Flow
-MRTG-DC01 provides:
-Active Directory Domain Services
-DNS
-DHCP
-CLIENT01 receives from DHCP:
-IPv4 address
-subnet mask
-DNS server
-DNS suffix
-CLIENT01 uses the DHCP-provided DNS settings to:
-resolve mrtg.local
-locate MRTG-DC01
-maintain domain communication and authentication
-Logical Relationship
+---
 
-CLIENT01 → DHCP lease from MRTG-DC01 → DNS resolution to MRTG-DC01 → Active Directory communication within mrtg.local
+## Objectives
 
-Pre-Lab Checkpoint
+- Install and configure the DHCP Server role
+- Authorize the DHCP server in Active Directory
+- Create a usable IPv4 scope for enterprise workstations
+- Configure scope options for gateway, DNS, and domain name
+- Add exclusions and a reservation for controlled lease assignment
+- Validate that a domain-connected client receives the correct lease
+- Confirm DNS resolution and domain communication using DHCP-provided settings
+- Demonstrate how DHCP supports identity-dependent infrastructure operations
 
-A Hyper-V checkpoint was created before installing DHCP so the lab could be rolled back cleanly if configuration issues occurred.
+---
 
-Screenshot: Lab-11-01-Pre-DHCP-Checkpoint.png
+## Scope
 
-Step 1 – Validate Baseline Network and Identity Health
+### Included
 
-Before deploying DHCP, baseline network and identity functionality were verified on both the domain controller and the client.
+- Installation of the DHCP Server role
+- DHCP post-installation configuration
+- Active Directory authorization of the DHCP server
+- Creation of an IPv4 scope
+- Configuration of scope options
+- Creation of an exclusion range
+- Creation of a DHCP reservation
+- Lease renewal and client validation
+- Verification of DNS-aware network configuration
+- Validation of domain communication from a DHCP client
 
-Domain Controller Baseline
+### Not Included
 
-On MRTG-DC01, ipconfig /all confirmed:
+- DHCP failover configuration
+- Split-scope DHCP design
+- IPv6 DHCP configuration
+- DHCP relay agents
+- PXE or imaging integration
+- DHCP policies by device class or vendor class
+- Multi-site DHCP deployment
+- High-availability or load-balanced DHCP architecture
 
-static IPv4 address
-DNS pointed to itself
-DHCP Enabled = No
+This lab stays focused on DHCP service deployment, Active Directory authorization, scope configuration, and client lease validation in support of directory-connected infrastructure.
 
-Screenshots:
+---
 
-Lab-11-02-DC-ipconfig-all-Baseline.png
-Lab-11-03-Server-Manager-AD-DNS-Baseline.png
-Client Baseline
+## Lab Environment
 
-On CLIENT01, ipconfig /all confirmed:
+### Systems
 
-static IPv4 address
-DNS pointed to the domain controller
-DHCP Enabled = No
+- **Host Platform:** Hyper-V
+- **Domain Controller / DNS Server:** `MRTG-DC01`
+- **DHCP Server:** `MRTG-DC01`
+- **Client System:** `MRTG-CLIENT-01`
+- **Domain:** `mrtg.local`
 
-Connectivity and DNS resolution were also tested before DHCP deployment.
+> In this lab, DHCP was implemented on the domain controller to keep the environment compact. In larger production environments, DHCP is often separated to a member server or dedicated infrastructure server.
 
-Screenshots:
+### Network / Scope Design
 
-Lab-11-04-Client-ipconfig-all-Baseline.png
-Lab-11-05-Client-Ping-and-NSLookup-Baseline.png
-Baseline Result
+- **IPv4 Network:** `192.168.10.0/24`
+- **Scope Name:** `MRTG-Workstations`
+- **Scope Range:** `192.168.10.100 - 192.168.10.199`
+- **Subnet Mask:** `255.255.255.0`
+- **Default Gateway:** `192.168.10.1`
+- **Preferred DNS Server:** `192.168.10.10`
+- **DNS Domain Name:** `mrtg.local`
+- **Exclusion Range:** `192.168.10.150 - 192.168.10.159`
+- **Reservation Target:** `MRTG-CLIENT-01`
 
-At the start of the lab:
+### Directory Structure
 
-both systems were on the same subnet
-DNS was functioning
-the client could resolve and reach the domain controller
-the environment was stable enough to introduce DHCP
-Step 2 – Install the DHCP Server Role
+- **Parent OU:** `_MRTG`
+- **Servers OU:** `_MRTG/Servers`
+- **Computers OU:** `_MRTG/Computers`
+- **Domain Controller:** `Domain Controllers`
+- **Client Device:** `MRTG-CLIENT-01`
 
-The DHCP Server role was installed on MRTG-DC01 through Server Manager using the Add Roles and Features Wizard.
+### Systems Used
 
-Installation Actions
-selected DHCP Server
-added required management tools
-completed installation successfully
+- **Server:** `MRTG-DC01`
+- **Client:** `MRTG-CLIENT-01`
 
-Screenshots:
+### Tools / Technologies Used
 
-Lab-11-06-Add-Roles-Wizard-DHCP-Selected.png
-Lab-11-07-DHCP-Installation-Success.png
-Lab-11-08-DHCP-Post-Install-Configuration.png
-Why This Matters
+- Windows Server 2022
+- DHCP Server role
+- Server Manager
+- DHCP Management Console
+- Active Directory
+- DNS
+- Command Prompt
+- PowerShell
+- `ipconfig`
+- `nslookup`
+- `ping`
 
-In a Windows enterprise environment, DHCP helps ensure clients receive the correct network configuration required to locate DNS and directory services consistently.
+---
 
-Step 3 – Authorize DHCP in Active Directory
-
-After installation, the DHCP Post-Install configuration wizard was used to authorize the DHCP server in Active Directory.
+## Architecture / Design
 
-Authorization Actions
-used domain administrative credentials
-created required DHCP security groups
-authorized MRTG-DC01 in AD
-confirmed the DHCP console recognized the server
-
-Screenshots:
+This lab was designed to support the following identity-infrastructure need:
 
-Lab-11-09-DHCP-Configuration-Credentials.png
-Lab-11-10-DHCP-Authorization-Success.png
-Lab-11-11-DHCP-Console-Server-Visible.png
-Why This Matters
+> MRTG requires centrally managed IP address assignment so domain-connected systems consistently receive the correct gateway, DNS server, and domain-aware network configuration needed to communicate with Active Directory services.
 
-Authorizing DHCP in Active Directory helps prevent unauthorized DHCP servers from distributing incorrect or malicious network settings inside a domain environment.
+### Design Logic
 
-Step 4 – Create and Activate the IPv4 Scope
+- Workstations should receive standardized IPv4 settings automatically rather than through manual per-device configuration
+- DHCP should be authorized in Active Directory so only approved infrastructure can issue leases
+- Scope options should direct clients to the internal DNS server that supports domain authentication and service discovery
+- Exclusions should preserve address space for controlled assignment needs
+- Reservations should provide predictable addressing for selected systems without forcing full static configuration
 
-A new IPv4 scope was created to provide dynamic addressing for MRTG domain clients.
+### IAM Perspective
 
-Scope Configuration
-Scope Name: MRTG-Client-Scope
-Description: DHCP scope for MRTG domain clients on 192.168.10.0/24
-Start IP: 192.168.10.100
-End IP: 192.168.10.200
-Subnet Mask: 255.255.255.0
-Exclusion Range: 192.168.10.150 - 192.168.10.160
-Scope Options
-Default Gateway: left blank
-This matched the current isolated lab design and avoided inventing a router that did not actually exist.
-Parent Domain: mrtg.local
-DNS Server: 192.168.10.10
-Scope Activation: enabled immediately
+This design supports:
 
-Screenshots:
+- identity-dependent network reliability
+- centralized infrastructure control
+- predictable client-to-directory communication
+- DNS-aware authentication support
+- reduced network configuration drift
+- stronger operational governance for domain-connected systems
 
-Lab-11-12-New-Scope-Wizard-Name.png
-Lab-11-13-New-Scope-IP-Range.png
-Lab-11-14-New-Scope-Exclusions.png
-Lab-11-15-New-Scope-Gateway-Option.png
-Lab-11-16-New-Scope-DNS-Option.png
-Lab-11-17-New-Scope-Activation-Summary.png
-Lab-11-18-DHCP-IPv4-Scope-Active.png
-Why This Matters
+The key design point is that DHCP is not just a networking convenience. It is a support service for identity operations. If a client receives the wrong DNS server, the wrong gateway, or inconsistent addressing, authentication, policy application, and administrative access can all break. This lab demonstrates how centralized lease management supports a healthier Active Directory environment.
 
-The DHCP scope defined the address pool and the critical domain-aware DNS configuration needed for clients to locate the domain controller and maintain identity services.
+---
 
-Step 5 – Convert CLIENT01 from Static IP to DHCP
+## Implementation Steps
 
-After the scope was active, CLIENT01 was reconfigured to obtain its IP and DNS settings automatically.
+### 1. Created a Pre-Lab Checkpoint
 
-Client Changes
-set IPv4 to Obtain an IP address automatically
-set DNS to Obtain DNS server address automatically
-released old static configuration
-renewed the lease from DHCP
-Lease Result
+Before making changes, I created a Hyper-V checkpoint to preserve the clean post-Lab 10 environment.
 
-After renewal, CLIENT01 received:
+**Screenshot Placeholder:** Hyper-V checkpoint for the Lab 11 starting state
 
-IPv4 Address: 192.168.10.101
-Subnet Mask: 255.255.255.0
-DHCP Server: 192.168.10.10
-DNS Server: 192.168.10.10
-DNS Suffix: mrtg.local
+---
 
-Screenshots:
+### 2. Installed the DHCP Server Role
 
-Lab-11-19-Client-IPv4-Set-to-Automatic.png
-Lab-11-20-Client-ipconfig-Renew-DHCP-Lease.png
-Lab-11-21-Client-ipconfig-all-DHCP-Assigned.png
-Lab-11-22-DHCP-Address-Lease-Visible.png
-Why This Matters
+On `MRTG-DC01`, I installed the **DHCP Server** role through Server Manager and included the DHCP management tools.
 
-This validated that DHCP was not only active, but also correctly distributing identity-aware network settings required by a domain-joined client.
+This provided the services and administrative console needed to configure centralized lease assignment for the MRTG environment.
 
-Step 6 – Validate Active Directory Functionality After DHCP
+**Screenshot Placeholder:** Add Roles and Features showing DHCP Server role selection
 
-After DHCP reassignment, CLIENT01 was tested to confirm that moving away from static addressing did not break domain services.
+---
 
-Validation Performed
-pinged MRTG-DC01
-resolved mrtg.local with nslookup
-identified the domain controller with nltest /dsgetdc:mrtg.local
-confirmed the logged-in session remained domain-based with whoami
+### 3. Completed DHCP Post-Installation Configuration
 
-Screenshots:
+After installation, I completed the DHCP post-installation tasks so the server could be properly integrated into the domain environment.
 
-Lab-11-23-Client-Ping-DC-After-DHCP.png
-Lab-11-24-Client-NSLookup-Domain-After-DHCP.png
-Lab-11-25-Client-LogonServer-After-DHCP.png
-Lab-11-26-Client-Domain-User-Session-After-DHCP.png
-Validation Results
-CLIENT01 could still resolve the domain controller by name
-CLIENT01 could still reach MRTG-DC01
-CLIENT01 successfully identified the domain controller in mrtg.local
-the logged-in user session remained mrtg\kevin.carter
-Security Perspective
+This step prepared the server for authorization and active DHCP management.
 
-In an Active Directory environment, DHCP is more than basic network automation. It is part of the identity infrastructure because clients depend on correct DNS and network configuration to:
+**Screenshot Placeholder:** DHCP post-installation configuration complete
 
-locate domain controllers
-authenticate users
-apply Group Policy
-maintain directory communication
-support centralized logging and future enterprise controls
+---
 
-A misconfigured DHCP environment can break authentication, name resolution, and trust in the client-to-directory relationship very quickly.
+### 4. Opened the DHCP Management Console
 
-Notes and Observations
-1. No Default Gateway
+In Server Manager, I launched the DHCP console and verified that the local server object was available for configuration.
 
-No default gateway was configured in the scope because the current lab network was intentionally operating as an isolated, same-subnet environment. This was acceptable for validating DHCP support for AD and DNS.
+This is the main management interface used to build scopes, reservations, exclusions, and lease settings.
 
-2. NSLookup “Server: UnKnown”
+**Screenshot Placeholder:** DHCP console open on `MRTG-DC01`
 
-nslookup successfully resolved mrtg.local, but the output showed:
+---
 
-DNS request timed out
-Server: UnKnown
+### 5. Created the IPv4 Scope
 
-This did not break the lab. The domain still resolved correctly through 192.168.10.10. This likely points to a reverse lookup / PTR cleanup issue, not a DHCP failure.
+I created a new IPv4 scope named `MRTG-Workstations` for the `192.168.10.0/24` network.
 
-3. Stray Lease Observation
+Configured values:
 
-A non-lab device briefly appeared in the DHCP lease list during testing. That indicated the lab network was not fully isolated at that moment. The final documentation was cleaned up to show only the intended lab client lease.
+- **Start IP address:** `192.168.10.100`
+- **End IP address:** `192.168.10.199`
+- **Subnet mask:** `255.255.255.0`
 
-Outcome
+This scope defined the address pool that domain-connected client systems can use.
 
-Successfully installed and authorized DHCP on MRTG-DC01, created and activated an IPv4 scope for MRTG domain clients, configured DNS scope options to support mrtg.local, and validated that CLIENT01 received a DHCP lease while maintaining full Active Directory connectivity and domain functionality.
+**Screenshot Placeholder:** Scope creation wizard with `MRTG-Workstations`
 
-Key Takeaways
-Domain controllers should remain statically addressed
-DHCP clients in AD environments must receive the correct DNS server
-DHCP supports identity infrastructure by enabling clients to reliably locate directory services
-Good DHCP design depends on accurate scope definition, clean exclusions, and honest network architecture
-Next Lab
+---
 
-Lab 12 – Additional Domain Controller and AD Replication
+### 6. Added an Exclusion Range
 
-This next lab builds on the now-stable DHCP and DNS-backed identity environment by introducing directory redundancy, replication, and improved operational resilience.
+I configured an exclusion range inside the scope:
+
+- **Exclusion range:** `192.168.10.150 - 192.168.10.159`
+
+This preserved a portion of the address pool so those IPs would not be handed out dynamically.
+
+**Screenshot Placeholder:** Exclusion range configured in the scope
+
+---
+
+### 7. Configured Scope Options
+
+I configured the scope options so clients would receive the correct supporting network settings automatically.
+
+Configured values:
+
+- **003 Router:** `192.168.10.1`
+- **006 DNS Servers:** `192.168.10.10`
+- **015 DNS Domain Name:** `mrtg.local`
+
+These settings are critical because they ensure DHCP clients can route traffic correctly and use the internal DNS service that supports Active Directory name resolution and authentication workflows.
+
+**Screenshot Placeholder:** Scope options showing router, DNS server, and domain name
+
+---
+
+### 8. Authorized the DHCP Server in Active Directory
+
+I authorized `MRTG-DC01` as a valid DHCP server in Active Directory.
+
+This matters because domain environments are designed to prevent unauthorized or rogue DHCP servers from issuing leases.
+
+**Screenshot Placeholder:** DHCP server shown as authorized in the console
+
+---
+
+### 9. Activated the Scope
+
+Once the scope was configured, I activated it so the server could begin leasing addresses to eligible clients.
+
+This changed the scope from a configured object into an active address source for the MRTG environment.
+
+**Screenshot Placeholder:** Active IPv4 scope in DHCP console
+
+---
+
+### 10. Created a Reservation for MRTG-CLIENT-01
+
+To demonstrate controlled lease assignment, I created a reservation for `MRTG-CLIENT-01` using its MAC address.
+
+Configured values:
+
+- **Reserved IP address:** `192.168.10.110`
+- **Reservation name:** `MRTG-CLIENT-01`
+
+This allowed the client to continue using DHCP while still receiving a predictable IP address.
+
+**Screenshot Placeholder:** Reservation object for `MRTG-CLIENT-01`
+
+---
+
+### 11. Renewed the Client Lease
+
+On `MRTG-CLIENT-01`, I renewed the DHCP lease so the client would request fresh configuration from the DHCP server.
+
+Commands used:
+
+```powershell
+ipconfig /release
+ipconfig /renew
+ipconfig /all
