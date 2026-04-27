@@ -275,11 +275,6 @@ Identity, policy, and access control are now integrated into a cohesive governan
 
 ## Next Lab
 
-[Lab-05 — Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management/)
+[**Lab-05 — Identity Lifecycle Management**](../Lab-05-Identity-Lifecycle-Management)
 
-Next phase introduces:
-
-- User provisioning (Joiner process)
-- Role changes (Mover process)
-- Account deactivation (Leaver process)
-- Identity lifecycle governance
+Lab-05 builds on the OU and Group Policy foundation by implementing joiner, mover, and leaver workflows for managing user identities across the MRTG environment.
