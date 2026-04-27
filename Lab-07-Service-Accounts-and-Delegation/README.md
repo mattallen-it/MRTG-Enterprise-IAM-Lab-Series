@@ -106,4 +106,7 @@ Reviewed `john.smith.admin` group membership and confirmed that the account was 
 This lab established a foundational privileged identity model inside the MRTG Active Directory environment by separating human administrative accounts, service accounts, and delegated support roles. It reinforced the principle that routine administrative tasks should be assigned through scoped delegation rather than broad domain-wide privilege. This lab also highlighted that delegated Active Directory rights and interactive logon rights are separate control layers, reinforcing the need to manage privileged access boundaries carefully in enterprise environments.
 
 ## Next Lab
-➡️ [Lab-08 - Identity Monitoring and Auditing](../Lab-08-Identity-Monitoring-and-Auditing/README.md)
+
+[**Lab-08 — Identity Monitoring and Auditing**](../Lab-08-Identity-Monitoring-and-Auditing)
+
+Lab-08 builds on service account and delegation controls by enabling identity monitoring and auditing to improve visibility into account activity and security-relevant events.
