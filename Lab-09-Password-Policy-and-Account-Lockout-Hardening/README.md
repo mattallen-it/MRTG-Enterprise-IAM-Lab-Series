@@ -359,4 +359,6 @@ This means the MRTG environment now supports centralized domain authentication h
 
 ## Next Lab
 
-Lab-10 will build on this authentication hardening foundation by implementing **Fine-Grained Password Policies** to differentiate authentication controls between standard users, service accounts, and privileged identities in the MRTG environment.
+[**Lab-10 — Fine-Grained Password Policies for Tiered Identity Control**](../Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control)
+
+Lab-10 builds on domain-level authentication hardening by applying fine-grained password policies to support tiered identity control for standard, service, and privileged accounts.
