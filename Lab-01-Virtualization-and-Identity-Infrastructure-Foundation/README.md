@@ -163,11 +163,6 @@ This environment now functions as the controlled identity boundary for authentic
 
 ## Next Lab
 
-[Lab-02 — Active Directory Domain Services (AD DS) Deployment](../Lab-02-AD-DS-Deployment/README.md)
+[**Lab-02 — AD DS Deployment**](../Lab-02-AD-DS-Deployment)
 
-The next lab will cover:
-
-- Installing the Active Directory Domain Services (AD DS) role  
-- Creating a new domain forest  
-- Configuring DNS for the domain environment  
-- Promoting the server to a Domain Controller  
+Lab-02 builds on the virtualization and identity infrastructure foundation by installing the Active Directory Domain Services role and preparing the environment for domain creation.
