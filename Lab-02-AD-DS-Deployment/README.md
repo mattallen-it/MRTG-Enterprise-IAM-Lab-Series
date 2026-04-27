@@ -135,11 +135,6 @@ The environment now functions as the authoritative identity boundary for domain-
 
 ## Next Lab
 
-[Lab-03 — Domain Controller Promotion & Identity Structure](../Lab-03-Domain-Controller-Promotion/)
+[**Lab-03 — Domain Controller Promotion**](../Lab-03-Domain-Controller-Promotion)
 
-The next lab will cover:
-
-- Organizational Unit (OU) structure design  
-- Initial Group Policy configuration  
-- Security group implementation (RBAC foundation)  
-- Identity organization aligned to business roles  
+Lab-03 builds on the AD DS deployment by promoting the server to a domain controller and establishing the core `mrtg.local` identity domain.
