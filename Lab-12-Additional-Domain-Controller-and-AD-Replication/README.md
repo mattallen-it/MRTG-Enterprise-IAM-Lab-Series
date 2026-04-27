@@ -1,8 +1,11 @@
 # Lab-12 — Additional Domain Controller and AD Replication
 
-## Topic
-
-**Directory Resilience**
+![Active Directory](https://img.shields.io/badge/Active%20Directory-Domain%20Services-blue)
+![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-blue)
+![DNS](https://img.shields.io/badge/DNS-Redundancy-blue)
+![Replication](https://img.shields.io/badge/AD%20Replication-Validated-brightgreen)
+![Hyper--V](https://img.shields.io/badge/Hyper--V-Virtualization-lightgrey)
+![IAM](https://img.shields.io/badge/IAM-Directory%20Resilience-purple)
 
 ## Lab Overview
 
