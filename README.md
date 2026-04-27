@@ -161,3 +161,4 @@ Core focus areas:
 - [Lab-09 — Password Policy and Account Lockout Hardening](./Lab-09-Password-Policy-and-Account-Lockout-Hardening/)
 - [Lab-10 — Fine-Grained Password Policies for Tiered Identity Control](./Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control/)
 - [Lab-11 — DHCP Services for Enterprise Identity Infrastructure](./Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure/)
+- [Lab-12 — Additional Domain Controller and AD Replication](Lab-12-Additional-Domain-Controller-and-AD-Replication)
