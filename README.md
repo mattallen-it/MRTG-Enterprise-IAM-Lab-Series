@@ -63,27 +63,39 @@ Core identity components include:
 
 ## Systems
 
-### MRTG-DC01 — Domain Controller
-- Active Directory  
-- DNS  
-- Group Policy Management  
+### MRTG-DC01 — Primary Domain Controller
 
-### CLIENT01 — Domain-Joined Workstation
-- Policy enforcement validation  
-- Authentication testing  
-- Access control validation  
+- Active Directory Domain Services
+- DNS
+- Group Policy Management
+- Global Catalog
+- Replication partner for MRTG-DC02
+
+### MRTG-DC02 — Additional Domain Controller
+
+- Active Directory Domain Services
+- DNS
+- Global Catalog
+- AD replication validation
+- Directory resilience support
+
+### MRTG-CLIENT-01 — Domain-Joined Workstation
+
+- Policy enforcement validation
+- Authentication testing
+- Access control validation
 
 ---
 
 ## Infrastructure Architecture
 
-| Component        | Description                      |
-|-----------------|----------------------------------|
-| Hypervisor       | Hyper-V (Windows 11 Pro Host)   |
-| Domain Controller| MRTG-DC01 — Windows Server 2022 |
-| Services         | AD DS, DNS, Group Policy        |
-| Client System    | CLIENT01 — Windows 11 Enterprise|
-
+| Component | Description |
+|---|---|
+| Hypervisor | Hyper-V (Windows 11 Pro Host) |
+| Primary Domain Controller | MRTG-DC01 — Windows Server 2022 |
+| Additional Domain Controller | MRTG-DC02 — Windows Server 2022 |
+| Services | AD DS, DNS, Group Policy, Global Catalog, AD Replication |
+| Client System | MRTG-CLIENT-01 — Windows 11 Enterprise |
 ---
 
 ## Identity Architecture
