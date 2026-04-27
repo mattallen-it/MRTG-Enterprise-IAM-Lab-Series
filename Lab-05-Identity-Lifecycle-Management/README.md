@@ -128,4 +128,7 @@ Disabled Mike Chen’s Finance account to simulate a controlled leaver workflow.
 This lab demonstrated a practical identity lifecycle workflow inside the MRTG Active Directory environment by showing how user identities are onboarded, updated, and offboarded in a controlled way. The lab reinforced two core IAM principles: identities should be placed correctly within the directory structure, and access should follow group membership rather than direct manual assignment. It also established a stronger foundation for the next lab, where these same groups can be applied to resource access through NTFS and share permissions.
 
 ## Next Lab
-➡️ [Lab-06 - NTFS and Share Permissions](../Lab-06-NTFS-and-Share-Permissions/README.md) Coming Soon
+
+[**Lab-06 — NTFS and Share Permissions**](../Lab-06-NTFS-and-Share-Permissions)
+
+Lab-06 builds on identity lifecycle management by applying NTFS and share permissions to control access to department resources using Active Directory users and groups.
