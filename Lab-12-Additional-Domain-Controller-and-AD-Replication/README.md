@@ -464,4 +464,4 @@ Active Directory replication is healthy between both domain controllers.
 
 **Lab-13 — Centralized Logging and Syslog for Identity Events**
 
-The next lab will focus on improving visibility and audit collection by centralizing identity-related logs and preparing the environment for stronger monitoring and security review.
+Lab-13 will build on this directory resilience foundation by centralizing identity-related logs and improving visibility into authentication, directory, and security events across the MRTG environment.
