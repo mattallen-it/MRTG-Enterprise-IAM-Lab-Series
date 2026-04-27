@@ -115,11 +115,11 @@ This improves identity infrastructure resilience by reducing dependency on a sin
 
 `MRTG-DC02` was renamed and configured with the correct IP address.
 
-![DC02 renamed and IP configured](screenshots/02-dc02-server-renamed-and-ip-configured.png)
+![DC02 renamed and IP configured](images/02-dc02-server-renamed-and-ip-configured.png)
 
 The server was configured with a static IP address and pointed to `MRTG-DC01` for DNS before domain join.
 
-![DC02 static IP and DNS configured](screenshots/03-dc02-static-ip-dns-configured.png)
+![DC02 static IP and DNS configured](images/03-dc02-static-ip-dns-configured.png)
 
 Initial validation confirmed that `MRTG-DC02` could reach `MRTG-DC01`, resolve the domain, and locate a domain controller.
 
@@ -132,7 +132,7 @@ nslookup mrtg.local
 nltest /dsgetdc:mrtg.local
 ```
 
-![DC02 connectivity to DC01 validated](screenshots/04-dc02-connectivity-to-dc01-validated.png)
+![DC02 connectivity to DC01 validated](images/04-dc02-connectivity-to-dc01-validated.png)
 
 ---
 
@@ -140,7 +140,7 @@ nltest /dsgetdc:mrtg.local
 
 `MRTG-DC02` was joined to the existing `mrtg.local` domain.
 
-![DC02 domain membership confirmed](screenshots/05-dc02-domain-membership-confirmed.png)
+![DC02 domain membership confirmed](images/05-dc02-domain-membership-confirmed.png)
 
 Before installing Active Directory Domain Services, a Hyper-V checkpoint was created for rollback.
 
@@ -150,7 +150,7 @@ Checkpoint:
 MRTG-DC02_Pre-ADDS-Install
 ```
 
-![DC02 pre-ADDS checkpoint created](screenshots/06-dc02-pre-adds-checkpoint-created.png)
+![DC02 pre-ADDS checkpoint created](images/06-dc02-pre-adds-checkpoint-created.png)
 
 ---
 
@@ -158,11 +158,11 @@ MRTG-DC02_Pre-ADDS-Install
 
 The Active Directory Domain Services role was selected on `MRTG-DC02`.
 
-![AD DS role selected on DC02](screenshots/07-adds-role-selected-on-dc02.png)
+![AD DS role selected on DC02](images/07-adds-role-selected-on-dc02.png)
 
 The AD DS role installed successfully, but additional configuration was required before the server could become a domain controller.
 
-![AD DS role installed on DC02](screenshots/08-adds-role-installed-on-dc02.png)
+![AD DS role installed on DC02](images/08-adds-role-installed-on-dc02.png)
 
 ---
 
@@ -180,11 +180,11 @@ Domain:
 mrtg.local
 ```
 
-![Add domain controller to existing domain](screenshots/09-add-domain-controller-to-existing-domain.png)
+![Add domain controller to existing domain](images/09-add-domain-controller-to-existing-domain.png)
 
 The server was configured as a DNS server and Global Catalog.
 
-![DC02 DNS and Global Catalog selected](screenshots/10-dc02-dns-global-catalog-selected.png)
+![DC02 DNS and Global Catalog selected](images/10-dc02-dns-global-catalog-selected.png)
 
 The replication source was set to the existing domain controller:
 
@@ -192,15 +192,15 @@ The replication source was set to the existing domain controller:
 MRTG-DC01.mrtg.local
 ```
 
-![DC02 replication source DC01](screenshots/11-dc02-replication-source-dc01.png)
+![DC02 replication source DC01](images/11-dc02-replication-source-dc01.png)
 
 The prerequisite check completed successfully.
 
-![DC02 prerequisite check passed](screenshots/12-dc02-prerequisite-check-passed.png)
+![DC02 prerequisite check passed](images/12-dc02-prerequisite-check-passed.png)
 
 After installation, `MRTG-DC02` rebooted and showed AD DS and DNS roles in Server Manager.
 
-![DC02 promoted and rebooted](screenshots/13-dc02-promoted-and-rebooted.png)
+![DC02 promoted and rebooted](images/13-dc02-promoted-and-rebooted.png)
 
 ---
 
@@ -208,15 +208,15 @@ After installation, `MRTG-DC02` rebooted and showed AD DS and DNS roles in Serve
 
 Active Directory Users and Computers confirmed that both domain controllers were present in the **Domain Controllers** OU.
 
-![Both domain controllers visible in ADUC](screenshots/14-both-domain-controllers-visible-in-aduc.png)
+![Both domain controllers visible in ADUC](images/14-both-domain-controllers-visible-in-aduc.png)
 
 Active Directory Sites and Services confirmed that both domain controllers were registered under the default site.
 
-![Both DCs visible in Sites and Services](screenshots/15-both-dcs-visible-in-sites-and-services.png)
+![Both DCs visible in Sites and Services](images/15-both-dcs-visible-in-sites-and-services.png)
 
 DNS Manager confirmed DNS records for both domain controllers.
 
-![DNS records for both domain controllers](screenshots/16-dns-records-for-both-domain-controllers.png)
+![DNS records for both domain controllers](images/16-dns-records-for-both-domain-controllers.png)
 
 PowerShell confirmed that both domain controllers were discoverable and configured as Global Catalog servers.
 
@@ -226,7 +226,7 @@ Command used:
 Get-ADDomainController -Filter * | Select-Object HostName, Site, IPv4Address, IsGlobalCatalog
 ```
 
-![Get-ADDomainController shows both DCs](screenshots/17-get-addomaincontroller-shows-both-dcs.png)
+![Get-ADDomainController shows both DCs](images/17-get-addomaincontroller-shows-both-dcs.png)
 
 ---
 
@@ -242,7 +242,7 @@ repadmin /replsummary
 
 The final output showed zero replication failures for both domain controllers.
 
-![Repadmin replication summary successful](screenshots/18-repadmin-replsummary-successful.png)
+![Repadmin replication summary successful](images/18-repadmin-replsummary-successful.png)
 
 Detailed replication status was validated with:
 
@@ -252,7 +252,7 @@ repadmin /showrepl
 
 The output showed successful inbound replication across the major naming contexts.
 
-![Repadmin showrepl successful](screenshots/19-repadmin-showrepl-successful.png)
+![Repadmin showrepl successful](images/19-repadmin-showrepl-successful.png)
 
 Replication-specific domain controller diagnostics were checked with:
 
@@ -262,7 +262,7 @@ dcdiag /test:replications /q
 
 No output was returned, which indicates no replication errors were detected by the replication-specific diagnostic test.
 
-![DCDIAG replication health check](screenshots/20-dcdiag-replication-health-check.png)
+![DCDIAG replication health check](images/20-dcdiag-replication-health-check.png)
 
 ---
 
@@ -276,11 +276,11 @@ Test OU:
 Lab12-Replication-Test
 ```
 
-![Test OU created on DC01](screenshots/21-test-ou-created-on-dc01.png)
+![Test OU created on DC01](images/21-test-ou-created-on-dc01.png)
 
 The same OU appeared on `MRTG-DC02`, proving replication from `DC01` to `DC02`.
 
-![Test OU replicated to DC02](screenshots/22-test-ou-replicated-to-dc02.png)
+![Test OU replicated to DC02](images/22-test-ou-replicated-to-dc02.png)
 
 A test user was then created on `MRTG-DC02`.
 
@@ -290,11 +290,11 @@ Test user:
 Replication Test
 ```
 
-![Test user created on DC02](screenshots/23-test-user-created-on-dc02.png)
+![Test user created on DC02](images/23-test-user-created-on-dc02.png)
 
 The test user appeared on `MRTG-DC01`, proving replication from `DC02` back to `DC01`.
 
-![Test user replicated to DC01](screenshots/24-test-user-replicated-to-dc01.png)
+![Test user replicated to DC01](images/24-test-user-replicated-to-dc01.png)
 
 This confirmed two-way Active Directory object replication between both domain controllers.
 
@@ -311,7 +311,7 @@ Preferred DNS: 192.168.10.10
 Alternate DNS: 192.168.10.11
 ```
 
-![DC01 DNS redundancy configured](screenshots/25a-dc01-dns-redundancy-configured.png)
+![DC01 DNS redundancy configured](images/25a-dc01-dns-redundancy-configured.png)
 
 `MRTG-DC02` DNS settings:
 
@@ -320,7 +320,7 @@ Preferred DNS: 192.168.10.11
 Alternate DNS: 192.168.10.10
 ```
 
-![DC02 DNS redundancy configured](screenshots/25b-dc02-dns-redundancy-configured.png)
+![DC02 DNS redundancy configured](images/25b-dc02-dns-redundancy-configured.png)
 
 Final replication validation was performed after updating DNS settings.
 
@@ -333,7 +333,7 @@ dcdiag /test:replications /q
 
 The replication summary showed zero failures, and the replication diagnostic test returned no errors.
 
-![Final replication health validation](screenshots/26-final-replication-health-validation.png)
+![Final replication health validation](images/26-final-replication-health-validation.png)
 
 ---
 
@@ -347,7 +347,7 @@ Final checkpoints were created for both domain controllers after successful repl
 MRTG-DC02_Post-Lab12_AD-Replication-Validated
 ```
 
-![DC02 final Lab 12 checkpoint created](screenshots/27a-dc02-final-lab12-checkpoint-created.png)
+![DC02 final Lab 12 checkpoint created](images/27a-dc02-final-lab12-checkpoint-created.png)
 
 `MRTG-DC01` final checkpoint:
 
@@ -355,7 +355,7 @@ MRTG-DC02_Post-Lab12_AD-Replication-Validated
 MRTG-DC01_Post-Lab12_AD-Replication-Validated
 ```
 
-![DC01 final Lab 12 checkpoint created](screenshots/27b-dc01-final-lab12-checkpoint-created.png)
+![DC01 final Lab 12 checkpoint created](images/27b-dc01-final-lab12-checkpoint-created.png)
 
 ---
 
