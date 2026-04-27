@@ -581,4 +581,6 @@ This lab moved the MRTG environment from manual client networking toward central
 
 ## Next Lab
 
-**Lab-12** will build on this infrastructure foundation by deploying an additional domain controller and validating Active Directory replication so the MRTG environment can improve resilience, service availability, and directory consistency.
+[**Lab-12 — Additional Domain Controller and AD Replication**](../Lab-12-Additional-Domain-Controller-and-AD-Replication)
+
+Lab-12 builds on the identity-supporting network services foundation by deploying an additional domain controller and validating Active Directory replication for improved directory resilience.
