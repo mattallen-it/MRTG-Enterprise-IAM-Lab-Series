@@ -111,7 +111,7 @@ This improves identity infrastructure resilience by reducing dependency on a sin
 
 `MRTG-DC02` was created in Hyper-V and connected to the same internal lab network as `MRTG-DC01`.
 
-![Hyper-V showing DC01 and DC02 running](screenshots/01-hyperv-dc01-dc02-running.png)
+![Hyper-V showing DC01 and DC02 running](images/01-hyperv-dc01-dc02-running.png)
 
 `MRTG-DC02` was renamed and configured with the correct IP address.
 
