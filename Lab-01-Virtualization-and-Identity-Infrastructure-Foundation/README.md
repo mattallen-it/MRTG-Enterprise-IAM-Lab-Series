@@ -122,7 +122,7 @@ This foundation defines the security boundary for centralized identity governanc
 ---
 
 ### 11. Hyper-V Storage Path Configuration
-![Storage Paths](images/11_hyperv_storage_paths.png)
+![Storage Paths](images/11_hyperv_default_storage_paths.png)
 
 ---
 
