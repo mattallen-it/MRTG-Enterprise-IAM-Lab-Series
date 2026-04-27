@@ -345,4 +345,6 @@ This lab moved the environment from basic authentication hardening into **tiered
 
 ## Next Lab
 
-Lab-11 will build on this identity-tiering foundation by implementing **LAPS and Local Administrator Management** so the MRTG environment can better control, rotate, and recover local privileged access on domain-joined systems.
+[**Lab-11 — DHCP Services for Enterprise Identity Infrastructure**](../Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure)
+
+Lab-11 builds on tiered identity control by deploying DHCP services to support reliable IP address assignment for domain-joined systems in the MRTG environment.
