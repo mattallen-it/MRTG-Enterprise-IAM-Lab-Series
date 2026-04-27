@@ -106,4 +106,7 @@ Tested access to the HR share using Sarah Jones’s IT-aligned account. Access w
 This lab demonstrated how identity group membership can be extended into resource access control through properly configured share permissions and NTFS permissions. It reinforced the principle that access should be granted to groups rather than directly to users, and it validated that least privilege was being enforced through both successful and denied access tests. This lab also strengthened the continuity of the IAM series by showing that the lifecycle changes made in Lab-05 directly influenced real resource access outcomes in Lab-06.
 
 ## Next Lab
-➡️ [Lab-07 - Service Accounts and Delegation](../Lab-07-Service-Accounts-and-Delegation/README.md)
+
+[**Lab-07 — Service Accounts and Delegation**](../Lab-07-Service-Accounts-and-Delegation)
+
+Lab-07 builds on resource access control by creating service accounts and applying delegation practices to support controlled administrative access in the MRTG environment.
