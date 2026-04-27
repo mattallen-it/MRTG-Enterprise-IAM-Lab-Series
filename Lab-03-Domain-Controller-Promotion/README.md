@@ -164,12 +164,6 @@ Compromise of a domain controller equates to compromise of the entire identity d
 
 ## Next Lab
 
-[Lab-04 — OU Design and GPO Enforcement (Access Control)](../Lab-04-OU-Design-and-GPO-Enforcement/)
+[**Lab-04 — OU Design and GPO Enforcement**](../Lab-04-OU-Design-and-GPO-Enforcement)
 
-Next phase will introduce:
-
-- Organizational Unit (OU) hierarchy design
-- Initial security group implementation (RBAC foundation)
-- Group Policy configuration and enforcement
-- Identity structure aligned to business roles
-
+Lab-04 builds on the domain controller foundation by designing an Organizational Unit structure and applying initial Group Policy controls for centralized identity and endpoint management.
