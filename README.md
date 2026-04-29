@@ -133,7 +133,7 @@ This architecture supports:
 | Lab-10 — Fine-Grained Password Policies for Tiered Identity Control | Tiered Authentication Control |
 | Lab-11 — DHCP Services for Enterprise Identity Infrastructure | Identity-Supporting Network Services |
 | Lab-12 — Additional Domain Controller and AD Replication | Directory Resilience |
-| Lab-13 — Centralized Logging and Syslog for Identity Events | Visibility & Audit Collection |
+| Lab-13 — Centralized Logging and Event Forwarding for Identity Events | Visibility & Audit Collection |
 | Lab-14 — Active Directory Sites and Services | Replication Topology |
 | Lab-15 — Group Policy Security Baselines for Workstations and Servers | Endpoint Security Control |
 | Lab-16 — Delegation of Control and Tiered Administrative Boundaries | Least Privilege Administration |
