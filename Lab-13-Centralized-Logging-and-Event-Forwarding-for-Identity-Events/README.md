@@ -47,7 +47,6 @@ This lab builds on the previous Active Directory replication lab by moving from 
 | Domain | `mrtg.local` |
 | Primary Domain Controller | `MRTG-DC01` |
 | Additional Domain Controller | `MRTG-DC02` |
-| Client Workstation | `MRTG-CLIENT-01` |
 | Logging Server | `MRTG-LOG01` |
 | Operating System | Windows Server 2022 Standard Evaluation |
 | Network | `MRTG-Internal` |
@@ -58,9 +57,8 @@ This lab builds on the previous Active Directory replication lab by moving from 
 
 | System | IP Address | Role |
 |---|---:|---|
-| `MRTG-DC01` | `192.168.10.10` | Primary domain controller / DNS / Global Catalog |
-| `MRTG-DC02` | `192.168.10.11` | Additional domain controller / DNS / Global Catalog |
-| `MRTG-CLIENT-01` | `192.168.10.101` | Domain-joined workstation |
+| `MRTG-DC01` | `192.168.10.10` | Primary domain controller / DNS / Global Catalog / Event source |
+| `MRTG-DC02` | `192.168.10.11` | Additional domain controller / DNS / Global Catalog / Event source |
 | `MRTG-LOG01` | `192.168.10.20` | Windows Event Collector |
 
 ---
