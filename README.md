@@ -175,3 +175,4 @@ Core focus areas:
 - [Lab-11 — DHCP Services for Enterprise Identity Infrastructure](./Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure/)
 - [Lab-12 — Additional Domain Controller and AD Replication](Lab-12-Additional-Domain-Controller-and-AD-Replication)
 - [Lab-13 — Centralized Logging and Event Forwarding for Identity Events](Lab-13-Centralized-Logging-and-Event-Forwarding-for-Identity-Events)
+- [Lab-14 — Active Directory Sites and Services for Replication Topology](Lab-14-Active-Directory-Sites-and-Services-for-Replication-Topology)
