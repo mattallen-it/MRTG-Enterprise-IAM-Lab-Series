@@ -434,6 +434,6 @@ Active Directory site awareness and replication health were successfully validat
 
 ## Next Lab
 
-**Lab-15 — Certificate Services for Identity Infrastructure**
+**Lab-15 — Group Policy Security Baselines for Workstations and Servers**
 
-Lab-15 will build on the MRTG identity foundation by introducing Active Directory Certificate Services and preparing the environment for certificate-based identity, trust, and secure internal services.
+Lab-15 will build on the MRTG identity foundation by applying security baseline controls to domain-joined workstations and servers, strengthening endpoint configuration, reducing insecure defaults, and improving enterprise policy enforcement through Group Policy.
