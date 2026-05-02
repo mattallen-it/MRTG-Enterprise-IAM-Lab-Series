@@ -7,10 +7,6 @@
 ![Focus](https://img.shields.io/badge/Focus-Endpoint%20Security%20Control-orange)
 ![Validation](https://img.shields.io/badge/Validation-gpupdate%20%7C%20gpresult-success)
 
-## Category
-
-Endpoint Security Control
-
 ---
 
 ## Objective
