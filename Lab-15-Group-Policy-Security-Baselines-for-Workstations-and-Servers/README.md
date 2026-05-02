@@ -515,6 +515,6 @@ This lab strengthened the MRTG identity infrastructure by demonstrating centrali
 
 ## Next Lab
 
-**Lab-16 — Advanced Group Policy Validation and Operational Troubleshooting**
+**Lab-16 — Delegation of Control and Tiered Administrative Boundaries**
 
-The next lab will build on this baseline by focusing on deeper Group Policy troubleshooting, policy precedence, inheritance behavior, and operational validation techniques used in real enterprise environments.
+The next lab will build on this role-based Group Policy foundation by focusing on delegated administration, least privilege access, and tiered administrative boundaries within the MRTG Active Directory environment.
