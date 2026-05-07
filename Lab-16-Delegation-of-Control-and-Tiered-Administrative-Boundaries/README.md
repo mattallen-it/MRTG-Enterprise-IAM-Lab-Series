@@ -644,7 +644,13 @@ RSAT Active Directory Users and Computers was not available on the management wo
 
 ## Validation Note
 
-This lab intentionally separated **delegated permissions** from **logon rights**.
+This lab intentionally separated delegated permissions from logon rights.
+
+### Existing Help Desk Group Note
+
+The `MRTG-GRP-Helpdesk-Password-Reset-Delegated` group was created as a scoped delegation group specifically for password reset permissions over standard user accounts. Existing help desk or administrative groups were left unchanged to preserve prior lab configurations and to demonstrate more granular role separation.
+
+This lab uses a task-specific delegation model instead of relying on a broad help desk admin group.
 
 The delegated admin account was allowed to perform password reset actions within the scoped Users OU, but it was not granted unnecessary access to the domain controller.
 
