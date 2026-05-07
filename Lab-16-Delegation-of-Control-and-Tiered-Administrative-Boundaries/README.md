@@ -7,10 +7,6 @@
 ![Focus](https://img.shields.io/badge/Focus-Least%20Privilege%20Administration-orange)
 ![Validation](https://img.shields.io/badge/Validation-ADSI%20%7C%20whoami%20%7C%20ACL%20Boundary-success)
 
-## Category
-
-Least Privilege Administration
-
 ---
 
 ## Objective
