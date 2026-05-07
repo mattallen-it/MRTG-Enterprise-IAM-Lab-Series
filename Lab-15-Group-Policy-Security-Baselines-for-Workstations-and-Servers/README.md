@@ -1,6 +1,5 @@
 # Lab-15 — Group Policy Security Baselines for Workstations and Servers
 
-![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-0A66C2)
 ![Tooling](https://img.shields.io/badge/Tooling-Group%20Policy-5C2D91)
