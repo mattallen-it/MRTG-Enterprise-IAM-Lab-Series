@@ -1,12 +1,10 @@
 # Lab-17 — Windows LAPS and Local Administrator Control
 
+![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-Windows%20LAPS-purple)
-![Tooling](https://img.shields.io/badge/Tooling-Group%20Policy-purple)
-![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
 ![Focus](https://img.shields.io/badge/Focus-Privileged%20Endpoint%20Protection-orange)
-![Validation](https://img.shields.io/badge/Validation-gpupdate%20%7C%20gpresult%20%7C%20Get--LapsADPassword-brightgreen)
 
 ---
 
@@ -123,7 +121,7 @@ Windows LAPS password retrieval is a higher-risk privileged action than resettin
 
 The `CLIENT01` computer object was confirmed inside the Workstations OU before applying Windows LAPS policy targeting.
 
-![CLIENT01 in Workstations OU](screenshots/01-aduc-client01-computer-object-in-workstations-ou.png)
+![CLIENT01 in Workstations OU](images/01-aduc-client01-computer-object-in-workstations-ou.png)
 
 ---
 
@@ -133,7 +131,7 @@ Windows LAPS cmdlets were not initially available on `MRTG-DC01`.
 
 The system was running Windows Server 2022, but the LAPS PowerShell module was not detected.
 
-![Windows LAPS module not detected](screenshots/02a-dc01-windows-laps-module-not-detected.png)
+![Windows LAPS module not detected](images/02a-dc01-windows-laps-module-not-detected.png)
 
 This confirmed that the domain controller required an update before Windows LAPS configuration could continue.
 
@@ -150,7 +148,7 @@ Get-Command *Laps*
 Get-Module -ListAvailable LAPS
 ```
 
-![KB5030216 installed and LAPS commands available](screenshots/02b-dc01-kb5030216-installed-and-laps-commands-available.png)
+![KB5030216 installed and LAPS commands available](images/02b-dc01-kb5030216-installed-and-laps-commands-available.png)
 
 Key cmdlets verified included:
 
@@ -168,7 +166,7 @@ Invoke-LapsPolicyProcessing
 
 Before modifying the Active Directory schema, a Hyper-V checkpoint was created for `MRTG-DC01`.
 
-![Pre-LAPS schema extension checkpoint](screenshots/03-hyperv-dc01-pre-laps-schema-extension-checkpoint.png)
+![Pre-LAPS schema extension checkpoint](images/03-hyperv-dc01-pre-laps-schema-extension-checkpoint.png)
 
 This provided a rollback point before performing a Tier 0 schema-related change.
 
@@ -186,7 +184,7 @@ Enterprise Admins
 Schema Admins
 ```
 
-![Schema admin membership check](screenshots/04a-dc01-schema-admin-membership-check.png)
+![Schema admin membership check](images/04a-dc01-schema-admin-membership-check.png)
 
 This confirmed that the issue was not caused by missing Schema Admins membership.
 
@@ -196,7 +194,7 @@ This confirmed that the issue was not caused by missing Schema Admins membership
 
 The first Windows LAPS schema extension attempt failed while attempting to add the `ms-LAPS-Password` schema attribute.
 
-![LAPS schema extension failed](screenshots/04b-dc01-laps-schema-extension-failed-operation-error.png)
+![LAPS schema extension failed](images/04b-dc01-laps-schema-extension-failed-operation-error.png)
 
 This failure was treated as a troubleshooting signal instead of being ignored.
 
@@ -206,7 +204,7 @@ This failure was treated as a troubleshooting signal instead of being ignored.
 
 A replication health check showed DNS lookup failures involving `MRTG-DC02`.
 
-![Replication DNS failure before schema retry](screenshots/04c-dc01-replication-dns-failure-before-laps-schema-retry.png)
+![Replication DNS failure before schema retry](images/04c-dc01-replication-dns-failure-before-laps-schema-retry.png)
 
 The failure showed that Active Directory replication was not healthy enough to safely continue with schema-related work.
 
@@ -216,7 +214,7 @@ The failure showed that Active Directory replication was not healthy enough to s
 
 After correcting the replication/DNS issue, replication health was rechecked.
 
-![Replication health restored](screenshots/04d-dc01-replication-health-restored-before-laps-schema-retry.png)
+![Replication health restored](images/04d-dc01-replication-health-restored-before-laps-schema-retry.png)
 
 Replication failures were cleared before continuing.
 
@@ -226,7 +224,7 @@ Replication failures were cleared before continuing.
 
 After retrying the schema process, Windows LAPS schema objects were verified in Active Directory.
 
-![Windows LAPS schema extension verified](screenshots/04e-dc01-windows-laps-schema-extension-verified.png)
+![Windows LAPS schema extension verified](images/04e-dc01-windows-laps-schema-extension-verified.png)
 
 Verified schema objects included:
 
@@ -253,7 +251,7 @@ Command used:
 Set-LapsADComputerSelfPermission -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local"
 ```
 
-![Workstations OU LAPS computer self-permission set](screenshots/05-workstations-ou-laps-computer-self-permission-set.png)
+![Workstations OU LAPS computer self-permission set](images/05-workstations-ou-laps-computer-self-permission-set.png)
 
 ---
 
@@ -267,7 +265,7 @@ Group created:
 MRTG-GRP-LAPS-Password-Readers
 ```
 
-![LAPS password readers group created](screenshots/06-laps-password-readers-group-created.png)
+![LAPS password readers group created](images/06-laps-password-readers-group-created.png)
 
 This group was created to avoid using broad administrative or help desk groups for privileged password retrieval.
 
@@ -277,7 +275,7 @@ This group was created to avoid using broad administrative or help desk groups f
 
 The primary administrator account was added to the LAPS password readers group.
 
-![Admin added to LAPS password readers group](screenshots/07-admin-added-to-laps-password-readers-group.png)
+![Admin added to LAPS password readers group](images/07-admin-added-to-laps-password-readers-group.png)
 
 The delegated help desk reset account from Lab 16 was intentionally not added.
 
@@ -293,7 +291,7 @@ Command used:
 Set-LapsADReadPasswordPermission -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local" -AllowedPrincipals "MRTG\MRTG-GRP-LAPS-Password-Readers"
 ```
 
-![LAPS read password permission delegated](screenshots/08-laps-read-password-permission-delegated.png)
+![LAPS read password permission delegated](images/08-laps-read-password-permission-delegated.png)
 
 This scoped LAPS password retrieval rights to workstation computer objects only.
 
@@ -309,7 +307,7 @@ GPO name:
 MRTG-GPO-Windows-LAPS-Workstation-Baseline
 ```
 
-![Windows LAPS GPO linked to Workstations OU](screenshots/09-gpmc-windows-laps-gpo-linked-to-workstations-ou.png)
+![Windows LAPS GPO linked to Workstations OU](images/09-gpmc-windows-laps-gpo-linked-to-workstations-ou.png)
 
 This ensured that the LAPS policy targeted workstation endpoints instead of being applied broadly across the domain.
 
@@ -338,7 +336,7 @@ Configured settings included:
 | Password length | 16 |
 | Password age | 30 days |
 
-![Windows LAPS policy settings configured](screenshots/10-gpme-windows-laps-policy-settings-configured.png)
+![Windows LAPS policy settings configured](images/10-gpme-windows-laps-policy-settings-configured.png)
 
 ---
 
@@ -353,7 +351,7 @@ gpupdate /force
 gpresult /r /scope computer
 ```
 
-![CLIENT01 LAPS GPO applied with gpresult](screenshots/11-client01-laps-gpo-applied-with-gpresult.png)
+![CLIENT01 LAPS GPO applied with gpresult](images/11-client01-laps-gpo-applied-with-gpresult.png)
 
 The LAPS GPO appeared under Applied Group Policy Objects:
 
@@ -373,7 +371,7 @@ Command used:
 Invoke-LapsPolicyProcessing -Verbose
 ```
 
-![CLIENT01 LAPS policy processing invoked](screenshots/12-client01-laps-policy-processing-invoked.png)
+![CLIENT01 LAPS policy processing invoked](images/12-client01-laps-policy-processing-invoked.png)
 
 The command completed successfully and confirmed that the client was domain-joined and able to process LAPS policy.
 
@@ -391,7 +389,7 @@ Get-LapsADPassword -Identity CLIENT01
 
 A plaintext retrieval test was also performed, but the actual password was redacted from the screenshot.
 
-![LAPS password retrieval metadata](screenshots/13-dc01-laps-password-retrieval-metadata.png)
+![LAPS password retrieval metadata](images/13-dc01-laps-password-retrieval-metadata.png)
 
 The metadata confirmed:
 
@@ -410,9 +408,9 @@ The actual local administrator password was intentionally not exposed in documen
 
 Post-lab checkpoints were created for both `MRTG-DC01` and `MRTG-CLIENT-01`.
 
-![MRTG-DC01 post-lab checkpoint](screenshots/14a-hyperv-dc01-post-lab17-checkpoint.png)
+![MRTG-DC01 post-lab checkpoint](images/14a-hyperv-dc01-post-lab17-checkpoint.png)
 
-![MRTG-CLIENT-01 post-lab checkpoint](screenshots/14b-hyperv-client01-post-lab17-checkpoint.png)
+![MRTG-CLIENT-01 post-lab checkpoint](images/14b-hyperv-client01-post-lab17-checkpoint.png)
 
 Checkpoint name:
 
