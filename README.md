@@ -177,3 +177,5 @@ Core focus areas:
 - [Lab-13 — Centralized Logging and Event Forwarding for Identity Events](Lab-13-Centralized-Logging-and-Event-Forwarding-for-Identity-Events)
 - [Lab-14 — Active Directory Sites and Services for Replication Topology](Lab-14-Active-Directory-Sites-and-Services-for-Replication-Topology)
 - [Lab-15 — Group Policy Security Baselines for Workstations and Servers](./Lab-15-Group-Policy-Security-Baselines-for-Workstations-and-Servers)
+- [Lab-16 — Delegation of Control and Tiered Administrative Boundaries](./Lab-16-Delegation-of-Control-and-Tiered-Administrative-Boundaries)
+- [Lab-17 — Windows LAPS and Local Administrator Control](./Lab-17-Windows-LAPS-and-Local-Administrator-Control)
