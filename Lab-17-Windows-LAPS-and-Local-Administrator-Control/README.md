@@ -1,10 +1,10 @@
 # Lab-17 — Windows LAPS and Local Administrator Control
 
-![Scope](https://img.shields.io/badge/Scope-Workstations-blueviolet)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-Windows%20LAPS-purple)
 ![Focus](https://img.shields.io/badge/Focus-Privileged%20Endpoint%20Protection-orange)
+![Validation](https://img.shields.io/badge/Validation-LAPS%20Password%20Retrieved-brightgreen)
 
 ---
 
