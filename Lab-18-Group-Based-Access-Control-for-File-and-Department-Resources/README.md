@@ -4,7 +4,7 @@
 ![IAM](https://img.shields.io/badge/IAM-Authorization%20Design-green)
 ![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-lightgrey)
 ![Access Control](https://img.shields.io/badge/Access%20Control-Group%20Based-brightgreen)
-![Access Validation](https://img.shields.io/badge/Access%20Validation-Passed-brightgreen)
+![Validation](https://img.shields.io/badge/Validation-Completed-brightgreen)
 
 ## Objective
 
