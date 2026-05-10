@@ -1,10 +1,10 @@
 # Lab-18 — Group-Based Access Control for File and Department Resources
 
-![Active Directory](https://img.shields.io/badge/Active%20Directory-Lab-blue)
-![IAM](https://img.shields.io/badge/IAM-Authorization%20Design-green)
-![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-lightgrey)
-![Access Control](https://img.shields.io/badge/Access%20Control-Group%20Based-brightgreen)
-![Validation](https://img.shields.io/badge/Validation-Completed-brightgreen)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-NTFS%20%26%20SMB-purple)
+![Focus](https://img.shields.io/badge/Focus-Group--Based%20Access%20Control-orange)
+![Validation](https://img.shields.io/badge/Validation-Access%20Allowed%20%26%20Denied-brightgreen)
 
 ## Objective
 
