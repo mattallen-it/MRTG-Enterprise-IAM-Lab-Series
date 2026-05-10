@@ -179,3 +179,4 @@ Core focus areas:
 - [Lab-15 — Group Policy Security Baselines for Workstations and Servers](./Lab-15-Group-Policy-Security-Baselines-for-Workstations-and-Servers)
 - [Lab-16 — Delegation of Control and Tiered Administrative Boundaries](./Lab-16-Delegation-of-Control-and-Tiered-Administrative-Boundaries)
 - [Lab-17 — Windows LAPS and Local Administrator Control](./Lab-17-Windows-LAPS-and-Local-Administrator-Control)
+- [Lab-18 — Group-Based Access Control for File and Department Resources](Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources)
