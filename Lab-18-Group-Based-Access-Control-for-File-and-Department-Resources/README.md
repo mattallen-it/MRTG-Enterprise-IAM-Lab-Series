@@ -374,6 +374,3 @@ The next lab in the MRTG Enterprise IAM Lab Series is:
 
 ```text
 Lab-19 — Active Directory Certificate Services
-```
-
-Lab 19 will focus on enterprise trust services and certificate authority configuration in an Active Directory environment.
