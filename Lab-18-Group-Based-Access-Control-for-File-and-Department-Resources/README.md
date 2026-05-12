@@ -370,7 +370,6 @@ This model improves:
 
 ## Next Lab
 
-The next lab in the MRTG Enterprise IAM Lab Series is:
+**Lab-19 — Active Directory Certificate Services**
 
-```text
-Lab-19 — Active Directory Certificate Services
+The next lab will build on this access control foundation by introducing Active Directory Certificate Services, focusing on enterprise trust, certificate authority configuration, certificate enrollment, and internal PKI validation in the MRTG domain.
