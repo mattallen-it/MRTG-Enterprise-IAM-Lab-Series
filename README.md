@@ -180,3 +180,4 @@ Core focus areas:
 - [Lab-16 — Delegation of Control and Tiered Administrative Boundaries](./Lab-16-Delegation-of-Control-and-Tiered-Administrative-Boundaries)
 - [Lab-17 — Windows LAPS and Local Administrator Control](./Lab-17-Windows-LAPS-and-Local-Administrator-Control)
 - [Lab-18 — Group-Based Access Control for File and Department Resources](Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources)
+- [Lab-19 — Active Directory Certificate Services](Lab-19-Active-Directory-Certificate-Services/)
