@@ -448,10 +448,6 @@ For this lab, using `MRTG-DC01` was acceptable because the goal was to understan
 
 ## Next Lab
 
-The next lab in the MRTG Enterprise IAM Lab Series is:
+**Lab-20 — Identity Lifecycle Automation with PowerShell**
 
-```text
-Lab-20 — Identity Lifecycle Automation with PowerShell
-```
-
-Lab 20 will focus on automating identity lifecycle tasks with PowerShell, including user creation, account updates, group membership changes, and repeatable IAM administration workflows.
+The next lab will build on this enterprise identity foundation by focusing on PowerShell-based identity lifecycle automation, including user creation, account updates, group membership changes, and repeatable IAM administration workflows.
