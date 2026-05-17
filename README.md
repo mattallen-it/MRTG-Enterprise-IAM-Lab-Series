@@ -185,3 +185,4 @@ Core focus areas:
 - [Lab-19 — Active Directory Certificate Services](Lab-19-Active-Directory-Certificate-Services/)
 - [Lab-20 — Identity Lifecycle Automation with PowerShell](Lab-20-Identity-Lifecycle-Automation-with-PowerShell/)
 - [Lab-21 — Directory Recovery, Backup, and Operational Resilience](Lab-21-Directory-Recovery-Backup-and-Operational-Resilience/)
+- [Lab-22 — IAM Security Review and Access Control Audit](Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
