@@ -182,3 +182,4 @@ Core focus areas:
 - [Lab-18 — Group-Based Access Control for File and Department Resources](Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources)
 - [Lab-19 — Active Directory Certificate Services](Lab-19-Active-Directory-Certificate-Services/)
 - [Lab-20 — Identity Lifecycle Automation with PowerShell](Lab-20-Identity-Lifecycle-Automation-with-PowerShell/)
+- [Lab-21 — Directory Recovery, Backup, and Operational Resilience](Lab-21-Directory-Recovery-Backup-and-Operational-Resilience/)
