@@ -181,3 +181,4 @@ Core focus areas:
 - [Lab-17 — Windows LAPS and Local Administrator Control](./Lab-17-Windows-LAPS-and-Local-Administrator-Control)
 - [Lab-18 — Group-Based Access Control for File and Department Resources](Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources)
 - [Lab-19 — Active Directory Certificate Services](Lab-19-Active-Directory-Certificate-Services/)
+- [Lab-20 — Identity Lifecycle Automation with PowerShell](Lab-20-Identity-Lifecycle-Automation-with-PowerShell/)
