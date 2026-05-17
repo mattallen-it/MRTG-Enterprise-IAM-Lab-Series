@@ -523,6 +523,6 @@ For this lab, standalone PowerShell scripts were appropriate because the goal wa
 
 ## Next Lab
 
-**Lab-21 — To Be Determined**
+**Lab-21 — Directory Recovery, Backup, and Operational Resilience**
 
-The next lab will continue building on the MRTG enterprise IAM environment by expanding automation, validation, or identity governance workflows.
+The next lab will build on the identity lifecycle automation work by focusing on directory recovery, backup planning, and operational resilience for the MRTG Active Directory environment.
