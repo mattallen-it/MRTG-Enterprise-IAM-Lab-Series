@@ -142,7 +142,9 @@ This architecture supports:
 | Lab-19 — Active Directory Certificate Services | Enterprise Trust Services |
 | Lab-20 — Identity Lifecycle Automation with PowerShell | Identity Automation |
 | Lab-21 — Directory Recovery, Backup, and Operational Resilience | Identity Recovery & Continuity |
-
+| Lab-22 — IAM Security Review and Access Control Audit | Identity Risk & Access Review |
+| Lab-23 — IAM Runbooks, SOPs, and Operational Handoff | Operational Documentation |
+| Lab-24 — Enterprise IAM Capstone Validation | End-to-End IAM Validation |
 ---
 
 ## Enterprise IAM Objectives
