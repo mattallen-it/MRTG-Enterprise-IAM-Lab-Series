@@ -20,7 +20,6 @@ The series covers identity infrastructure, access control, Group Policy, delegat
 This project simulates a structured enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
 
 The lab series demonstrates how identity infrastructure is deployed, governed, and secured using Active Directory, with emphasis on policy enforcement, role-based access control (RBAC), and auditability within regulated environments.
-
 Core implementation areas:
 
 - Active Directory Domain Services (AD DS)
