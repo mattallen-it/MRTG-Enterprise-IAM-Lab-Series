@@ -390,7 +390,9 @@ Validation confirmed:
 | `GG_PSO_Privileged_Admins` | `john.smith.admin` |
 | `MRTG-GRP-LAPS-Password-Readers` | Administrator |
 
-![LAPS and Endpoint Security Groups Validated](images/09-laps-and-endpoint-security-groups-validated.png)
+![LAPS and Endpoint Security Groups Listed](images/09a-laps-and-endpoint-security-groups-listed.png)
+
+![LAPS and Endpoint Security Group Membership Validated](images/09b-laps-and-endpoint-security-group-membership-validated.png)
 
 ## Enterprise Trust Services Validation
 
