@@ -187,3 +187,4 @@ Core focus areas:
 - [Lab-21 — Directory Recovery, Backup, and Operational Resilience](Lab-21-Directory-Recovery-Backup-and-Operational-Resilience/)
 - [Lab-22 — IAM Security Review and Access Control Audit](Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
 - [Lab-23 — IAM Runbooks, SOPs, and Operational Handoff](Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
+- [Lab-24 — Enterprise IAM Capstone Validation](Lab-24-Enterprise-IAM-Capstone-Validation/)
