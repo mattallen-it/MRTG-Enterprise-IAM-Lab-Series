@@ -7,6 +7,15 @@
 ![Focus](https://img.shields.io/badge/Focus-Identity_Governance-purple)
 
 ---
+## Series Status
+
+**Status:** Completed  
+**Total Labs:** 24  
+**Focus:** Enterprise Active Directory, IAM operations, access control, automation, recovery, audit, and operational handoff
+
+This lab series demonstrates a complete enterprise-style IAM environment built from the ground up and validated through a final capstone lab.
+
+The series covers identity infrastructure, access control, Group Policy, delegation, logging, Windows LAPS, Active Directory Certificate Services, identity lifecycle automation, backup and recovery, IAM audit evidence, and operational handoff documentation.
 
 This project simulates a structured enterprise Identity and Access Management (IAM) environment for Monroe Redstone Technology Group (MRTG).
 
