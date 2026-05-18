@@ -23,12 +23,26 @@ The lab series demonstrates how identity infrastructure is deployed, governed, a
 
 Core implementation areas:
 
-- Role-Based Access Control (RBAC)
+- Active Directory Domain Services (AD DS)
 - Organizational Unit (OU) design
-- Group Policy enforcement
-- Access control via security groups
-- Identity lifecycle governance
-- Monitoring and auditing
+- Group Policy Object (GPO) enforcement
+- Role-Based Access Control (RBAC)
+- Security group-based access control
+- Password and account lockout policy
+- Fine-grained password policy
+- DHCP services for identity infrastructure
+- Additional domain controller deployment
+- Active Directory replication validation
+- Centralized logging and event forwarding
+- Group Policy security baselines
+- Delegation of control
+- Windows LAPS and local administrator protection
+- Active Directory Certificate Services (AD CS)
+- Identity lifecycle automation with PowerShell
+- Directory backup and recovery readiness
+- IAM security review and access control auditing
+- SOPs, runbooks, and operational handoff documentation
+- Enterprise IAM capstone validation
 
 The focus is on practical IAM operations aligned with enterprise and government environments, emphasizing least privilege, centralized access control, and auditability.
 
