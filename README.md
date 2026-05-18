@@ -50,11 +50,14 @@ The focus is on practical IAM operations aligned with enterprise and government 
 
 ## Objectives
 
-- Design, implement, and secure an enterprise identity environment  
-- Deploy Active Directory Domain Services (AD DS)  
-- Enforce identity-based access control  
-- Validate policy enforcement across domain systems  
-- Align identity operations with governance-oriented IT practices  
+- Design, implement, and secure an enterprise identity environment
+- Deploy and validate Active Directory Domain Services (AD DS)
+- Enforce identity-based access control using groups and GPOs
+- Validate policy enforcement across domain-joined systems
+- Implement delegated administration and least privilege controls
+- Automate identity lifecycle workflows with PowerShell
+- Validate backup, recovery, audit, and operational handoff readiness
+- Align identity operations with governance-oriented IT practices
 
 ---
 
@@ -66,13 +69,19 @@ This repository represents a structured IAM implementation for:
 
 Core identity components include:
 
-- Active Directory Domain Services (AD DS)  
-- Domain-joined endpoints  
-- Organizational Unit (OU) hierarchy  
-- Role-Based Access Control (RBAC)  
-- Group Policy-based security enforcement  
-- Hybrid identity preparation (future Entra ID integration)  
-- Identity monitoring and validation  
+- Active Directory Domain Services (AD DS)
+- Domain-joined endpoints
+- Organizational Unit (OU) hierarchy
+- Role-Based Access Control (RBAC)
+- Group Policy-based security enforcement
+- Department-based security groups
+- Delegated administration
+- Windows LAPS local administrator protection
+- Active Directory Certificate Services (AD CS)
+- Identity lifecycle automation with PowerShell
+- Backup, recovery, and operational resilience
+- IAM security review and audit evidence
+- Runbooks, SOPs, and operational handoff documentation
 
 ---
 
@@ -93,6 +102,7 @@ Core identity components include:
 - Group Policy Management
 - Global Catalog
 - Replication partner for MRTG-DC02
+- FSMO role holder
 
 ### MRTG-DC02 — Additional Domain Controller
 
@@ -136,7 +146,10 @@ This architecture supports:
 - Least privilege  
 - Centralized identity governance  
 - Policy-driven enforcement  
-- Auditability  
+- Auditability
+- Delegated administration
+- Lifecycle automation
+- Recovery and audit readiness
 
 ---
 
