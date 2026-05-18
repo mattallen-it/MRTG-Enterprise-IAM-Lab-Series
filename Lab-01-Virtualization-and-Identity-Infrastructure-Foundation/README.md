@@ -17,6 +17,11 @@ A controlled virtualization boundary was prepared to support Active Directory Do
 
 ---
 
+## Series Context
+
+This lab is the foundation of the MRTG Enterprise IAM Lab Series.
+
+It establishes the virtualization boundary, host readiness, storage structure, and initial domain controller virtual machine needed to support the rest of the Active Directory and IAM environment.
 ## Why This Matters
 
 Enterprise identity systems depend on clearly defined infrastructure boundaries.
