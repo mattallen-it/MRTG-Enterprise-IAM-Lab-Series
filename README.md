@@ -172,16 +172,25 @@ This architecture supports:
 
 ## Enterprise IAM Objectives
 
-This lab series demonstrates structured IAM implementation within an enterprise environment.
+This completed lab series demonstrates structured IAM implementation within an enterprise-style Active Directory environment.
 
 Core focus areas:
 
-- Active Directory deployment and hardening  
-- Identity provisioning and lifecycle management  
-- Role-based access control (RBAC)  
-- Group Policy configuration and enforcement  
-- Hybrid identity preparation (future Entra ID integration)  
-- Identity monitoring, logging, and auditing  
+- Build and validate Active Directory Domain Services
+- Design a scalable OU and group structure
+- Enforce access control through security groups
+- Implement Group Policy for identity and endpoint security
+- Apply password, account lockout, and fine-grained password policies
+- Validate domain controller replication and directory resilience
+- Implement centralized logging for identity events
+- Configure delegation of control and tiered administrative boundaries
+- Implement Windows LAPS for local administrator protection
+- Deploy Active Directory Certificate Services
+- Automate Joiner, Mover, and Leaver identity workflows
+- Validate directory backup and recovery readiness
+- Perform IAM security review and access control auditing
+- Create operational SOPs, runbooks, and handoff documentation
+- Validate the full environment through an enterprise IAM capstone
 
 ---
 
