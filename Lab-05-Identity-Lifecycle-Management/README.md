@@ -1,10 +1,11 @@
 # Lab-05 — Identity Lifecycle Management
 
-![Windows Server](https://img.shields.io/badge/Windows%20Server-Active%20Directory-blue)
-![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
-![AD DS](https://img.shields.io/badge/AD%20DS-Identity%20Platform-0A66C2)
-![IAM](https://img.shields.io/badge/IAM-Identity%20Lifecycle-darkgreen)
-![RBAC](https://img.shields.io/badge/RBAC-Group%20Based%20Access-4B0082)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-ADUC-purple)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Lifecycle-orange)
+![Access](https://img.shields.io/badge/Access-Group%20Based-brightgreen)
+![Model](https://img.shields.io/badge/Model-RBAC-blue)
 
 ## Overview
 In this lab, I implemented identity lifecycle management processes within the Monroe Redstone Technology Group (MRTG) Active Directory environment. Building on the organizational unit and group structure established in earlier labs, this lab focused on joiner, mover, and leaver workflows using department-aligned OUs and role-based security groups. The objective was to show how user identities are created, updated, and offboarded in a controlled enterprise environment.
