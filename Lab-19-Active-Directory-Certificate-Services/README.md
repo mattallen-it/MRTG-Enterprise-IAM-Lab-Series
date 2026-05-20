@@ -2,8 +2,9 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory%20Certificate%20Services-blue)
-![Tooling](https://img.shields.io/badge/Tooling-Certification%20Authority%20%26%20Certificate%20Manager-purple)
+![Tooling](https://img.shields.io/badge/Tooling-Certification%20Authority%20%26%20CertMgr-purple)
 ![Focus](https://img.shields.io/badge/Focus-Enterprise%20PKI-orange)
+![Security](https://img.shields.io/badge/Security-Internal%20Trust%20Services-red)
 ![Validation](https://img.shields.io/badge/Validation-Certificate%20Issued%20%26%20Trusted-brightgreen)
 
 ## Objective
@@ -448,6 +449,6 @@ For this lab, using `MRTG-DC01` was acceptable because the goal was to understan
 
 ## Next Lab
 
-**Lab-20 — Identity Lifecycle Automation with PowerShell**
+[**Lab-20 — Identity Lifecycle Automation with PowerShell**](../Lab-20-Identity-Lifecycle-Automation/)
 
 The next lab will build on this enterprise identity foundation by focusing on PowerShell-based identity lifecycle automation, including user creation, account updates, group membership changes, and repeatable IAM administration workflows.
