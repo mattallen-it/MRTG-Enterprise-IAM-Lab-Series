@@ -38,7 +38,7 @@ This lab establishes the identity authority that all future access control and g
 | Component        | Value |
 |-----------------|--------|
 | Domain Name      | mrtg.local |
-| Domain Controller| MRTG-DC01 |
+| Domain Controller | MRTG-DC01 |
 | OS               | Windows Server 2022 |
 | Role Installed   | Active Directory Domain Services |
 | Virtualization   | Hyper-V |
@@ -107,7 +107,6 @@ This deployment establishes the centralized identity authority for the MRTG envi
 - DNS pointed to self for authoritative resolution  
 
 ![IP Configuration](images/07-ipconfig-domain-controller.png)
-
 
 ---
 
