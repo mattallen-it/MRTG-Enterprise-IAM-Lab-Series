@@ -617,6 +617,6 @@ The lab also documented a realistic troubleshooting path involving missing LAPS 
 
 ## Next Lab
 
-[**Lab-18 — Group-Based Access Control for File and Department Resources**](../Lab-18-Group-Based-Access-Control/)
+[**Lab-18 — Group-Based Access Control for File and Department Resources**](../Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources/)
 
 Lab-18 will build on prior IAM concepts by using Active Directory security groups to control access to shared resources through a scalable authorization model.
