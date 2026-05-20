@@ -1,11 +1,11 @@
 # Lab-12 — Additional Domain Controller and AD Replication
 
-![Active Directory](https://img.shields.io/badge/Active%20Directory-Domain%20Services-blue)
-![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-blue)
-![DNS](https://img.shields.io/badge/DNS-Redundancy-blue)
-![Replication](https://img.shields.io/badge/AD%20Replication-Validated-brightgreen)
-![Hyper--V](https://img.shields.io/badge/Hyper--V-Virtualization-lightgrey)
-![IAM](https://img.shields.io/badge/IAM-Directory%20Resilience-purple)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Service](https://img.shields.io/badge/Service-DNS%20%26%20Global%20Catalog-lightgrey)
+![Tooling](https://img.shields.io/badge/Tooling-REPADMIN%20%26%20DCDIAG-purple)
+![Focus](https://img.shields.io/badge/Focus-Directory%20Resilience-orange)
+![Validation](https://img.shields.io/badge/Validation-AD%20Replication-brightgreen)
 
 ## Lab Overview
 
