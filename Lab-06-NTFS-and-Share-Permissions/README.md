@@ -1,10 +1,11 @@
 # Lab-06 — NTFS and Share Permissions
 
-![Windows Server](https://img.shields.io/badge/Windows%20Server-File%20Services-blue)
-![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
-![AD DS](https://img.shields.io/badge/AD%20DS-Identity%20Backbone-0A66C2)
-![IAM](https://img.shields.io/badge/IAM-Resource%20Access%20Control-darkgreen)
-![RBAC](https://img.shields.io/badge/RBAC-Group%20Based%20Permissions-4B0082)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Service](https://img.shields.io/badge/Service-SMB%20File%20Sharing-lightgrey)
+![Access](https://img.shields.io/badge/Access-NTFS%20%26%20Share%20Permissions-orange)
+![Model](https://img.shields.io/badge/Model-RBAC-purple)
+![Validation](https://img.shields.io/badge/Validation-Least%20Privilege-brightgreen)
 
 ## Overview
 In this lab, I implemented resource access control within the Monroe Redstone Technology Group (MRTG) Active Directory environment by configuring NTFS permissions and shared folder permissions for departmental resources. Building directly on the identity lifecycle work from Lab-05, this lab demonstrates how department-based security groups can be used to control access to shared resources in a structured enterprise environment.
