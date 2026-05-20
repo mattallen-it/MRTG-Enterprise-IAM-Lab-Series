@@ -2,11 +2,12 @@
 
 ---
 
-![IAM](https://img.shields.io/badge/IAM-Active%20Directory-blue)
-![GPO](https://img.shields.io/badge/Policy-Group%20Policy-blue)
-![Access Control](https://img.shields.io/badge/Security-Access%20Control-red)
-![Windows Server](https://img.shields.io/badge/Platform-Windows%20Server%202022-lightgrey)
-![RBAC](https://img.shields.io/badge/Model-RBAC-purple)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Policy](https://img.shields.io/badge/Policy-Group%20Policy-purple)
+![Security](https://img.shields.io/badge/Security-Access%20Control-red)
+![Model](https://img.shields.io/badge/Model-RBAC-orange)
+![Validation](https://img.shields.io/badge/Validation-GPO%20Enforcement-brightgreen)
 
 ---
 
@@ -92,9 +93,9 @@ This structure enables:
 
 Enforces:
 
-- Password policy
-- Account lockout policy
 - User session lock controls
+- Workstation security configuration
+- Policy-based endpoint controls
 
 ### Linking Strategy
 
