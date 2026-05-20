@@ -1,10 +1,11 @@
 # Lab-15 — Group Policy Security Baselines for Workstations and Servers
 
-![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
-![Technology](https://img.shields.io/badge/Technology-Active%20Directory-0A66C2)
-![Tooling](https://img.shields.io/badge/Tooling-Group%20Policy-5C2D91)
-![Focus](https://img.shields.io/badge/Focus-Endpoint%20Security%20Control-orange)
-![Validation](https://img.shields.io/badge/Validation-gpupdate%20%7C%20gpresult-success)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-GPMC%20%26%20gpresult-purple)
+![Focus](https://img.shields.io/badge/Focus-Group%20Policy%20Security%20Baselines-orange)
+![Security](https://img.shields.io/badge/Security-Endpoint%20Hardening-red)
+![Validation](https://img.shields.io/badge/Validation-gpupdate%20%26%20gpresult-brightgreen)
 
 ---
 
@@ -514,6 +515,6 @@ This lab strengthened the MRTG identity infrastructure by demonstrating centrali
 
 ## Next Lab
 
-**Lab-16 — Delegation of Control and Tiered Administrative Boundaries**
+[**Lab-16 — Delegation of Control and Tiered Administrative Boundaries**](../Lab-16-Delegation-of-Control-and-Tiered-Administrative-Boundaries/)
 
 The next lab will build on this role-based Group Policy foundation by focusing on delegated administration, least privilege access, and tiered administrative boundaries within the MRTG Active Directory environment.
