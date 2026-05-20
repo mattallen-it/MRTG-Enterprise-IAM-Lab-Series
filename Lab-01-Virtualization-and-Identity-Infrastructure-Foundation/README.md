@@ -1,11 +1,11 @@
 # Lab-01 — Virtualization and Identity Infrastructure Foundation
 
-![Type](https://img.shields.io/badge/type-lab-blue)
-![Track](https://img.shields.io/badge/track-IAM-green)
-![Platform](https://img.shields.io/badge/platform-Windows_11_Pro-lightgrey)
-![Hypervisor](https://img.shields.io/badge/hypervisor-Hyper--V-blue)
-![Focus](https://img.shields.io/badge/focus-Infrastructure-orange)
-![Level](https://img.shields.io/badge/level-Foundation-purple)
+![Platform](https://img.shields.io/badge/Platform-Windows%2011%20Pro-blue)
+![Hypervisor](https://img.shields.io/badge/Hypervisor-Hyper--V-blue)
+![Technology](https://img.shields.io/badge/Technology-Virtualization-lightgrey)
+![Focus](https://img.shields.io/badge/Focus-Infrastructure-orange)
+![Security](https://img.shields.io/badge/Security-BitLocker-green)
+![Validation](https://img.shields.io/badge/Validation-Host%20Readiness-brightgreen)
 
 ---
 
