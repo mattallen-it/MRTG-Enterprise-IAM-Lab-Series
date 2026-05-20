@@ -1,7 +1,5 @@
 # Lab-02 — Active Directory Domain Services (AD DS) Deployment
 
-![Type](https://img.shields.io/badge/type-lab-blue)
-![Track](https://img.shields.io/badge/track-IAM-green)
 ![Technology](https://img.shields.io/badge/technology-Active_Directory-2A628C)
 ![Platform](https://img.shields.io/badge/platform-Windows_Server_2022-lightgrey)
 ![Focus](https://img.shields.io/badge/focus-Identity_Deployment-orange)
