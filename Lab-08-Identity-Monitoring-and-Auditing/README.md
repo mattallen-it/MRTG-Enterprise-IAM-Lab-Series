@@ -1,8 +1,11 @@
 # Lab-08 — Identity Monitoring and Auditing
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
-![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
-![Focus](https://img.shields.io/badge/Focus-Identity%20Monitoring%20%26%20Auditing-purple)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-GPMC%20%26%20Event%20Viewer-purple)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Monitoring-orange)
+![Security](https://img.shields.io/badge/Security-Audit%20Policy-red)
+![Validation](https://img.shields.io/badge/Validation-Security%20Events-brightgreen)
 
 ## Overview
 
