@@ -1,8 +1,11 @@
 # Lab-10 — Fine-Grained Password Policies for Tiered Identity Control
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
-![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
-![Focus](https://img.shields.io/badge/Focus-Fine--Grained%20Password%20Policies-purple)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-ADAC%20%26%20ADUC-purple)
+![Focus](https://img.shields.io/badge/Focus-Tiered%20Identity%20Control-orange)
+![Security](https://img.shields.io/badge/Security-Fine--Grained%20Password%20Policy-red)
+![Validation](https://img.shields.io/badge/Validation-PSO%20Assignment-brightgreen)
 
 ## Overview
 
