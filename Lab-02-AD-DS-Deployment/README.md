@@ -15,7 +15,7 @@
 
 This lab establishes Active Directory Domain Services (AD DS) within the MRTG environment by promoting Windows Server 2022 to a Domain Controller.
 
-This deployment creates the centralized identity authority responsible for authentication, authorization, and directory-based access control.
+This deployment establishes the centralized identity authority responsible for authentication, authorization, DNS-integrated name resolution, and directory-based access control.
 
 ---
 
@@ -122,7 +122,7 @@ A Hyper-V checkpoint was created to preserve the post-promotion state for contro
 
 ## Outcome
 
-A fully functional Active Directory Domain Services environment was successfully deployed.
+A fully functional Active Directory Domain Services environment was deployed and promoted into the initial `mrtg.local` domain.
 
 - MRTG-DC01 configured as Domain Controller  
 - DNS integrated with Active Directory  
