@@ -1,11 +1,11 @@
 # Lab-13 — Centralized Logging and Event Forwarding for Identity Events
 
-![Active Directory](https://img.shields.io/badge/Active%20Directory-Identity%20Events-blue)
-![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-blue)
-![Windows Event Forwarding](https://img.shields.io/badge/Windows%20Event%20Forwarding-Configured-brightgreen)
-![Group Policy](https://img.shields.io/badge/Group%20Policy-Event%20Forwarding-blue)
-![IAM](https://img.shields.io/badge/IAM-Audit%20Visibility-purple)
-![Security Monitoring](https://img.shields.io/badge/Security%20Monitoring-Forwarded%20Events-orange)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Service](https://img.shields.io/badge/Service-Windows%20Event%20Forwarding-lightgrey)
+![Tooling](https://img.shields.io/badge/Tooling-GPO%20%26%20Event%20Viewer-purple)
+![Focus](https://img.shields.io/badge/Focus-Centralized%20Logging-orange)
+![Validation](https://img.shields.io/badge/Validation-Forwarded%20Identity%20Events-brightgreen)
 
 ## Lab Overview
 
@@ -485,6 +485,6 @@ Identity-related security events are now centrally collected and available for r
 
 ## Next Lab
 
-**Lab-14 — Active Directory Sites and Services**
+[**Lab-14 — Active Directory Sites and Services**](../Lab-14-Active-Directory-Sites-and-Services/)
 
 Lab-14 will build on the multi-domain-controller environment by configuring Active Directory Sites and Services to improve replication topology, site awareness, and domain controller placement in the MRTG environment.
