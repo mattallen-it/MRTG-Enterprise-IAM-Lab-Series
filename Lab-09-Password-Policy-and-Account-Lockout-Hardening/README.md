@@ -1,9 +1,11 @@
 # Lab-09 — Password Policy and Account Lockout Hardening
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
-![Directory](https://img.shields.io/badge/Directory-Active%20Directory-darkgreen)
-![Focus](https://img.shields.io/badge/Focus-Password%20Policy%20%26%20Account%20Lockout-purple)
-
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-GPMC%20%26%20PowerShell-purple)
+![Focus](https://img.shields.io/badge/Focus-Authentication%20Hardening-orange)
+![Security](https://img.shields.io/badge/Security-Password%20%26%20Lockout%20Policy-red)
+![Validation](https://img.shields.io/badge/Validation-Account%20Lockout-brightgreen)
 
 ## Overview
 
