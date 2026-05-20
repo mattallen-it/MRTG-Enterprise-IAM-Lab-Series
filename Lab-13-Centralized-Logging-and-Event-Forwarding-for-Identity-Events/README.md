@@ -485,6 +485,6 @@ Identity-related security events are now centrally collected and available for r
 
 ## Next Lab
 
-[**Lab-14 — Active Directory Sites and Services**](../Lab-14-Active-Directory-Sites-and-Services/)
+[**Lab-14 — Active Directory Sites and Services for Replication Topology**](../Lab-14-Active-Directory-Sites-and-Services-for-Replication-Topology/)
 
 Lab-14 will build on the multi-domain-controller environment by configuring Active Directory Sites and Services to improve replication topology, site awareness, and domain controller placement in the MRTG environment.
