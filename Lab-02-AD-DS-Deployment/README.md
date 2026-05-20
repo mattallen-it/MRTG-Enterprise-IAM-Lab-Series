@@ -1,11 +1,11 @@
 # Lab-02 — Active Directory Domain Services (AD DS) Deployment
 
-![Technology](https://img.shields.io/badge/technology-Active_Directory-2A628C)
-![Platform](https://img.shields.io/badge/platform-Windows_Server_2022-lightgrey)
-![Focus](https://img.shields.io/badge/focus-Identity_Deployment-orange)
-![Domain](https://img.shields.io/badge/domain-mrtg.local-purple)
-![Auth](https://img.shields.io/badge/auth-Kerberos-blue)
-![Level](https://img.shields.io/badge/level-Foundation-darkblue)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Deployment-orange)
+![Domain](https://img.shields.io/badge/Domain-mrtg.local-purple)
+![Authentication](https://img.shields.io/badge/Authentication-Kerberos-brightgreen)
+![Validation](https://img.shields.io/badge/Validation-AD%20DS%20Deployment-lightgrey)
 
 ---
 
