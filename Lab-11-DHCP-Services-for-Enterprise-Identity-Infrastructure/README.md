@@ -1,9 +1,11 @@
 # Lab-11 — DHCP Services for Enterprise Identity Infrastructure
 
-![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-1f6feb)
-![Directory](https://img.shields.io/badge/Directory-Active%20Directory-0e8a16)
-![Focus](https://img.shields.io/badge/Focus-DHCP%20Services-7a3cff)
-![Service](https://img.shields.io/badge/Service-Enterprise%20Identity%20Infrastructure-bd561d)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Service](https://img.shields.io/badge/Service-DHCP%20%26%20DNS-lightgrey)
+![Tooling](https://img.shields.io/badge/Tooling-DHCP%20Console%20%26%20CMD-purple)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Infrastructure-orange)
+![Validation](https://img.shields.io/badge/Validation-Client%20Lease%20%26%20Domain%20Discovery-brightgreen)
 
 ---
 
