@@ -4,6 +4,7 @@
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-NTFS%20%26%20SMB-purple)
 ![Focus](https://img.shields.io/badge/Focus-Group--Based%20Access%20Control-orange)
+![Security](https://img.shields.io/badge/Security-Least%20Privilege-red)
 ![Validation](https://img.shields.io/badge/Validation-Access%20Allowed%20%26%20Denied-brightgreen)
 
 ## Objective
@@ -370,6 +371,6 @@ This model improves:
 
 ## Next Lab
 
-**Lab-19 — Active Directory Certificate Services**
+[**Lab-19 — Active Directory Certificate Services**](../Lab-19-Active-Directory-Certificate-Services/)
 
 The next lab will build on this access control foundation by introducing Active Directory Certificate Services, focusing on enterprise trust, certificate authority configuration, certificate enrollment, and internal PKI validation in the MRTG domain.
