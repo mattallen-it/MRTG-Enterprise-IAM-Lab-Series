@@ -135,6 +135,6 @@ The environment now functions as the authoritative identity boundary for domain-
 
 ## Next Lab
 
-[**Lab-03 — Domain Controller Promotion**](../Lab-03-Domain-Controller-Promotion)
+[Lab-03 — Domain Controller Promotion](../Lab-03-Domain-Controller-Promotion/)
 
-Lab-03 builds on the AD DS deployment by promoting the server to a domain controller and establishing the core `mrtg.local` identity domain.
+Lab-03 builds on the AD DS deployment by validating domain controller functionality, confirming core identity services, and establishing the initial post-promotion baseline for the `mrtg.local` domain.
