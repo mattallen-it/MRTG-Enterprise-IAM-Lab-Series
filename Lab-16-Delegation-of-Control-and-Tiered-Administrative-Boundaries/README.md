@@ -1,10 +1,11 @@
 # Lab-16 — Delegation of Control and Tiered Administrative Boundaries
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
-![Technology](https://img.shields.io/badge/Technology-Active%20Directory-0A66C2)
-![Tooling](https://img.shields.io/badge/Tooling-Delegation%20of%20Control-5C2D91)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-Delegation%20of%20Control%20%26%20ADSI-purple)
 ![Focus](https://img.shields.io/badge/Focus-Least%20Privilege%20Administration-orange)
-![Validation](https://img.shields.io/badge/Validation-ADSI%20%7C%20whoami%20%7C%20ACL%20Boundary-success)
+![Security](https://img.shields.io/badge/Security-Scoped%20Password%20Reset-red)
+![Validation](https://img.shields.io/badge/Validation-Delegation%20Boundary-brightgreen)
 
 ---
 
@@ -704,6 +705,6 @@ This lab demonstrated a practical least-privilege administrative model where ide
 
 ## Next Lab
 
-**Lab-17 — Windows LAPS and Local Administrator Control**
+[**Lab-17 — Windows LAPS and Local Administrator Control**](../Lab-17-Windows-LAPS-and-Local-Administrator-Control/)
 
 The next lab will build on this least privilege delegation model by focusing on Windows LAPS, local administrator password management, and privileged endpoint protection for domain-joined systems.
