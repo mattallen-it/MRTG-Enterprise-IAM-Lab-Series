@@ -1,11 +1,11 @@
 # Lab-14 — Active Directory Sites and Services for Replication Topology
 
-![Active Directory](https://img.shields.io/badge/Active%20Directory-Sites%20and%20Services-blue)
-![Windows Server](https://img.shields.io/badge/Windows%20Server-2022-blue)
-![DNS](https://img.shields.io/badge/DNS-Site%20Records-blue)
-![Replication](https://img.shields.io/badge/Replication-Validated-brightgreen)
-![IAM](https://img.shields.io/badge/IAM-Directory%20Topology-purple)
-![Hyper-V](https://img.shields.io/badge/Hyper--V-Virtualization-lightgrey)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Service](https://img.shields.io/badge/Service-Sites%20%26%20Services-lightgrey)
+![Tooling](https://img.shields.io/badge/Tooling-REPADMIN%20%26%20NLTEST-purple)
+![Focus](https://img.shields.io/badge/Focus-Replication%20Topology-orange)
+![Validation](https://img.shields.io/badge/Validation-Site%20Awareness-brightgreen)
 
 ## Lab Overview
 
@@ -434,6 +434,6 @@ Active Directory site awareness and replication health were successfully validat
 
 ## Next Lab
 
-**Lab-15 — Group Policy Security Baselines for Workstations and Servers**
+[**Lab-15 — Group Policy Security Baselines for Workstations and Servers**](../Lab-15-Group-Policy-Security-Baselines-for-Workstations-and-Servers/)
 
 Lab-15 will build on the MRTG identity foundation by applying security baseline controls to domain-joined workstations and servers, strengthening endpoint configuration, reducing insecure defaults, and improving enterprise policy enforcement through Group Policy.
