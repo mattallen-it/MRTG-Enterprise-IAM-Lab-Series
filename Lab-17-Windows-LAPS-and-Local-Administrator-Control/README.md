@@ -4,6 +4,7 @@
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-Windows%20LAPS-purple)
 ![Focus](https://img.shields.io/badge/Focus-Privileged%20Endpoint%20Protection-orange)
+![Security](https://img.shields.io/badge/Security-Local%20Admin%20Control-red)
 ![Validation](https://img.shields.io/badge/Validation-LAPS%20Password%20Retrieved-brightgreen)
 
 ---
@@ -616,6 +617,6 @@ The lab also documented a realistic troubleshooting path involving missing LAPS 
 
 ## Next Lab
 
-Lab-18 will focus on group-based access control for file and department resources.
+[**Lab-18 — Group-Based Access Control for File and Department Resources**](../Lab-18-Group-Based-Access-Control/)
 
-The next lab will build on prior IAM concepts by using AD security groups to control access to shared resources through a scalable authorization model.
+Lab-18 will build on prior IAM concepts by using Active Directory security groups to control access to shared resources through a scalable authorization model.
