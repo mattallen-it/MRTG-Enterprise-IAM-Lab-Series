@@ -1,13 +1,11 @@
 # Lab-03 — Domain Controller Promotion (Identity Activation)
 
-![Type](https://img.shields.io/badge/type-lab-blue)
-![Track](https://img.shields.io/badge/track-IAM-green)
-![Technology](https://img.shields.io/badge/technology-Active_Directory-2A628C)
-![Platform](https://img.shields.io/badge/platform-Windows_Server_2022-lightgrey)
-![Auth](https://img.shields.io/badge/auth-Kerberos-blue)
-![Focus](https://img.shields.io/badge/focus-Identity_Activation-yellow)
-![Level](https://img.shields.io/badge/level-Foundation-darkblue)
-![Role](https://img.shields.io/badge/role-Domain_Controller-critical)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Role](https://img.shields.io/badge/Role-Domain%20Controller-critical)
+![Authentication](https://img.shields.io/badge/Authentication-Kerberos-brightgreen)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Activation-orange)
+![Validation](https://img.shields.io/badge/Validation-Domain%20Controller%20Health-lightgrey)
 
 ---
 
