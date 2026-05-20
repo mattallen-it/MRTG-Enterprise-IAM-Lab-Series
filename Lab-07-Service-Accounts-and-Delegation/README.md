@@ -1,10 +1,11 @@
 # Lab-07 — Service Accounts and Delegation
 
-![Windows Server](https://img.shields.io/badge/Windows%20Server-Privileged%20Administration-blue)
-![Hyper-V](https://img.shields.io/badge/Hyper--V-Lab%20Environment-5C2D91)
-![AD DS](https://img.shields.io/badge/AD%20DS-Delegated%20Administration-0A66C2)
-![IAM](https://img.shields.io/badge/IAM-Privileged%20Identity%20Management-darkgreen)
-![Least Privilege](https://img.shields.io/badge/Security-Least%20Privilege-darkred)
+![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
+![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
+![Tooling](https://img.shields.io/badge/Tooling-ADUC-purple)
+![Focus](https://img.shields.io/badge/Focus-Delegated%20Administration-orange)
+![Security](https://img.shields.io/badge/Security-Least%20Privilege-red)
+![Validation](https://img.shields.io/badge/Validation-Scoped%20Admin%20Access-brightgreen)
 
 ## Overview
 In this lab, I implemented foundational privileged identity management controls within the Monroe Redstone Technology Group (MRTG) Active Directory environment by separating human administrative identities from service accounts and delegating limited user-management rights through a dedicated support group. Building on the identity lifecycle and access control work from earlier labs, this lab demonstrates how routine administrative tasks can be scoped to delegated identities without granting broad domain-wide administrative privilege.
