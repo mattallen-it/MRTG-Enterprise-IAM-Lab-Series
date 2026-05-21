@@ -4,7 +4,8 @@
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
 ![Focus](https://img.shields.io/badge/Focus-Identity%20Lifecycle%20Automation-orange)
-![Validation](https://img.shields.io/badge/Validation-Joiner%20Mover%20Leaver-brightgreen)
+![Automation](https://img.shields.io/badge/Automation-Joiner%20Mover%20Leaver-red)
+![Validation](https://img.shields.io/badge/Validation-CSV%20Output%20Reports-brightgreen)
 
 ## Objective
 
@@ -523,6 +524,6 @@ For this lab, standalone PowerShell scripts were appropriate because the goal wa
 
 ## Next Lab
 
-**Lab-21 — Directory Recovery, Backup, and Operational Resilience**
+[**Lab-21 — Directory Recovery, Backup, and Operational Resilience**](../Lab-21-Directory-Recovery-Backup-Operational-Resilience/)
 
 The next lab will build on the identity lifecycle automation work by focusing on directory recovery, backup planning, and operational resilience for the MRTG Active Directory environment.
