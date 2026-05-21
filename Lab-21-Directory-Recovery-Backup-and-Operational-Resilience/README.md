@@ -2,9 +2,10 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
-![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
+![Tooling](https://img.shields.io/badge/Tooling-PowerShell%20%26%20WBADMIN-purple)
 ![Backup](https://img.shields.io/badge/Backup-System%20State-orange)
 ![Focus](https://img.shields.io/badge/Focus-Recovery%20%26%20Resilience-brightgreen)
+![Validation](https://img.shields.io/badge/Validation-Recovery%20Artifacts-blue)
 
 ## Objective
 
