@@ -612,6 +612,6 @@ For this lab, the goal was to validate the core recovery readiness process witho
 
 ## Next Lab
 
-**Lab-22 — IAM Security Review and Access Control Audit**
+[**Lab-22 — IAM Security Review and Access Control Audit**](../Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
 
 The next lab will build on this recovery and resilience work by reviewing identity security posture, privileged access, group membership, disabled accounts, delegation boundaries, and access control risks across the MRTG Active Directory environment.
