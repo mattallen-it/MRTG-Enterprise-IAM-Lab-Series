@@ -4,7 +4,8 @@
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
 ![Focus](https://img.shields.io/badge/Focus-Enterprise%20IAM%20Capstone-orange)
-![Validation](https://img.shields.io/badge/Validation-End--to--End%20IAM-brightgreen)
+![Security](https://img.shields.io/badge/Security-End--to--End%20Validation-red)
+![Validation](https://img.shields.io/badge/Validation-Full%20IAM%20Series-brightgreen)
 
 ## Objective
 
