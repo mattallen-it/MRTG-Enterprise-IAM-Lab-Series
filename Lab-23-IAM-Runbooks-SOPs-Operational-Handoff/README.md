@@ -2,9 +2,10 @@
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
-![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
+![Tooling](https://img.shields.io/badge/Tooling-PowerShell%20%26%20Markdown-purple)
 ![Focus](https://img.shields.io/badge/Focus-Operational%20Handoff-orange)
 ![Documentation](https://img.shields.io/badge/Documentation-SOPs%20%26%20Runbooks-brightgreen)
+![Validation](https://img.shields.io/badge/Validation-Handoff%20Package-blue)
 
 ## Objective
 
@@ -516,6 +517,6 @@ For this lab, the goal was to demonstrate the core mechanics of creating a pract
 
 ## Next Lab
 
-**Lab-24 — Enterprise IAM Capstone Validation**
+[**Lab-24 — Enterprise IAM Capstone Validation**](../Lab-24-Enterprise-IAM-Capstone-Validation/)
 
 The next lab will validate the entire MRTG Enterprise IAM Lab Series as one connected identity environment, tying together identity infrastructure, access control, delegation, security baselines, AD CS, automation, backup, audit, and operational handoff.
