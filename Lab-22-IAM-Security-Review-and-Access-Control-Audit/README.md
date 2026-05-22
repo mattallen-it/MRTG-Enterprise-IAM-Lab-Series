@@ -4,7 +4,8 @@
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
 ![Focus](https://img.shields.io/badge/Focus-IAM%20Security%20Review-orange)
-![Validation](https://img.shields.io/badge/Validation-Access%20Control%20Audit-brightgreen)
+![Security](https://img.shields.io/badge/Security-Access%20Control%20Audit-red)
+![Validation](https://img.shields.io/badge/Validation-Audit%20Evidence-brightgreen)
 
 ## Objective
 
@@ -624,9 +625,8 @@ A stronger production design would include:
 - Export to a centralized audit repository
 
 For this lab, the goal was to demonstrate the core mechanics of an evidence-based IAM security review using Active Directory and PowerShell.
-
 ## Next Lab
 
-**Lab-23 — IAM Runbooks, SOPs, and Operational Handoff**
+[**Lab-23 — IAM Runbooks, SOPs, and Operational Handoff**](../Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
 
 The next lab will build on this access review by creating operational runbooks, standard operating procedures, and handoff documentation for the MRTG enterprise IAM environment.
