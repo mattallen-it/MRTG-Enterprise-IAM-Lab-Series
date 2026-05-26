@@ -370,6 +370,6 @@ This lab extends the service account governance foundation from Lab 25 into a pr
 
 ## Next Lab
 
-Lab 27 will focus on endpoint encryption and recovery handling.
+[Lab 27 — BitLocker and Endpoint Encryption Recovery](../Lab-27-BitLocker-and-Endpoint-Encryption-Recovery)
 
-`Lab 27 — BitLocker & Endpoint Encryption Recovery`
+Lab 27 will focus on BitLocker, endpoint encryption, recovery key handling, and layered endpoint security controls.
