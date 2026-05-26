@@ -251,6 +251,8 @@ Core focus areas:
 - [Lab-22 — IAM Security Review and Access Control Audit](Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
 - [Lab-23 — IAM Runbooks, SOPs, and Operational Handoff](Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
 - [Lab-24 — Enterprise IAM Capstone Validation](Lab-24-Enterprise-IAM-Capstone-Validation/)
+- [Lab-25 — Service Account Governance Foundation](../Lab-25-Service-Account-Governance-Foundation)
+- [Lab-26 — Scheduled Task with Least-Privilege Service Account](../Lab-26-Scheduled-Task-with-Least-Privilege-Service-Account)
 
 ## Original Foundation Series Completion
 
