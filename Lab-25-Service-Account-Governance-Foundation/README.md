@@ -1,4 +1,4 @@
-# Lab 25 — Service Account Governance Foundation
+# Lab-25 — Service Account Governance Foundation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
