@@ -183,6 +183,19 @@ This architecture supports:
 | Lab-24 — Enterprise IAM Capstone Validation | End-to-End IAM Validation |
 ---
 
+## Series Expansion: Labs 25–30
+
+After completing the original 24-lab IAM foundation series, this expansion focuses on identity governance, service account control, endpoint recovery, local administrator review, SIEM identity monitoring, and operational IAM maturity.
+
+| Lab | Title | Focus |
+|---|---|---|
+| 25 | Service Account Governance Foundation | Non-human identity inventory, ownership, and risk review |
+| 26 | Scheduled Task with Least-Privilege Service Account | Service account usage, least privilege, and task execution |
+| 27 | BitLocker & Endpoint Encryption Recovery | Endpoint encryption, recovery key handling, and layered security |
+| 28 | Local Administrator Access Review & Remediation | Privileged access review and local admin cleanup |
+| 29 | SIEM Identity Monitoring with Splunk | Identity event collection, detection, and alerting |
+| 30 | IAM Operations, Monitoring, and Governance Capstone | Full governance and monitoring wrap-up |
+
 ## Enterprise IAM Objectives
 
 This completed lab series demonstrates structured IAM implementation within an enterprise-style Active Directory environment.
