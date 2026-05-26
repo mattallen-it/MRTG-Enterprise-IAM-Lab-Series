@@ -200,7 +200,7 @@ After completing the original 24-lab IAM foundation series, this expansion focus
 
 ## Enterprise IAM Objectives
 
-This completed lab series demonstrates structured IAM implementation within an enterprise-style Active Directory environment.
+The original 24-lab foundation series demonstrates structured IAM implementation within an enterprise-style Active Directory environment. Labs 25–30 expand the project into IAM governance, privileged access review, endpoint recovery, SIEM monitoring, and operational maturity.
 
 Core focus areas:
 
