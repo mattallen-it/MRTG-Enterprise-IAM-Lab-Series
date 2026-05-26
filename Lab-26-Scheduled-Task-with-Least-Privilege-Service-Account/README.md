@@ -1,4 +1,4 @@
-# Lab 26 — Scheduled Task with Least-Privilege Service Account
+# Lab-26 — Scheduled Task with Least-Privilege Service Account
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
