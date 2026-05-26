@@ -249,9 +249,9 @@ Core focus areas:
 - [Lab-23 — IAM Runbooks, SOPs, and Operational Handoff](Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
 - [Lab-24 — Enterprise IAM Capstone Validation](Lab-24-Enterprise-IAM-Capstone-Validation/)
 
-## Series Completion
+## Original Foundation Series Completion
 
-The MRTG Enterprise IAM Lab Series is complete.
+The original 24-lab MRTG Enterprise IAM foundation series is complete.
 
 The final environment includes:
 
@@ -263,12 +263,12 @@ The final environment includes:
 - Password and account lockout controls
 - Fine-grained password policies
 - Delegated administration
-- Windows LAPS password reader controls
+- Windows LAPS-managed domain controller
 - Active Directory Certificate Services
 - Identity lifecycle automation
-- System State Backup and recovery artifacts
+- System State backup and recovery artifacts
 - IAM audit exports and security review summary
-- SOPs, runbooks, and operational handoff documentation
+- SOP, runbook, and operational handoff documentation
 - Final enterprise IAM capstone validation
 
-The completed series shows a practical, enterprise-style IAM environment built, secured, automated, backed up, audited, documented, and validated.
+The completed foundation series shows a practical, enterprise-style IAM environment built, secured, automated, backed up, audited, documented, and validated.
