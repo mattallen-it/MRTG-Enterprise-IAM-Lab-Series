@@ -192,9 +192,11 @@ After completing the original 24-lab IAM foundation series, this expansion focus
 | 25 | Service Account Governance Foundation | Non-human identity inventory, ownership, and risk review |
 | 26 | Scheduled Task with Least-Privilege Service Account | Service account usage, least privilege, and task execution |
 | 27 | BitLocker & Endpoint Encryption Recovery | Endpoint encryption, recovery key handling, and layered security |
-| 28 | Local Administrator Access Review & Remediation | Privileged access review and local admin cleanup |
+| 28 | Local Administrator Access Review & Remediation | Privileged access review and local administrator cleanup |
 | 29 | SIEM Identity Monitoring with Splunk | Identity event collection, detection, and alerting |
-| 30 | IAM Operations, Monitoring, and Governance Capstone | Full governance and monitoring wrap-up |
+| 30 | IAM Operations, Monitoring, and Governance Capstone | IAM governance, monitoring, evidence review, and operational maturity |
+
+---
 
 ## Enterprise IAM Objectives
 
