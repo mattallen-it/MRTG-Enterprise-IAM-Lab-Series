@@ -372,6 +372,6 @@ This creates the foundation for Lab 26, where the service account governance mod
 
 ## Next Lab
 
-Lab 26 will build on this work by using a service account in a controlled automation scenario.
+[Lab 26 — Scheduled Task with Least-Privilege Service Account](../Lab-26-Scheduled-Task-with-Least-Privilege-Service-Account)
 
-`Lab 26 — Scheduled Task with Least-Privilege Service Account`
+Lab 26 will build on this work by using a service account in a controlled automation scenario.
