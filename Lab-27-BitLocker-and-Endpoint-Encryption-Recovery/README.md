@@ -1,4 +1,4 @@
-# Lab 27 — BitLocker & Endpoint Encryption Recovery
+# Lab-27 — BitLocker & Endpoint Encryption Recovery
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)
 ![Technology](https://img.shields.io/badge/Technology-BitLocker-blue)
