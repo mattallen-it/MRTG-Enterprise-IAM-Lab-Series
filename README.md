@@ -254,7 +254,8 @@ Core focus areas:
 - [Lab-25 — Service Account Governance Foundation](Lab-25-Service-Account-Governance-Foundation/)
 - [Lab-26 — Scheduled Task with Least-Privilege Service Account](Lab-26-Scheduled-Task-with-Least-Privilege-Service-Account/)
 - [Lab-27 — BitLocker and Endpoint Encryption Recovery](Lab-27-BitLocker-and-Endpoint-Encryption-Recovery)
-  
+- [Lab-28 — Local Administrator Access Review and Remediation](Lab-28-Local-Administrator-Access-Review-and-Remediation)
+    
 ## Original Foundation Series Completion
 
 The original 24-lab MRTG Enterprise IAM foundation series is complete.
