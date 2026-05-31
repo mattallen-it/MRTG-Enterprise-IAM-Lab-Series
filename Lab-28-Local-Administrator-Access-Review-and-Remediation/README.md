@@ -1,4 +1,4 @@
-# Lab 28 — Local Administrator Access Review and Remediation
+# Lab-28 — Local Administrator Access Review and Remediation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)
 ![Technology](https://img.shields.io/badge/Technology-Local%20Users%20and%20Groups-blue)
