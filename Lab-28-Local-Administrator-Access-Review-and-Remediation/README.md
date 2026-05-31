@@ -316,7 +316,7 @@ Checkpoint created:
 
 `MRTG-DC01_Post-Lab28-Local-Admin-Access-Review-Validated`
 
-![DC01 post-lab checkpoint](images/lab28-dc01-post-lab-checkpoin.png)
+![DC01 post-lab checkpoint](images/lab28-dc01-post-lab-checkpoint.png)
 
 ### Client Post-Lab Checkpoint
 
