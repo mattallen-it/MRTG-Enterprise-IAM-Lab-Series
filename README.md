@@ -133,7 +133,6 @@ Core identity components include:
 - SIEM search validation
 
 ---
-
 ## Infrastructure Architecture
 
 | Component | Description |
@@ -141,7 +140,8 @@ Core identity components include:
 | Hypervisor | Hyper-V (Windows 11 Pro Host) |
 | Primary Domain Controller | MRTG-DC01 — Windows Server 2022 |
 | Additional Domain Controller | MRTG-DC02 — Windows Server 2022 |
-| Services | AD DS, DNS, Group Policy, Global Catalog, AD Replication |
+| Logging / SIEM Server | MRTG-LOG01 — Windows Server 2022 with Splunk Enterprise |
+| Services | AD DS, DNS, Group Policy, Global Catalog, AD Replication, Windows Security Event Logging, Splunk SIEM Monitoring |
 | Client System | MRTG-CLIENT-01 — Windows 11 Enterprise |
 ---
 
