@@ -96,7 +96,7 @@ Core identity components include:
 
 ---
 
-## Systems
+### Systems
 
 ### MRTG-DC01 — Primary Domain Controller
 
@@ -120,6 +120,17 @@ Core identity components include:
 - Policy enforcement validation
 - Authentication testing
 - Access control validation
+- BitLocker endpoint encryption
+- Local administrator access review
+
+### MRTG-LOG01 — Logging and SIEM Server
+
+- Splunk Enterprise
+- Windows Security Event Log ingestion
+- Identity event monitoring
+- Successful and failed logon searches
+- Security group membership change review
+- SIEM search validation
 
 ---
 
