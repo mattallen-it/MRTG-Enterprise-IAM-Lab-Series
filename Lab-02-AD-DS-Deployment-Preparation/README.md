@@ -216,21 +216,6 @@ Use the following pictures for this lab:
 
 ---
 
-## What Belongs in Lab 03 Instead
-
-The following evidence belongs in Lab 03 because it proves domain controller promotion and post-promotion validation:
-
-| Image File | Lab 03 Purpose |
-|---|---|
-| `images/03-new-forest-mrtg-local.png` | New forest creation |
-| `images/04-dns-zones-mrtg-local.png` | DNS zone validation |
-| `images/05-dns-msdcs-service-records.png` | `_msdcs` service record validation |
-| `images/06-dns-host-and-service-record.png` | DNS host and service records |
-| `images/07-ipconfig-domain-controller.png` | IP and DNS self-reference validation |
-| `images/09-post-dc-promotion-checkpoint.png` | Post-promotion checkpoint |
-
----
-
 ## What I Would Improve in Production
 
 In a production environment, I would improve this process by:
