@@ -205,7 +205,7 @@ This architecture supports:
 | Lab | Topic | Focus |
 |---|---|---|
 | Lab-01 | Virtualization and Identity Infrastructure Foundation | Environment Buildout |
-| Lab-02 | AD DS Deployment | Identity Platform Deployment |
+| Lab-02 | AD DS Deployment Preparation | Identity Platform Preparation |
 | Lab-03 | Domain Controller Promotion | Identity Activation |
 | Lab-04 | OU Design and GPO Enforcement | Policy and Access Control |
 | Lab-05 | Identity Lifecycle Management | Joiner / Mover / Leaver |
