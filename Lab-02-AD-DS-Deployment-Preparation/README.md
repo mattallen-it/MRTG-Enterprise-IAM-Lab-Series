@@ -205,17 +205,6 @@ The following evidence was collected during the lab:
 
 ---
 
-## Pictures Used
-
-Use the following pictures for this lab:
-
-| Order | Image File | Purpose |
-|---:|---|---|
-| 1 | `images/01-ad-ds-role-installation.png` | Shows AD DS role and management tools selected |
-| 2 | `images/02-ad-ds-prerequisites-check.png` | Shows prerequisite checks passed before promotion |
-
----
-
 ## What I Would Improve in Production
 
 In a production environment, I would improve this process by:
