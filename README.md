@@ -267,7 +267,8 @@ Core focus areas:
 - [Lab-27 — BitLocker and Endpoint Encryption Recovery](Lab-27-BitLocker-and-Endpoint-Encryption-Recovery)
 - [Lab-28 — Local Administrator Access Review and Remediation](Lab-28-Local-Administrator-Access-Review-and-Remediation)
 - [Lab-29 — SIEM Identity Monitoring with Splunk](Lab-29-SIEM-Identity-Monitoring-with-Splunk)
-      
+- [Lab-30 — IAM Operations, Monitoring, and Governance Capstone](Lab-30-IAM-Operations-Monitoring-and-Governance-Capstone)     
+
 ## Original Foundation Series Completion
 
 The original 24-lab MRTG Enterprise IAM foundation series is complete.
