@@ -207,7 +207,7 @@ A user session lock policy was configured through Group Policy.
 
 The policy supported endpoint security by enforcing session protection for inactive users.
 
-![User session lock policy](images/step06_user_session_lock.png)
+![User session lock policy](images/step04_user_session_lock.png)
 
 ---
 
@@ -217,7 +217,7 @@ The workstation policy GPO was linked to the Workstations OU.
 
 This ensured the policy targeted the correct set of domain-joined client systems.
 
-![GPO linked to OU](images/step07_gpo_linked_to_ou.png)
+![GPO linked to OU](images/step05_gpo_linked_to_ou.png)
 
 ---
 
@@ -225,7 +225,7 @@ This ensured the policy targeted the correct set of domain-joined client systems
 
 The GPO scope and security filtering were reviewed to confirm the policy applied to the intended targets.
 
-![GPO scope filtering](images/step08_gpo_scope_filtering.png)
+![GPO scope filtering](images/step06_gpo_scope_filtering.png)
 
 ---
 
@@ -239,7 +239,7 @@ gpresult /r
 
 The output showed that the workstation baseline policy was applied to `CLIENT01`.
 
-![Computer policy applied](images/step09_computer_policy_applied.png)
+![Computer policy applied](images/step07_computer_policy_applied.png)
 
 ---
 
@@ -249,7 +249,7 @@ User policy application was validated to confirm that user-side policy processin
 
 The output showed that the user session lock policy was applied for the signed-in domain user.
 
-![User policy applied](images/step10_user_policy_applied.png)
+![User policy applied](images/step08_user_policy_applied.png)
 
 ---
 
@@ -259,7 +259,7 @@ Remote Desktop access was tested before the user was granted the required group-
 
 The access attempt failed as expected.
 
-![RDP access denied](images/step11_rdp_access_denied.png)
+![RDP access denied](images/step09_rdp_access_denied.png)
 
 This confirmed that access was not being granted automatically or through unnecessary privilege.
 
@@ -273,7 +273,7 @@ Group used:
 
 `GG_Remote_Desktop_Users`
 
-![RDP group membership](images/step12_rdp_group_membership.png)
+![RDP group membership](images/step10_rdp_group_membership.png)
 
 This implemented access through role-based group membership instead of direct user-level permissions.
 
@@ -285,7 +285,7 @@ After group membership was updated, Remote Desktop access was tested again.
 
 The user successfully signed in after the correct group-based permission was assigned.
 
-![RDP successful login](images/step13_rdp_successful_login.png)
+![RDP successful login](images/step11_rdp_successful_login.png)
 
 This validated the group-based access control model.
 
@@ -372,14 +372,14 @@ The following evidence was collected during the lab:
 | OU structure | `images/step01_ou_structure.png` |
 | Computer OU structure | `images/step02_computer_ou_structure.png` |
 | Workstation OU membership | `images/step03_workstation_ou_membership.png` |
-| User session lock policy | `images/step06_user_session_lock.png` |
-| GPO linked to OU | `images/step07_gpo_linked_to_ou.png` |
-| GPO scope filtering | `images/step08_gpo_scope_filtering.png` |
-| Computer policy applied | `images/step09_computer_policy_applied.png` |
-| User policy applied | `images/step10_user_policy_applied.png` |
-| RDP access denied | `images/step11_rdp_access_denied.png` |
-| RDP group membership | `images/step12_rdp_group_membership.png` |
-| RDP successful login | `images/step13_rdp_successful_login.png` |
+| User session lock policy | `images/step04_user_session_lock.png` |
+| GPO linked to OU | `images/step05_gpo_linked_to_ou.png` |
+| GPO scope filtering | `images/step06_gpo_scope_filtering.png` |
+| Computer policy applied | `images/step07_computer_policy_applied.png` |
+| User policy applied | `images/step08_user_policy_applied.png` |
+| RDP access denied | `images/step09_rdp_access_denied.png` |
+| RDP group membership | `images/step10_rdp_group_membership.png` |
+| RDP successful login | `images/step11_rdp_successful_login.png` |
 
 ---
 
