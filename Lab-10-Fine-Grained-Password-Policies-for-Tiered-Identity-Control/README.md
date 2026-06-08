@@ -1,4 +1,4 @@
-# Lab-10 — Fine-Grained Password Policies for Tiered Identity Control
+# Lab 10 — Fine-Grained Password Policies for Tiered Identity Control
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -7,347 +7,533 @@
 ![Security](https://img.shields.io/badge/Security-Fine--Grained%20Password%20Policy-red)
 ![Validation](https://img.shields.io/badge/Validation-PSO%20Assignment-brightgreen)
 
-## Overview
+---
 
-In this lab, I implemented **Fine-Grained Password Policies (FGPPs)** in the **Monroe Redstone Technology Group (MRTG)** Active Directory environment to apply different authentication controls to different identity tiers. The objective was to move beyond a single domain-wide password policy and show that **standard users, privileged admin accounts, and service accounts** can be governed by separate password settings based on identity type and risk.
+## Objective
 
-Unlike traditional domain password policy, FGPP is not configured through a normal GPO. Instead, it is built through **Password Settings Objects (PSOs)** in the **Active Directory Administrative Center** and applied to **users or global security groups**. In this lab, I used group-based targeting so each identity tier could receive its own password policy design.
+The objective of this lab is to implement Fine-Grained Password Policies in the `mrtg.local` Active Directory domain.
 
-This lab builds directly on the authentication hardening work from **Lab 09**. Lab 09 established domain-wide password and lockout controls. Lab 10 extends that foundation by introducing **tiered authentication control**, which is more aligned with real IAM and privileged access design.
+This lab builds on the domain-level authentication hardening from Lab 09 by applying different password policy requirements to different identity tiers.
+
+The focus is on using Password Settings Objects and group-based targeting to apply separate authentication controls for standard users, privileged administrators, and service accounts.
 
 ---
 
-## Objectives
+## Business Problem
 
-- Create global security groups for FGPP targeting
-- Build separate Password Settings Objects for:
-  - standard users
-  - privileged admin accounts
-  - service accounts
-- Apply FGPP through security groups rather than individual accounts
-- Validate that different identity types receive different password settings
-- Demonstrate tiered identity control in Active Directory
+Monroe Redstone Technology Group needs differentiated password controls for different types of identities.
+
+A single domain-wide password policy is useful as a baseline, but standard users, privileged administrators, and service accounts do not carry the same level of risk.
+
+This lab addresses the need to:
+
+- Move beyond one-size-fits-all password policy
+- Apply stronger controls to privileged accounts
+- Apply separate controls to service accounts
+- Use group-based targeting for scalable policy assignment
+- Validate that different identities receive the correct Password Settings Object
+- Support tiered identity control in Active Directory
+
+---
+
+## Lab Summary
+
+In this lab, I created Fine-Grained Password Policies using Password Settings Objects in Active Directory Administrative Center.
+
+I created three policy targeting groups:
+
+- `GG_PSO_Standard_Users`
+- `GG_PSO_Privileged_Admins`
+- `GG_PSO_Service_Accounts`
+
+I then created three Password Settings Objects and applied them to the appropriate groups.
+
+The lab validated that standard user, privileged admin, and service account identities received the intended password policy tier.
+
+---
+
+## Environment
+
+| Component | Details |
+|---|---|
+| Domain | `mrtg.local` |
+| Domain Controller | `MRTG-DC01` |
+| Directory Service | Active Directory Domain Services |
+| Management Tools | Active Directory Users and Computers, Active Directory Administrative Center |
+| FGPP Container | Password Settings Container |
+| Standard User | `kevin.carter` |
+| Privileged Admin | `john.smith.admin` |
+| Service Account | `Service App Deploy` |
+| Lab Organization | Monroe Redstone Technology Group |
 
 ---
 
 ## Scope
 
 ### Included
-- Creation of FGPP targeting groups
-- Creation of three Password Settings Objects
-- Group-based assignment of PSOs
-- Validation of directly associated password settings in AD Administrative Center
-- Comparison of policy precedence across identity tiers
+
+- Pre-lab Hyper-V checkpoint
+- FGPP targeting group creation
+- Group membership assignment for policy targeting
+- Password Settings Container review
+- Standard user Password Settings Object creation
+- Privileged admin Password Settings Object creation
+- Service account Password Settings Object creation
+- PSO object validation
+- Directly associated password settings validation
+- Tiered policy comparison
 
 ### Not Included
-- Fine-Grained Password Policy precedence conflict testing
+
 - Password reset workflow testing
+- FGPP precedence conflict testing
 - Authentication policy silos
-- Microsoft Entra ID password protection
-- Hybrid identity password writeback
+- Microsoft Entra ID Password Protection
+- Hybrid password writeback
 - LAPS or local administrator password rotation
-
-This lab stays focused on **Active Directory Fine-Grained Password Policies** and their use in **tiered identity administration**.
+- MFA or Conditional Access
+- Privileged Identity Management
 
 ---
 
-## Lab Environment
+## Architecture
 
-### Systems
-- **Host Platform:** Hyper-V
-- **Domain Controller:** `MRTG-DC01`
-- **Domain:** `mrtg.local`
+This lab uses Fine-Grained Password Policies to apply different password settings by identity tier.
 
-### Directory Structure
-- **Parent OU:** `_MRTG`
-- **Groups OU:** `_MRTG/Groups`
-- **Admin Accounts OU:** `_MRTG/Admin Accounts`
-- **Service Accounts OU:** `_MRTG/Service Accounts`
-- **Users OU:** `_MRTG/Users`
+```text
+mrtg.local
+└── System
+    └── Password Settings Container
+        ├── PSO-Service-Accounts
+        ├── PSO-Privileged-Admins
+        └── PSO-Standard-Users
+```
 
-### Identity Tiers Used
-- **Standard User:** `kevin.carter`
-- **Privileged Admin:** `john.smith.admin`
-- **Service Account:** `Service App Deploy`
+Group-based targeting was used:
 
-### FGPP Targeting Groups
+```text
+GG_PSO_Standard_Users
+└── kevin.carter
+
+GG_PSO_Privileged_Admins
+└── john.smith.admin
+
+GG_PSO_Service_Accounts
+└── Service App Deploy
+```
+
+This structure supports:
+
+- Tiered authentication control
+- Group-based password policy assignment
+- Stronger privileged account protection
+- Separate service account password requirements
+- Cleaner policy administration
+- Improved IAM governance
+
+---
+
+## Fine-Grained Password Policy Model
+
+Fine-Grained Password Policies are not configured like normal Group Policy settings.
+
+FGPP uses Password Settings Objects stored in the Password Settings Container.
+
+| Component | Purpose |
+|---|---|
+| Password Settings Object | Defines password and lockout requirements |
+| Precedence | Determines which PSO wins if multiple apply |
+| Global Security Group | Used to target the PSO to identities |
+| Directly Associated Password Settings | Shows which PSO is associated with the account |
+
+This lab used group-based targeting instead of assigning PSOs directly to individual users.
+
+---
+
+## Identity Tiers
+
+| Identity Tier | Example Identity | Targeting Group | Password Settings Object |
+|---|---|---|---|
+| Standard Users | `kevin.carter` | `GG_PSO_Standard_Users` | `PSO-Standard-Users` |
+| Privileged Admins | `john.smith.admin` | `GG_PSO_Privileged_Admins` | `PSO-Privileged-Admins` |
+| Service Accounts | `Service App Deploy` | `GG_PSO_Service_Accounts` | `PSO-Service-Accounts` |
+
+---
+
+## Password Settings Object Design
+
+| PSO | Precedence | Minimum Length | Password History | Maximum Age | Lockout Threshold |
+|---|---:|---:|---:|---|---:|
+| `PSO-Service-Accounts` | `10` | `20` | `5` | `365 days` | `5` |
+| `PSO-Privileged-Admins` | `20` | `14` | `10` | `60 days` | `3` |
+| `PSO-Standard-Users` | `30` | `12` | `5` | `90 days` | `5` |
+
+Lower precedence numbers have higher priority.
+
+---
+
+## Implementation and Validation
+
+### 1. Pre-Lab Checkpoint Created
+
+A Hyper-V checkpoint was created before making Fine-Grained Password Policy changes.
+
+This preserved the clean post-Lab-09 environment.
+
+![Pre-FGPP checkpoint](images/Lab-10-01-Pre-FGPP-Checkpoint.png)
+
+---
+
+### 2. FGPP Targeting Groups Created
+
+The following global security groups were created inside the `_MRTG/Groups` OU:
+
 - `GG_PSO_Standard_Users`
 - `GG_PSO_Privileged_Admins`
 - `GG_PSO_Service_Accounts`
 
-### Tools / Technologies Used
-- Windows Server 2022
-- Active Directory Users and Computers
-- Active Directory Administrative Center
-- Fine-Grained Password Policies
-- Password Settings Objects (PSOs)
-- Group-based policy targeting
+![PSO groups created](images/Lab-10-02-PSO-Groups-Created.png)
+
+These groups were used to apply Password Settings Objects by identity tier.
 
 ---
 
-## Architecture / Design
+### 3. Policy Targeting Group Membership Assigned
 
-This lab was designed to support the following identity-control need:
+Representative identities were added to the FGPP targeting groups.
 
-> **MRTG requires differentiated password policy enforcement so that higher-risk identities are not governed by the exact same authentication standards as normal user accounts.**
+| Identity | Group |
+|---|---|
+| `kevin.carter` | `GG_PSO_Standard_Users` |
+| `john.smith.admin` | `GG_PSO_Privileged_Admins` |
+| `Service App Deploy` | `GG_PSO_Service_Accounts` |
 
-### Design Logic
-- **Standard users** receive a strong but practical baseline password policy
-- **Privileged admin accounts** receive tighter controls with stronger password requirements and stricter lockout behavior
-- **Service accounts** receive a separate policy tier with a longer password length and extended password lifetime model
+![PSO group membership](images/Lab-10-03-PSO-Group-Membership.png)
 
-### IAM Perspective
-
-This design supports:
-
-- **identity tiering**
-- **group-based authentication control**
-- **privileged account protection**
-- **policy differentiation by account type**
-- **centralized password governance**
-
-The key design point is that FGPP is **not a standard GPO setting**. It is a directory-level password policy model built with **PSOs** and applied through **users or global security groups**. That distinction matters because this lab is proving **tiered identity control**, not ordinary GPO administration.
+This allowed each identity type to receive a different password policy through group membership.
 
 ---
 
-## Implementation Steps
+### 4. Password Settings Container Opened
 
-### 1. Created a Pre-Lab Checkpoint
+Active Directory Administrative Center was used to open the Password Settings Container.
 
-Before making changes, I created a Hyper-V checkpoint to preserve the clean post-Lab 09 environment.
+Path reviewed:
 
-![Lab-10-01 - Pre-FGPP Checkpoint](images/Lab-10-01-Pre-FGPP-Checkpoint.png)
+```text
+mrtg.local
+└── System
+    └── Password Settings Container
+```
 
----
+![ADAC password settings container](images/Lab-10-04-ADAC-Password-Settings-Container.png)
 
-### 2. Created FGPP Targeting Groups
-
-In **Active Directory Users and Computers**, I created the following global security groups inside the `_MRTG/Groups` OU:
-
-- `GG_PSO_Standard_Users`
-- `GG_PSO_Privileged_Admins`
-- `GG_PSO_Service_Accounts`
-
-These groups were used as the policy targets for the Password Settings Objects.
-
-![Lab-10-02 - PSO Groups Created](images/Lab-10-02-PSO-Groups-Created.png)
+This is where Fine-Grained Password Policies are created and managed.
 
 ---
 
-### 3. Added Group Membership for Policy Targeting
+### 5. Standard Users PSO Created
 
-I populated the FGPP targeting groups with representative identities:
+A Password Settings Object named `PSO-Standard-Users` was created and applied to:
 
-- `kevin.carter` → `GG_PSO_Standard_Users`
-- `john.smith.admin` → `GG_PSO_Privileged_Admins`
-- `Service App Deploy` → `GG_PSO_Service_Accounts`
+`GG_PSO_Standard_Users`
 
-This allowed each identity tier to receive a different password policy through group membership.
+Configured values included:
 
-![Lab-10-03 - PSO Group Membership](images/Lab-10-03-PSO-Group-Membership.png)
+| Setting | Value |
+|---|---|
+| Precedence | `30` |
+| Minimum password length | `12` |
+| Password history | `5` |
+| Maximum password age | `90 days` |
+| Minimum password age | `1 day` |
+| Complexity | `Enabled` |
+| Reversible encryption | `Disabled` |
+| Lockout threshold | `5` |
+| Reset lockout counter after | `15 minutes` |
+| Lockout duration | `15 minutes` |
 
----
-
-### 4. Opened the Password Settings Container
-
-In **Active Directory Administrative Center**, I browsed to:
-
-`mrtg.local > System > Password Settings Container`
-
-This is the location where Fine-Grained Password Policies are created and managed.
-
-![Lab-10-04 - ADAC Password Settings Container](images/Lab-10-04-ADAC-Password-Settings-Container.png)
-
----
-
-### 5. Created the Standard Users PSO
-
-I created a Password Settings Object named **`PSO-Standard-Users`** and applied it to `GG_PSO_Standard_Users`.
-
-**Configured values:**
-- **Precedence:** `30`
-- **Minimum password length:** `12`
-- **Password history:** `5`
-- **Maximum password age:** `90 days`
-- **Minimum password age:** `1 day`
-- **Complexity:** `Enabled`
-- **Reversible encryption:** `Disabled`
-- **Lockout threshold:** `5`
-- **Reset lockout counter after:** `15 minutes`
-- **Lockout duration:** `15 minutes`
+![Standard users PSO](images/Lab-10-05-Standard-Users-PSO.png)
 
 This policy represents the baseline authentication standard for normal workforce identities.
 
-![Lab-10-05 - Standard Users PSO](images/Lab-10-05-Standard-Users-PSO.png)
+---
+
+### 6. Privileged Admins PSO Created
+
+A Password Settings Object named `PSO-Privileged-Admins` was created and applied to:
+
+`GG_PSO_Privileged_Admins`
+
+Configured values included:
+
+| Setting | Value |
+|---|---|
+| Precedence | `20` |
+| Minimum password length | `14` |
+| Password history | `10` |
+| Maximum password age | `60 days` |
+| Minimum password age | `1 day` |
+| Complexity | `Enabled` |
+| Reversible encryption | `Disabled` |
+| Lockout threshold | `3` |
+| Reset lockout counter after | `30 minutes` |
+| Lockout duration | `30 minutes` |
+
+![Privileged admins PSO](images/Lab-10-06-Privileged-Admins-PSO.png)
+
+This policy applies stronger requirements to higher-risk privileged identities.
 
 ---
 
-### 6. Created the Privileged Admins PSO
+### 7. Service Accounts PSO Created
 
-I created a Password Settings Object named **`PSO-Privileged-Admins`** and applied it to `GG_PSO_Privileged_Admins`.
+A Password Settings Object named `PSO-Service-Accounts` was created and applied to:
 
-**Configured values:**
-- **Precedence:** `20`
-- **Minimum password length:** `14`
-- **Password history:** `10`
-- **Maximum password age:** `60 days`
-- **Minimum password age:** `1 day`
-- **Complexity:** `Enabled`
-- **Reversible encryption:** `Disabled`
-- **Lockout threshold:** `3`
-- **Reset lockout counter after:** `30 minutes`
-- **Lockout duration:** `30 minutes`
+`GG_PSO_Service_Accounts`
 
-This policy was designed to apply stronger requirements to a higher-risk privileged identity tier.
+Configured values included:
 
-![Lab-10-06 - Privileged Admins PSO](images/Lab-10-06-Privileged-Admins-PSO.png)
+| Setting | Value |
+|---|---|
+| Precedence | `10` |
+| Minimum password length | `20` |
+| Password history | `5` |
+| Maximum password age | `365 days` |
+| Minimum password age | `1 day` |
+| Complexity | `Enabled` |
+| Reversible encryption | `Disabled` |
+| Lockout threshold | `5` |
+| Reset lockout counter after | `15 minutes` |
+| Lockout duration | `15 minutes` |
 
----
+![Service accounts PSO](images/Lab-10-07-Service-Accounts-PSO.png)
 
-### 7. Created the Service Accounts PSO
-
-I created a Password Settings Object named **`PSO-Service-Accounts`** and applied it to `GG_PSO_Service_Accounts`.
-
-**Configured values:**
-- **Precedence:** `10`
-- **Minimum password length:** `20`
-- **Password history:** `5`
-- **Maximum password age:** `365 days`
-- **Minimum password age:** `1 day`
-- **Complexity:** `Enabled`
-- **Reversible encryption:** `Disabled`
-- **Lockout threshold:** `5`
-- **Reset lockout counter after:** `15 minutes`
-- **Lockout duration:** `15 minutes`
-
-This policy tier differentiates service identities from normal user accounts by using a longer minimum password length and an extended password lifetime model.
-
-![Lab-10-07 - Service Accounts PSO](images/Lab-10-07-Service-Accounts-PSO.png)
+This policy differentiates service identities from normal user accounts by using a longer minimum password length and a separate password lifetime model.
 
 ---
 
-### 8. Confirmed PSO Object Creation
+### 8. PSO Objects Confirmed
 
-After creating the three PSOs, I returned to the **Password Settings Container** and verified that all three objects were present with the expected precedence values.
+The Password Settings Container was reviewed after creating all three PSOs.
 
-- `PSO-Service-Accounts` — `10`
-- `PSO-Privileged-Admins` — `20`
-- `PSO-Standard-Users` — `30`
+The following objects were present:
 
-![Lab-10-08 - PSO Objects Created](images/Lab-10-08-PSO-Objects-Created.png)
+| Password Settings Object | Precedence |
+|---|---:|
+| `PSO-Service-Accounts` | `10` |
+| `PSO-Privileged-Admins` | `20` |
+| `PSO-Standard-Users` | `30` |
 
----
+![PSO objects created](images/Lab-10-08-PSO-Objects-Created.png)
 
-## Validation / Proof
-
-### Validation Scenario 1 - Standard User Tier
-
-**Identity tested:** `kevin.carter`
-
-I opened the user object in **Active Directory Administrative Center** and confirmed that:
-
-- the account was a member of `GG_PSO_Standard_Users`
-- the **Directly Associated Password Settings** section showed `PSO-Standard-Users`
-- the associated precedence was `30`
-
-This confirmed that the standard user identity tier was receiving the intended PSO.
-
-![Lab-10-09 - Resultant PSO Kevin Carter](images/Lab-10-09-Resultant-PSO-Kevin-Carter.png)
+This confirmed that all three policy tiers were created successfully.
 
 ---
 
-### Validation Scenario 2 - Privileged Admin Tier
+### 9. Standard User Resultant PSO Validated
 
-**Identity tested:** `john.smith.admin`
+The `kevin.carter` user object was reviewed in Active Directory Administrative Center.
 
-I opened the privileged admin account in **Active Directory Administrative Center** and confirmed that:
+Validation confirmed:
 
-- the account was a member of `GG_PSO_Privileged_Admins`
-- the **Directly Associated Password Settings** section showed `PSO-Privileged-Admins`
-- the associated precedence was `20`
+- The account was a member of `GG_PSO_Standard_Users`
+- Directly Associated Password Settings showed `PSO-Standard-Users`
+- Associated precedence was `30`
 
-This confirmed that the privileged identity tier was receiving stronger authentication controls than the standard user tier.
+![Resultant PSO Kevin Carter](images/Lab-10-09-Resultant-PSO-Kevin-Carter.png)
 
-![Lab-10-10 - Resultant PSO John Smith Admin](images/Lab-10-10-Resultant-PSO-John-Smith-Admin.png)
-
----
-
-### Validation Scenario 3 - Service Account Tier
-
-**Identity tested:** `Service App Deploy`
-
-I opened the service account object in **Active Directory Administrative Center** and confirmed that:
-
-- the account was a member of `GG_PSO_Service_Accounts`
-- the **Directly Associated Password Settings** section showed `PSO-Service-Accounts`
-- the associated precedence was `10`
-
-This confirmed that the service account tier was receiving its own differentiated password settings.
-
-![Lab-10-11 - Resultant PSO Service Account](images/Lab-10-11-Resultant-PSO-Service-Account.png)
+This confirmed that the standard user tier received the intended PSO.
 
 ---
 
-### Validation Scenario 4 - Tiered Policy Comparison
+### 10. Privileged Admin Resultant PSO Validated
 
-I returned to the **Password Settings Container** and reviewed all three PSOs together with precedence visible.
+The `john.smith.admin` account was reviewed in Active Directory Administrative Center.
 
-This final validation confirmed that the MRTG environment now contains a clear tiered FGPP design:
+Validation confirmed:
 
-- **Service Accounts** — precedence `10`
-- **Privileged Admins** — precedence `20`
-- **Standard Users** — precedence `30`
+- The account was a member of `GG_PSO_Privileged_Admins`
+- Directly Associated Password Settings showed `PSO-Privileged-Admins`
+- Associated precedence was `20`
 
-![Lab-10-12 - AD User Policy Tier Validation](images/Lab-10-12-AD-User-Policy-Tier-Validation.png)
+![Resultant PSO John Smith Admin](images/Lab-10-10-Resultant-PSO-John-Smith-Admin.png)
 
----
-
-## Security Relevance
-
-This lab strengthens the MRTG environment by moving beyond one-size-fits-all password policy and into **identity-tiered authentication control**.
-
-Key security benefits include:
-
-- stronger protection for privileged identities
-- differentiated controls based on account risk
-- centralized password governance through group-based assignment
-- better alignment with IAM and privileged access design
-- clearer separation between normal user, admin, and service-account policy models
-
-This matters because different account types do not present the same risk. Standard users, delegated admins, and service identities should not always be governed by identical password controls. FGPP gives Active Directory a practical way to apply differentiated authentication policy without redesigning the entire domain policy model.
+This confirmed that the privileged admin tier received stronger authentication controls than the standard user tier.
 
 ---
 
-## Key Skills Demonstrated
+### 11. Service Account Resultant PSO Validated
 
-- Active Directory Administrative Center
-- Fine-Grained Password Policies
-- Password Settings Objects (PSOs)
-- Global security group targeting
-- Group-based policy assignment
-- Password policy tier design
-- Privileged identity protection concepts
-- Service account policy differentiation
-- Directly associated password settings validation
-- IAM-focused authentication control
+The `Service App Deploy` account was reviewed in Active Directory Administrative Center.
+
+Validation confirmed:
+
+- The account was a member of `GG_PSO_Service_Accounts`
+- Directly Associated Password Settings showed `PSO-Service-Accounts`
+- Associated precedence was `10`
+
+![Resultant PSO service account](images/Lab-10-11-Resultant-PSO-Service-Account.png)
+
+This confirmed that the service account tier received its own password policy.
+
+---
+
+### 12. Tiered Policy Comparison Validated
+
+The Password Settings Container was reviewed with all three PSOs visible.
+
+![AD user policy tier validation](images/Lab-10-12-AD-User-Policy-Tier-Validation.png)
+
+This confirmed that the environment contained a complete tiered FGPP design:
+
+- Service Accounts — precedence `10`
+- Privileged Admins — precedence `20`
+- Standard Users — precedence `30`
+
+---
+
+## Security Perspective
+
+This lab demonstrates that different identity types should not always share the same authentication policy.
+
+Standard users, privileged administrators, and service accounts carry different risk profiles.
+
+From a security perspective, this lab supports:
+
+- Tiered identity control
+- Stronger privileged account protection
+- Differentiated service account policy
+- Group-based authentication policy assignment
+- Centralized password governance
+- Reduced one-size-fits-all policy design
+- Improved IAM maturity
+
+FGPP gives Active Directory a practical way to apply different authentication controls without creating separate domains.
+
+---
+
+## Risk Addressed
+
+Without Fine-Grained Password Policies, all domain users are governed by the same domain password policy unless other controls are introduced.
+
+This lab reduces the risk of:
+
+- Privileged accounts using the same password rules as standard users
+- Service accounts being governed by an unsuitable password policy
+- Lack of differentiation between identity tiers
+- Manual per-user password policy assignment
+- Weak privileged account authentication standards
+- Poor service account password governance
+
+---
+
+## Control Mapping
+
+| Control Area | How This Lab Supports It |
+|---|---|
+| Tiered identity control | Applies different password policies by account type |
+| Privileged access protection | Applies stronger settings to admin accounts |
+| Service account governance | Applies separate password settings to service accounts |
+| Group-based targeting | Uses security groups to assign PSOs |
+| Authentication hardening | Extends domain-wide hardening from Lab 09 |
+| Audit readiness | Documents PSO creation, assignment, and validation |
+| IAM maturity | Differentiates controls based on identity risk |
+
+---
+
+## Validation
+
+The following validation checks were completed:
+
+| Validation Item | Result |
+|---|---|
+| Pre-lab checkpoint created | Passed |
+| FGPP targeting groups created | Passed |
+| Users added to PSO targeting groups | Passed |
+| Password Settings Container opened | Passed |
+| `PSO-Standard-Users` created | Passed |
+| `PSO-Privileged-Admins` created | Passed |
+| `PSO-Service-Accounts` created | Passed |
+| PSO precedence values configured | Passed |
+| All PSO objects visible in container | Passed |
+| Kevin Carter associated with `PSO-Standard-Users` | Passed |
+| `john.smith.admin` associated with `PSO-Privileged-Admins` | Passed |
+| `Service App Deploy` associated with `PSO-Service-Accounts` | Passed |
+| Tiered PSO design validated | Passed |
+
+---
+
+## Evidence Collected
+
+The following evidence was collected during the lab:
+
+| Evidence | File |
+|---|---|
+| Pre-FGPP checkpoint | `images/Lab-10-01-Pre-FGPP-Checkpoint.png` |
+| PSO groups created | `images/Lab-10-02-PSO-Groups-Created.png` |
+| PSO group membership | `images/Lab-10-03-PSO-Group-Membership.png` |
+| ADAC Password Settings Container | `images/Lab-10-04-ADAC-Password-Settings-Container.png` |
+| Standard users PSO | `images/Lab-10-05-Standard-Users-PSO.png` |
+| Privileged admins PSO | `images/Lab-10-06-Privileged-Admins-PSO.png` |
+| Service accounts PSO | `images/Lab-10-07-Service-Accounts-PSO.png` |
+| PSO objects created | `images/Lab-10-08-PSO-Objects-Created.png` |
+| Resultant PSO Kevin Carter | `images/Lab-10-09-Resultant-PSO-Kevin-Carter.png` |
+| Resultant PSO John Smith Admin | `images/Lab-10-10-Resultant-PSO-John-Smith-Admin.png` |
+| Resultant PSO service account | `images/Lab-10-11-Resultant-PSO-Service-Account.png` |
+| AD user policy tier validation | `images/Lab-10-12-AD-User-Policy-Tier-Validation.png` |
+
+---
+
+## What I Would Improve in Production
+
+In a production environment, I would improve this process by:
+
+- Documenting formal identity tiers
+- Defining password policy standards by account type
+- Reviewing service account ownership and rotation requirements
+- Avoiding normal user accounts in privileged policy groups
+- Testing PSO precedence conflicts
+- Validating resultant password settings with PowerShell
+- Monitoring group membership changes for PSO targeting groups
+- Reviewing PSO assignments on a regular schedule
+- Aligning privileged account policy with compliance requirements
+- Combining FGPP with MFA and privileged access controls where supported
+- Using managed service accounts or gMSAs where appropriate
+
+---
+
+## Lessons Learned
+
+This lab reinforced that Fine-Grained Password Policies are separate from normal GPO-based password policy management.
+
+FGPP uses Password Settings Objects, not standard OU-linked GPO settings.
+
+The biggest takeaway is that identity risk should influence authentication controls. A service account, a privileged admin account, and a standard user account should not automatically receive the same password requirements.
+
+Group-based PSO targeting keeps the model scalable and easier to review.
 
 ---
 
 ## Outcome
 
-By the end of this lab, the MRTG environment was able to:
+Lab 10 successfully implemented Fine-Grained Password Policies for tiered identity control in the MRTG Active Directory environment.
 
-- create separate password policy tiers for different identity types
-- apply FGPP through security groups instead of individual account sprawl
-- assign differentiated password settings to standard users, privileged admins, and service accounts
-- validate that real identities were receiving the intended Password Settings Objects
+The lab confirmed:
 
-This lab moved the environment from basic authentication hardening into **tiered identity control**, which is a stronger IAM model than relying on a single password policy for every account in the domain.
+- FGPP targeting groups were created
+- Standard users, privileged admins, and service accounts were assigned to separate groups
+- Three Password Settings Objects were created
+- PSOs were applied through group-based targeting
+- Each identity tier received the correct directly associated password settings
+- The environment now supports differentiated authentication controls by account type
+
+This moved the environment from domain-wide authentication hardening into tiered identity control.
 
 ---
 
 ## Next Lab
 
-[**Lab-11 — DHCP Services for Enterprise Identity Infrastructure**](../Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure)
+[Lab 11 — DHCP Services for Enterprise Identity Infrastructure](../Lab-11-DHCP-Services-for-Enterprise-Identity-Infrastructure/)
 
-Lab-11 builds on tiered identity control by deploying DHCP services to support reliable IP address assignment for domain-joined systems in the MRTG environment.
+Lab 11 will build on tiered identity control by deploying DHCP services to support reliable IP address assignment for domain-joined systems in the MRTG environment.
