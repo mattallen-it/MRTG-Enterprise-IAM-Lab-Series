@@ -13,9 +13,9 @@
 
 The objective of this lab is to prepare `MRTG-DC01` for Active Directory Domain Services deployment.
 
-This lab focuses on the AD DS deployment preparation phase before the domain controller becomes fully operational.
+This lab focuses on installing the AD DS role, confirming required management tools, and validating that the server is ready for domain controller promotion.
 
-The actual domain controller promotion, forest creation, DNS validation, and identity activation are completed in Lab 03.
+The actual domain controller promotion, new forest creation, DNS validation, and identity activation are completed in Lab 03.
 
 ---
 
@@ -28,11 +28,11 @@ Before a domain controller can provide those services, the server must be prepar
 This lab addresses the need to:
 
 - Prepare the first identity server for AD DS deployment
-- Install and confirm the required AD DS components
-- Validate promotion readiness
-- Confirm prerequisite checks pass before identity activation
-- Establish a controlled handoff point before domain creation
-- Keep role installation and domain controller promotion documented as separate phases
+- Install the AD DS role and required management tools
+- Confirm the server is ready for promotion
+- Validate prerequisite checks before identity activation
+- Separate role installation from domain controller promotion
+- Establish a clean handoff point for Lab 03
 
 ---
 
@@ -40,11 +40,11 @@ This lab addresses the need to:
 
 In this lab, I prepared `MRTG-DC01` for Active Directory Domain Services deployment.
 
-The AD DS role and supporting management tools were selected and prepared for installation.
+The AD DS role and supporting management tools were selected for installation through Server Manager.
 
-After the AD DS role was available, the Active Directory Domain Services Configuration Wizard was used to begin deployment preparation for a new forest named `mrtg.local`.
+After role selection, the Active Directory Domain Services Configuration Wizard was used to begin promotion preparation for a new forest named `mrtg.local`.
 
-The prerequisite checks passed successfully, confirming the server was ready for promotion in the next phase.
+The prerequisite checks passed successfully, confirming that `MRTG-DC01` was ready to be promoted as the first domain controller in Lab 03.
 
 ---
 
@@ -55,7 +55,8 @@ The prerequisite checks passed successfully, confirming the server was ready for
 | Domain | `mrtg.local` |
 | Server | `MRTG-DC01` |
 | Operating System | Windows Server 2022 |
-| Role | Active Directory Domain Services |
+| Role Prepared | Active Directory Domain Services |
+| Management Tools | Group Policy Management, AD DS tools, PowerShell module |
 | Virtualization Platform | Hyper-V |
 | Lab Organization | Monroe Redstone Technology Group |
 | Promotion Status | Prepared in this lab, completed in Lab 03 |
@@ -66,16 +67,18 @@ The prerequisite checks passed successfully, confirming the server was ready for
 
 ### Included
 
-- AD DS role preparation
+- AD DS role selection
 - AD DS management tool selection
-- Deployment configuration review
+- Group Policy Management tool selection
+- Deployment configuration preparation
 - New forest preparation for `mrtg.local`
-- Prerequisite validation
+- AD DS prerequisite validation
 - Promotion readiness confirmation
 
 ### Not Included
 
 - Completed domain controller promotion
+- New forest creation completion
 - Full DNS zone validation
 - SRV record validation
 - Kerberos authentication validation
@@ -86,11 +89,66 @@ The prerequisite checks passed successfully, confirming the server was ready for
 
 ---
 
-## AD DS Role and Management Tools Selection
+## Architecture
 
-The AD DS role and supporting management tools were selected for installation on `MRTG-DC01`.
+This lab prepares `MRTG-DC01` to become the first domain controller in the MRTG environment.
 
-The selected components included:
+```text
+MRTG-DC01
+└── Active Directory Domain Services role prepared
+    ├── Group Policy Management tools selected
+    ├── AD DS and AD LDS tools selected
+    ├── Active Directory PowerShell module selected
+    ├── Active Directory Administrative Center selected
+    └── AD DS snap-ins and command-line tools selected
+```
+
+Planned domain:
+
+```text
+mrtg.local
+```
+
+This prepares the server for the identity activation phase completed in Lab 03.
+
+---
+
+## AD DS Deployment Model
+
+This lab separates AD DS deployment into two phases.
+
+| Phase | Lab | Purpose |
+|---|---|---|
+| Preparation | Lab 02 | Install AD DS role and validate promotion readiness |
+| Activation | Lab 03 | Promote the server, create the forest, and validate domain services |
+
+This separation makes the build easier to document, troubleshoot, and explain.
+
+---
+
+## AD DS Role Components
+
+The following components were selected during AD DS role installation:
+
+| Component | Purpose |
+|---|---|
+| Active Directory Domain Services | Provides directory services and domain identity foundation |
+| Group Policy Management | Supports centralized policy management |
+| Remote Server Administration Tools | Provides management tools for AD DS |
+| AD DS and AD LDS Tools | Provides AD DS administration tools |
+| Active Directory Module for Windows PowerShell | Supports AD administration through PowerShell |
+| Active Directory Administrative Center | Provides modern AD management interface |
+| AD DS Snap-ins and Command-Line Tools | Supports classic AD administration and validation |
+
+---
+
+## Implementation and Validation
+
+### 1. AD DS Role and Management Tools Selected
+
+The Active Directory Domain Services role was selected for installation on `MRTG-DC01`.
+
+The installation selection included:
 
 - Active Directory Domain Services
 - Group Policy Management
@@ -100,68 +158,68 @@ The selected components included:
 - Active Directory Administrative Center
 - AD DS snap-ins and command-line tools
 
-![AD DS role installation](images/01-ad-ds-role-installation.png)
+![AD DS role installation](screenshots/lab-02-01-ad-ds-role-installation.png)
+
+This prepared the server with the required components for future domain controller promotion.
 
 ---
 
-## Deployment Configuration Preparation
+### 2. AD DS Prerequisite Check Completed
 
 The Active Directory Domain Services Configuration Wizard was used to prepare the server for a new forest deployment.
 
-The selected deployment operation was:
+The intended root domain name was:
 
-`Add a new forest`
+```text
+mrtg.local
+```
 
-The root domain name entered was:
+The prerequisite check completed successfully.
 
-`mrtg.local`
+Validation result:
 
-This prepared `MRTG-DC01` for promotion as the first domain controller in the new MRTG forest.
+```text
+All prerequisite checks passed successfully.
+```
 
----
+![AD DS prerequisites check](screenshots/lab-02-02-ad-ds-prerequisites-check.png)
 
-## Prerequisites Check
+The DNS delegation warning was expected because this is an isolated internal lab domain with no external parent DNS zone.
 
-The AD DS Configuration Wizard prerequisite checks were completed successfully.
-
-The wizard confirmed:
-
-`All prerequisite checks passed successfully.`
-
-The warning about DNS delegation was expected in this lab because this was a new isolated internal lab domain and no external parent DNS delegation was required.
-
-![AD DS prerequisites check](images/02-ad-ds-prerequisites-check.png)
+This confirmed that `MRTG-DC01` was ready for domain controller promotion in Lab 03.
 
 ---
 
-## Security Considerations
+## Security Perspective
 
-This lab prepared a server that will become a Tier 0 identity asset.
+This lab prepares a future Tier 0 identity asset.
 
-Security considerations include:
+A domain controller is one of the most sensitive systems in a Windows environment because it controls authentication, authorization, policy processing, and directory services.
 
-- Domain controllers must be treated as privileged identity infrastructure
-- Administrative access should be limited to approved administrators
-- Role installation and promotion should be documented separately
-- DNS and authentication configuration must be validated after promotion
-- A clean checkpoint should be maintained before and after major identity changes
-- AD DS deployment should occur only on designated servers
+From a security and IAM perspective, this lab supports:
+
+- Controlled identity infrastructure preparation
+- Separation between role installation and promotion
+- Clear documentation of privileged infrastructure changes
+- Promotion readiness validation before identity activation
+- Preparation for centralized authentication and policy enforcement
+- Reduced risk of undocumented domain controller build steps
 
 ---
 
 ## Risk Addressed
 
-Without proper AD DS deployment preparation, the domain controller promotion process may fail or create an unstable identity foundation.
+Without proper AD DS deployment preparation, domain controller promotion may fail or result in an unstable identity foundation.
 
-This lab reduces that risk by validating the required role components and confirming that prerequisite checks passed before completing identity activation.
-
-The main risks addressed include:
+This lab reduces the risk of:
 
 - Missing AD DS role components
+- Missing management tools
 - Incomplete server preparation
-- Failed promotion readiness checks
-- Unclear separation between role installation and domain promotion
-- Poor documentation of the identity infrastructure build process
+- Failed prerequisite checks
+- Poor separation between installation and promotion
+- Weak documentation of the identity infrastructure build process
+- Unclear handoff between AD DS preparation and domain activation
 
 ---
 
@@ -170,11 +228,12 @@ The main risks addressed include:
 | Control Area | How This Lab Supports It |
 |---|---|
 | Identity infrastructure preparation | Prepares `MRTG-DC01` for AD DS deployment |
-| Change control readiness | Documents the preparation phase before promotion |
+| Change control readiness | Documents role installation before promotion |
 | Tier 0 planning | Identifies the future domain controller as privileged infrastructure |
-| Operational consistency | Separates role preparation from domain controller promotion |
+| Operational consistency | Separates preparation from identity activation |
+| Deployment validation | Confirms prerequisite checks passed |
 | Audit readiness | Captures evidence of role selection and prerequisite validation |
-| Deployment validation | Confirms prerequisite checks passed before identity activation |
+| Future IAM foundation | Prepares the server for centralized authentication and policy enforcement |
 
 ---
 
@@ -185,9 +244,14 @@ The following validation checks were completed:
 | Validation Item | Result |
 |---|---|
 | AD DS role selected | Passed |
-| Required management tools selected | Passed |
-| New forest deployment path selected | Passed |
-| `mrtg.local` entered as the root domain name | Passed |
+| Group Policy Management selected | Passed |
+| Remote Server Administration Tools selected | Passed |
+| AD DS and AD LDS Tools selected | Passed |
+| Active Directory PowerShell module selected | Passed |
+| Active Directory Administrative Center selected | Passed |
+| AD DS snap-ins and command-line tools selected | Passed |
+| New forest deployment path prepared | Passed |
+| `mrtg.local` entered as planned root domain | Passed |
 | AD DS prerequisite checks completed | Passed |
 | Prerequisite checks passed successfully | Passed |
 | DNS delegation warning reviewed | Passed |
@@ -200,8 +264,8 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| AD DS role and management tools selection | `images/01-ad-ds-role-installation.png` |
-| AD DS prerequisite validation | `images/02-ad-ds-prerequisites-check.png` |
+| AD DS role and management tools selected | `screenshots/lab-02-01-ad-ds-role-installation.png` |
+| AD DS prerequisite validation | `screenshots/lab-02-02-ad-ds-prerequisites-check.png` |
 
 ---
 
@@ -209,7 +273,7 @@ The following evidence was collected during the lab:
 
 In a production environment, I would improve this process by:
 
-- Using a formal deployment checklist before installing AD DS
+- Using a formal domain controller deployment checklist
 - Confirming server naming standards before promotion
 - Validating static IP and DNS planning before role installation
 - Documenting administrative ownership of the domain controller
@@ -218,6 +282,8 @@ In a production environment, I would improve this process by:
 - Creating formal change management records
 - Reviewing DNS delegation requirements for enterprise environments
 - Capturing pre-change and post-change validation evidence
+- Confirming time synchronization requirements
+- Reviewing domain and forest naming standards before deployment
 
 ---
 
@@ -225,7 +291,7 @@ In a production environment, I would improve this process by:
 
 This lab reinforced that AD DS deployment is a phased process.
 
-Installing and preparing the AD DS role is not the same as fully activating a domain controller.
+Installing the AD DS role is not the same as fully activating a domain controller.
 
 A clean lab structure separates preparation, promotion, and validation into clear phases. This makes the work easier to troubleshoot, document, and explain.
 
@@ -244,6 +310,7 @@ The lab confirmed:
 - New forest deployment preparation was started
 - `mrtg.local` was entered as the planned root domain
 - AD DS prerequisite checks passed successfully
+- DNS delegation warning was reviewed and understood
 - The server was ready for domain controller promotion in Lab 03
 
 This lab created the controlled preparation point before activating the MRTG identity domain.
