@@ -1,48 +1,48 @@
-# Lab 04 — OU Design and GPO Enforcement
+# Lab 03 — Domain Controller Promotion and Identity Activation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
-![Policy](https://img.shields.io/badge/Policy-Group%20Policy-purple)
-![Security](https://img.shields.io/badge/Security-Access%20Control-red)
-![Model](https://img.shields.io/badge/Model-RBAC-orange)
-![Validation](https://img.shields.io/badge/Validation-GPO%20Enforcement-brightgreen)
+![Role](https://img.shields.io/badge/Role-Domain%20Controller-critical)
+![Authentication](https://img.shields.io/badge/Authentication-Kerberos-brightgreen)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Activation-orange)
+![Validation](https://img.shields.io/badge/Validation-Domain%20Controller%20Operational-lightgrey)
 
 ---
 
 ## Objective
 
-The objective of this lab is to design an Organizational Unit structure and enforce baseline policy through Group Policy in the `mrtg.local` Active Directory domain.
+The objective of this lab is to promote `MRTG-DC01` to the first domain controller in the `mrtg.local` Active Directory forest.
 
-This lab transitions the environment from a functioning domain controller into a structured, policy-driven identity environment.
-
-The focus is on OU-based policy targeting, GPO enforcement, and group-based access control.
+This lab activates the identity foundation prepared in Lab 02 by creating the new forest, validating Active Directory Domain Services, confirming DNS registration, verifying domain authentication context, and creating a stable post-promotion checkpoint.
 
 ---
 
 ## Business Problem
 
-Monroe Redstone Technology Group needs a scalable way to organize users, computers, administrative accounts, service accounts, and access groups.
+Monroe Redstone Technology Group needs a centralized identity authority for authentication, authorization, policy enforcement, and future IAM governance.
 
-Without a structured OU design and policy enforcement model, identity management becomes inconsistent, manual, and difficult to audit.
+Before users, groups, policies, access controls, and monitoring can be built, the organization needs an operational Active Directory domain.
 
 This lab addresses the need to:
 
-- Organize Active Directory objects by function
-- Separate users, computers, groups, admin accounts, and service accounts
-- Apply Group Policy to targeted systems
-- Validate that computer and user policies apply correctly
-- Enforce access through security group membership
-- Support repeatable identity governance
+- Promote the prepared server into a domain controller
+- Create the `mrtg.local` Active Directory forest
+- Establish centralized domain authentication
+- Validate AD-integrated DNS zones
+- Confirm domain controller service records
+- Verify network and DNS configuration
+- Validate domain authentication context
+- Preserve a stable post-promotion baseline
 
 ---
 
 ## Lab Summary
 
-In this lab, I created a structured OU hierarchy for the MRTG domain and configured Group Policy enforcement for domain-joined systems.
+In this lab, I promoted `MRTG-DC01` as the first domain controller for the new `mrtg.local` forest.
 
-I validated policy application using `gpresult /r` and tested access control behavior through Remote Desktop access.
+After promotion, I validated that the domain existed in Active Directory Users and Computers, confirmed AD-integrated DNS zones, reviewed `_msdcs` service records, verified the domain controller IP and DNS configuration, confirmed domain authentication context, and created a post-promotion Hyper-V checkpoint.
 
-The lab demonstrated that access should be granted through group membership instead of direct user-level permissions.
+This lab transitions the MRTG environment from a prepared server into an operational identity platform.
 
 ---
 
@@ -52,10 +52,12 @@ The lab demonstrated that access should be granted through group membership inst
 |---|---|
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
-| Client System | `CLIENT01` |
 | Operating System | Windows Server 2022 |
-| Management Tool | Group Policy Management Console |
-| Directory Tool | Active Directory Users and Computers |
+| Directory Service | Active Directory Domain Services |
+| DNS | AD-integrated DNS |
+| Authentication | Kerberos-based domain authentication |
+| IP Address | `192.168.10.10` |
+| Virtualization Platform | Hyper-V |
 | Lab Organization | Monroe Redstone Technology Group |
 
 ---
@@ -64,268 +66,245 @@ The lab demonstrated that access should be granted through group membership inst
 
 ### Included
 
-- Organizational Unit design
-- Computer OU segmentation
-- Workstation object placement
-- Group Policy Object creation
-- GPO linking to targeted OU
-- GPO scope and security filtering review
-- User session lock policy configuration
-- Computer policy validation
-- User policy validation
-- Group-based access control testing
-- RDP denied and remediation validation
+- New forest deployment configuration
+- Domain controller promotion
+- `mrtg.local` forest creation
+- Active Directory Users and Computers validation
+- AD-integrated DNS zone validation
+- `_msdcs` service record validation
+- Forward lookup zone validation
+- Domain controller IP and DNS validation
+- Domain authentication context validation
+- Domain name resolution validation
+- Post-promotion Hyper-V checkpoint creation
 
 ### Not Included
 
-- Domain controller promotion
-- Password policy hardening
-- Account lockout hardening
+- OU structure design
+- User and group provisioning
+- Group Policy enforcement
+- Domain-joined client configuration
+- Additional domain controller deployment
+- DHCP configuration
+- Centralized logging
 - Fine-grained password policies
-- Windows LAPS
-- Certificate services
-- Lifecycle automation
 
 ---
 
 ## Architecture
 
-The MRTG domain uses a structured OU hierarchy to support policy targeting and future delegated administration.
+This lab establishes `MRTG-DC01` as the first domain controller in the MRTG environment.
 
 ```text
 mrtg.local
-└── _MRTG
-    ├── Users
-    │   ├── IT
-    │   ├── Security
-    │   ├── HR
-    │   ├── Finance
-    │   ├── Operations
-    │   ├── Engineering
-    │   └── Executives
-    ├── Computers
-    │   ├── Workstations
-    │   └── Servers
-    ├── Groups
-    ├── Admin Accounts
-    └── Service Accounts
+└── MRTG-DC01
+    ├── Active Directory Domain Services
+    ├── AD-integrated DNS
+    ├── Kerberos authentication
+    └── Domain controller service registration
 ```
 
-This structure supports:
+The domain controller becomes the authoritative identity provider for the lab environment.
 
-- OU-based policy targeting
-- Separation of users and computers
-- Administrative boundary planning
-- Group-based access control
-- Future delegation of control
-- Future lifecycle management
+```text
+MRTG-DC01
+└── mrtg.local
+    ├── Authentication
+    ├── Authorization
+    ├── DNS service location
+    ├── Directory services
+    └── Future Group Policy enforcement
+```
 
 ---
 
-## Identity Governance Model
+## Identity Activation Model
 
-This lab uses three core identity governance controls:
+Lab 02 prepared the server for Active Directory Domain Services.
 
-| Control | Purpose |
+Lab 03 activates the domain.
+
+| Phase | Lab | Purpose |
+|---|---|---|
+| Preparation | Lab 02 | AD DS role installed and prerequisite checks passed |
+| Activation | Lab 03 | Server promoted and `mrtg.local` domain created |
+| Governance Foundation | Lab 04 | OU structure and Group Policy controls begin |
+
+This separation keeps the identity build process clean, reviewable, and easier to troubleshoot.
+
+---
+
+## Domain Controller Role
+
+After promotion, `MRTG-DC01` provides the following core services:
+
+| Service | Purpose |
 |---|---|
-| Organizational Units | Structure identity and computer objects for management |
-| Group Policy Objects | Enforce configuration and security settings |
-| Security Groups | Control access through role-based membership |
-
-Together, these controls create a scalable policy and access control model.
-
----
-
-## Group Policy Strategy
-
-The workstation baseline policy was designed to apply to domain-joined client systems.
-
-The policy model used:
-
-- GPO linked to the Workstations OU
-- Security filtering through authenticated domain users
-- User and computer policy validation
-- Group-based access control for Remote Desktop access
-
-This keeps policy enforcement centralized and repeatable.
-
----
-
-## Access Control Model
-
-Access was governed through security group membership.
-
-Example group:
-
-`GG_Remote_Desktop_Users`
-
-This model avoids direct user-level access assignments.
-
-Instead, access is granted by placing users into the appropriate security group.
-
-This supports:
-
-- Least privilege
-- Easier access review
-- Cleaner permissions management
-- Better auditability
-- Scalable access control
+| Active Directory Domain Services | Stores and manages domain identities |
+| DNS | Supports domain name resolution and service discovery |
+| Kerberos | Provides domain authentication |
+| Service Records | Allows clients and services to locate domain controllers |
+| Directory Management | Enables future users, groups, OUs, and policies |
 
 ---
 
 ## Implementation and Validation
 
-### 1. Organizational Unit Structure Created
+### 1. New Forest Deployment Configured
 
-A structured OU hierarchy was created under the MRTG domain.
+The Active Directory Domain Services Configuration Wizard was used to configure a new forest.
 
-The OU structure separated users, computers, groups, admin accounts, and service accounts.
+Selected deployment operation:
 
-![OU structure](images/step01_ou_structure.png)
-
----
-
-### 2. Computer OU Segmentation Implemented
-
-Computer objects were organized into dedicated OUs for future workstation and server policy targeting.
-
-![Computer OU structure](images/step02_computer_ou_structure.png)
-
----
-
-### 3. Client Workstation Placed in Workstations OU
-
-`CLIENT01` was placed in the Workstations OU so workstation-specific policy could be applied.
-
-![Workstation OU membership](images/step03_workstation_ou_membership.png)
-
----
-
-### 4. User Session Lock Policy Configured
-
-A user session lock policy was configured through Group Policy.
-
-The policy supported endpoint security by enforcing session protection for inactive users.
-
-![User session lock policy](images/step04_user_session_lock.png)
-
----
-
-### 5. GPO Linked to Workstations OU
-
-The workstation policy GPO was linked to the Workstations OU.
-
-This ensured the policy targeted the correct set of domain-joined client systems.
-
-![GPO linked to OU](images/step05_gpo_linked_to_ou.png)
-
----
-
-### 6. GPO Scope and Security Filtering Reviewed
-
-The GPO scope and security filtering were reviewed to confirm the policy applied to the intended targets.
-
-![GPO scope filtering](images/step06_gpo_scope_filtering.png)
-
----
-
-### 7. Computer Policy Application Validated
-
-Computer policy application was validated using:
-
-```powershell
-gpresult /r
+```text
+Add a new forest
 ```
 
-The output showed that the workstation baseline policy was applied to `CLIENT01`.
+Root domain name:
 
-![Computer policy applied](images/step07_computer_policy_applied.png)
+```text
+mrtg.local
+```
 
----
+![New forest deployment configuration](screenshots/lab-03-01-new-forest-mrtg-local.png)
 
-### 8. User Policy Application Validated
-
-User policy application was validated to confirm that user-side policy processing was working correctly.
-
-The output showed that the user session lock policy was applied for the signed-in domain user.
-
-![User policy applied](images/step08_user_policy_applied.png)
+This step started the identity activation process for the MRTG domain.
 
 ---
 
-### 9. Access Control Failure Simulated
+### 2. Active Directory Domain Created
 
-Remote Desktop access was tested before the user was granted the required group-based access.
+After promotion, Active Directory Users and Computers was opened to confirm that the `mrtg.local` domain existed.
 
-The access attempt failed as expected.
+![Active Directory domain created](screenshots/lab-03-02-active-directory-domain-created.png)
 
-![RDP access denied](images/step09_rdp_access_denied.png)
-
-This confirmed that access was not being granted automatically or through unnecessary privilege.
+This confirmed that the new Active Directory domain was created successfully.
 
 ---
 
-### 10. Group-Based Access Control Implemented
+### 3. DNS `_msdcs` Service Records Validated
 
-The user was added to the appropriate Remote Desktop access group.
+DNS Manager was used to review the `_msdcs.mrtg.local` zone.
 
-Group used:
+The zone contained domain controller service location records required for Active Directory discovery.
 
-`GG_Remote_Desktop_Users`
+![DNS msdcs service records](screenshots/lab-03-03-dns-msdcs-service-records.png)
 
-![RDP group membership](images/step10_rdp_group_membership.png)
-
-This implemented access through role-based group membership instead of direct user-level permissions.
+This confirmed that domain controller service registration was present.
 
 ---
 
-### 11. Access Remediation Validated
+### 4. DNS Forward Lookup Zones Validated
 
-After group membership was updated, Remote Desktop access was tested again.
+DNS Manager was used to validate the forward lookup zones.
 
-The user successfully signed in after the correct group-based permission was assigned.
+Confirmed zones included:
 
-![RDP successful login](images/step11_rdp_successful_login.png)
+```text
+_msdcs.mrtg.local
+mrtg.local
+```
 
-This validated the group-based access control model.
+![DNS forward lookup zones](screenshots/lab-03-04-dns-forward-lookup-zones.png)
+
+This confirmed that AD-integrated DNS zones were created and running.
+
+---
+
+### 5. Domain Controller Network Configuration Validated
+
+`ipconfig /all` was used to confirm the domain controller network configuration.
+
+Validated values included:
+
+| Setting | Value |
+|---|---|
+| Host Name | `MRTG-DC01` |
+| IPv4 Address | `192.168.10.10` |
+| Subnet Mask | `255.255.255.0` |
+| DNS Server | `192.168.10.10` |
+
+![Domain controller ipconfig](screenshots/lab-03-05-domain-controller-ipconfig.png)
+
+This confirmed that the domain controller was using itself for DNS resolution.
+
+---
+
+### 6. Domain Authentication and Name Resolution Validated
+
+Domain context and domain name resolution were validated from the command line.
+
+Commands used:
+
+```cmd
+echo %USERDOMAIN%
+whoami
+ping mrtg.local
+```
+
+Validated results included:
+
+```text
+USERDOMAIN = MRTG
+whoami = mrtg\administrator
+mrtg.local resolved to 192.168.10.10
+```
+
+![Domain authentication validation](screenshots/lab-03-06-domain-authentication-validation.png)
+
+This confirmed that the server was operating in the domain context and that the domain name resolved correctly.
+
+---
+
+### 7. Post-Promotion Checkpoint Created
+
+A Hyper-V checkpoint was created after successful promotion and validation.
+
+Checkpoint name:
+
+```text
+Post-DC-Promotion
+```
+
+![Post DC promotion checkpoint](screenshots/lab-03-07-post-dc-promotion-checkpoint.png)
+
+This preserved a stable post-promotion baseline for future labs and rollback.
 
 ---
 
 ## Security Perspective
 
-This lab demonstrates that identity governance depends on structure, policy, and access control working together.
+This lab establishes the first Tier 0 identity asset in the MRTG environment.
 
-The OU structure provides targeting.
+A domain controller is a critical security system because it controls authentication, authorization, directory services, and future policy enforcement.
 
-Group Policy provides enforcement.
+From a security and IAM perspective, this lab supports:
 
-Security groups provide access control.
+- Centralized domain authentication
+- AD-integrated DNS service discovery
+- Kerberos-based identity operations
+- Controlled identity infrastructure activation
+- Tier 0 infrastructure awareness
+- Evidence-based validation
+- Stable rollback readiness through checkpointing
 
-From a security perspective, this lab supports:
-
-- Least privilege
-- Centralized policy enforcement
-- Reduced manual configuration
-- Group-based access control
-- Easier audit review
-- Repeatable access management
-- Scalable identity governance
+Compromise of a domain controller can compromise the entire identity domain, so this system must be treated as privileged infrastructure.
 
 ---
 
 ## Risk Addressed
 
-Without OU structure and GPO enforcement, identity environments become inconsistent and difficult to govern.
+Without a properly promoted and validated domain controller, the environment cannot reliably support identity operations.
 
 This lab reduces the risk of:
 
-- Unstructured Active Directory growth
-- Policy misapplication
-- Manual endpoint configuration drift
-- Direct user-level permissions
-- Inconsistent access control
-- Poor auditability
-- Weak least-privilege enforcement
+- Failed domain creation
+- Missing AD-integrated DNS zones
+- Broken domain controller service discovery
+- Incorrect DNS self-reference
+- Weak post-promotion validation
+- No rollback point after identity activation
+- Poor evidence for foundational identity infrastructure
 
 ---
 
@@ -333,13 +312,14 @@ This lab reduces the risk of:
 
 | Control Area | How This Lab Supports It |
 |---|---|
-| OU governance | Organizes users, computers, groups, admin accounts, and service accounts |
-| Policy enforcement | Applies GPO settings through OU targeting |
-| Endpoint security | Enforces user session lock controls |
-| Access control | Uses security groups for Remote Desktop access |
-| Least privilege | Access is denied until proper group membership is assigned |
-| Audit readiness | Screenshots and validation evidence document the control state |
-| Operational consistency | Uses repeatable GPO and group-based access patterns |
+| Identity activation | Promotes `MRTG-DC01` as the first domain controller |
+| Centralized authentication | Creates the `mrtg.local` domain |
+| DNS service discovery | Validates `_msdcs` and forward lookup zones |
+| Network validation | Confirms IP and DNS configuration |
+| Authentication validation | Confirms domain context and domain resolution |
+| Operational resilience | Creates post-promotion checkpoint |
+| Audit readiness | Captures evidence of domain creation and validation |
+| Tier 0 awareness | Establishes the first privileged identity infrastructure asset |
 
 ---
 
@@ -349,17 +329,19 @@ The following validation checks were completed:
 
 | Validation Item | Result |
 |---|---|
-| OU hierarchy created | Passed |
-| Computer OUs created | Passed |
-| Client workstation placed in correct OU | Passed |
-| User session lock policy configured | Passed |
-| GPO linked to Workstations OU | Passed |
-| GPO scope reviewed | Passed |
-| Computer policy validated with `gpresult /r` | Passed |
-| User policy validated | Passed |
-| RDP access denied before group membership | Passed |
-| User added to access group | Passed |
-| RDP access granted after group membership update | Passed |
+| New forest deployment configured | Passed |
+| `mrtg.local` root domain entered | Passed |
+| `MRTG-DC01` promoted as domain controller | Passed |
+| `mrtg.local` visible in Active Directory Users and Computers | Passed |
+| `_msdcs.mrtg.local` DNS zone present | Passed |
+| `mrtg.local` DNS zone present | Passed |
+| Domain controller service records present | Passed |
+| Domain controller IP configuration validated | Passed |
+| DNS self-reference validated | Passed |
+| Domain context confirmed with `%USERDOMAIN%` | Passed |
+| Domain identity confirmed with `whoami` | Passed |
+| `mrtg.local` resolved to `192.168.10.10` | Passed |
+| Post-promotion checkpoint created | Passed |
 
 ---
 
@@ -369,17 +351,13 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| OU structure | `images/step01_ou_structure.png` |
-| Computer OU structure | `images/step02_computer_ou_structure.png` |
-| Workstation OU membership | `images/step03_workstation_ou_membership.png` |
-| User session lock policy | `images/step04_user_session_lock.png` |
-| GPO linked to OU | `images/step05_gpo_linked_to_ou.png` |
-| GPO scope filtering | `images/step06_gpo_scope_filtering.png` |
-| Computer policy applied | `images/step07_computer_policy_applied.png` |
-| User policy applied | `images/step08_user_policy_applied.png` |
-| RDP access denied | `images/step09_rdp_access_denied.png` |
-| RDP group membership | `images/step10_rdp_group_membership.png` |
-| RDP successful login | `images/step11_rdp_successful_login.png` |
+| New forest deployment configuration | `screenshots/lab-03-01-new-forest-mrtg-local.png` |
+| Active Directory domain created | `screenshots/lab-03-02-active-directory-domain-created.png` |
+| DNS `_msdcs` service records | `screenshots/lab-03-03-dns-msdcs-service-records.png` |
+| DNS forward lookup zones | `screenshots/lab-03-04-dns-forward-lookup-zones.png` |
+| Domain controller IP configuration | `screenshots/lab-03-05-domain-controller-ipconfig.png` |
+| Domain authentication validation | `screenshots/lab-03-06-domain-authentication-validation.png` |
+| Post-DC promotion checkpoint | `screenshots/lab-03-07-post-dc-promotion-checkpoint.png` |
 
 ---
 
@@ -387,52 +365,55 @@ The following evidence was collected during the lab:
 
 In a production environment, I would improve this process by:
 
-- Creating a formal OU design document
-- Defining naming standards for OUs, groups, and GPOs
-- Separating workstation and server policy baselines
-- Applying security filtering more narrowly where required
-- Using WMI filtering only when needed
-- Documenting GPO ownership and review cycles
-- Using change management for policy changes
-- Testing GPOs in a pilot OU before broad deployment
-- Reviewing access groups on a regular schedule
-- Avoiding direct user permissions wherever possible
-- Monitoring GPO changes through event logging or SIEM
+- Using a formal domain controller promotion checklist
+- Validating DNS design before promotion
+- Confirming domain and forest naming standards
+- Documenting Tier 0 administrative ownership
+- Configuring domain controller backup immediately after promotion
+- Reviewing time synchronization configuration
+- Applying domain controller hardening baselines
+- Restricting interactive logon to approved administrators
+- Monitoring domain controller security events
+- Creating a post-promotion health report
+- Avoiding unnecessary roles on domain controllers
+- Using formal change control for domain creation
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that Active Directory governance starts with structure.
+This lab reinforced that domain controller promotion is the point where identity infrastructure becomes operational.
 
-A domain by itself is not enough. Objects need to be organized, policies need to be targeted, and access needs to be granted through groups.
+Installing AD DS prepares the server, but promotion activates the domain.
 
-The biggest takeaway is that OU design and Group Policy are foundational IAM controls. They create the structure needed for later labs involving password hardening, delegation, LAPS, lifecycle automation, and audit review.
+The biggest takeaway is that promotion must be validated from multiple angles: Active Directory visibility, DNS zone creation, service records, IP configuration, domain context, and name resolution.
+
+A domain controller should never be assumed healthy just because the promotion wizard finishes.
 
 ---
 
 ## Outcome
 
-Lab 04 successfully implemented OU-based policy targeting and group-based access control in the MRTG domain.
+Lab 03 successfully promoted `MRTG-DC01` as the first domain controller in the `mrtg.local` Active Directory forest.
 
 The lab confirmed:
 
-- A structured OU hierarchy was created
-- Computer objects were segmented into workstation and server OUs
-- `CLIENT01` was placed in the Workstations OU
-- A user session lock policy was configured
-- GPO linking and scope were reviewed
-- Computer policy application was validated
-- User policy application was validated
-- RDP access was denied before group-based permission assignment
-- Access was granted after group membership remediation
+- A new forest was configured for `mrtg.local`
+- `MRTG-DC01` became the first domain controller
+- The `mrtg.local` domain was visible in Active Directory Users and Computers
+- AD-integrated DNS zones were created
+- `_msdcs` service records were present
+- The domain controller used `192.168.10.10` for DNS
+- Domain context was validated
+- `mrtg.local` resolved successfully
+- A stable post-promotion checkpoint was created
 
-The environment now operates as a more structured and policy-driven identity system.
+The MRTG environment now has an operational Active Directory identity foundation.
 
 ---
 
 ## Next Lab
 
-[Lab 05 — Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management/)
+[Lab 04 — OU Design and GPO Enforcement](../Lab-04-OU-Design-and-GPO-Enforcement/)
 
-Lab 05 will build on the OU and Group Policy foundation by implementing joiner, mover, and leaver workflows for managing user identities across the MRTG environment.
+Lab 04 will build on the activated domain by creating a structured OU design and applying Group Policy controls for centralized identity and endpoint governance.
