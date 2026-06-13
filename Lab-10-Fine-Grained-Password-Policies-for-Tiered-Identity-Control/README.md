@@ -50,6 +50,8 @@ I then created three Password Settings Objects and applied them to the appropria
 
 The lab validated that standard user, privileged admin, and service account identities received the intended password policy tier.
 
+This lab moved the MRTG environment from a single domain-wide password baseline into a tiered identity control model.
+
 ---
 
 ## Environment
@@ -142,7 +144,7 @@ FGPP uses Password Settings Objects stored in the Password Settings Container.
 | Component | Purpose |
 |---|---|
 | Password Settings Object | Defines password and lockout requirements |
-| Precedence | Determines which PSO wins if multiple apply |
+| Precedence | Determines which PSO wins if multiple policies apply |
 | Global Security Group | Used to target the PSO to identities |
 | Directly Associated Password Settings | Shows which PSO is associated with the account |
 
@@ -180,7 +182,7 @@ A Hyper-V checkpoint was created before making Fine-Grained Password Policy chan
 
 This preserved the clean post-Lab-09 environment.
 
-![Pre-FGPP checkpoint](images/Lab-10-01-Pre-FGPP-Checkpoint.png)
+![Pre-FGPP checkpoint](screenshots/lab-10-01-pre-fgpp-checkpoint.png)
 
 ---
 
@@ -192,7 +194,7 @@ The following global security groups were created inside the `_MRTG/Groups` OU:
 - `GG_PSO_Privileged_Admins`
 - `GG_PSO_Service_Accounts`
 
-![PSO groups created](images/Lab-10-02-PSO-Groups-Created.png)
+![PSO groups created](screenshots/lab-10-02-pso-groups-created.png)
 
 These groups were used to apply Password Settings Objects by identity tier.
 
@@ -208,7 +210,7 @@ Representative identities were added to the FGPP targeting groups.
 | `john.smith.admin` | `GG_PSO_Privileged_Admins` |
 | `Service App Deploy` | `GG_PSO_Service_Accounts` |
 
-![PSO group membership](images/Lab-10-03-PSO-Group-Membership.png)
+![PSO group membership](screenshots/lab-10-03-pso-group-membership.png)
 
 This allowed each identity type to receive a different password policy through group membership.
 
@@ -226,7 +228,7 @@ mrtg.local
     └── Password Settings Container
 ```
 
-![ADAC password settings container](images/Lab-10-04-ADAC-Password-Settings-Container.png)
+![Password Settings Container opened](screenshots/lab-10-04-password-settings-container-opened.png)
 
 This is where Fine-Grained Password Policies are created and managed.
 
@@ -236,7 +238,9 @@ This is where Fine-Grained Password Policies are created and managed.
 
 A Password Settings Object named `PSO-Standard-Users` was created and applied to:
 
-`GG_PSO_Standard_Users`
+```text
+GG_PSO_Standard_Users
+```
 
 Configured values included:
 
@@ -253,7 +257,7 @@ Configured values included:
 | Reset lockout counter after | `15 minutes` |
 | Lockout duration | `15 minutes` |
 
-![Standard users PSO](images/Lab-10-05-Standard-Users-PSO.png)
+![Standard users PSO configured](screenshots/lab-10-05-standard-users-pso-configured.png)
 
 This policy represents the baseline authentication standard for normal workforce identities.
 
@@ -263,7 +267,9 @@ This policy represents the baseline authentication standard for normal workforce
 
 A Password Settings Object named `PSO-Privileged-Admins` was created and applied to:
 
-`GG_PSO_Privileged_Admins`
+```text
+GG_PSO_Privileged_Admins
+```
 
 Configured values included:
 
@@ -280,7 +286,7 @@ Configured values included:
 | Reset lockout counter after | `30 minutes` |
 | Lockout duration | `30 minutes` |
 
-![Privileged admins PSO](images/Lab-10-06-Privileged-Admins-PSO.png)
+![Privileged admins PSO configured](screenshots/lab-10-06-privileged-admins-pso-configured.png)
 
 This policy applies stronger requirements to higher-risk privileged identities.
 
@@ -290,7 +296,9 @@ This policy applies stronger requirements to higher-risk privileged identities.
 
 A Password Settings Object named `PSO-Service-Accounts` was created and applied to:
 
-`GG_PSO_Service_Accounts`
+```text
+GG_PSO_Service_Accounts
+```
 
 Configured values included:
 
@@ -307,7 +315,7 @@ Configured values included:
 | Reset lockout counter after | `15 minutes` |
 | Lockout duration | `15 minutes` |
 
-![Service accounts PSO](images/Lab-10-07-Service-Accounts-PSO.png)
+![Service accounts PSO configured](screenshots/lab-10-07-service-accounts-pso-configured.png)
 
 This policy differentiates service identities from normal user accounts by using a longer minimum password length and a separate password lifetime model.
 
@@ -325,7 +333,7 @@ The following objects were present:
 | `PSO-Privileged-Admins` | `20` |
 | `PSO-Standard-Users` | `30` |
 
-![PSO objects created](images/Lab-10-08-PSO-Objects-Created.png)
+![PSO objects created](screenshots/lab-10-08-pso-objects-created.png)
 
 This confirmed that all three policy tiers were created successfully.
 
@@ -341,7 +349,7 @@ Validation confirmed:
 - Directly Associated Password Settings showed `PSO-Standard-Users`
 - Associated precedence was `30`
 
-![Resultant PSO Kevin Carter](images/Lab-10-09-Resultant-PSO-Kevin-Carter.png)
+![Resultant PSO Kevin Carter](screenshots/lab-10-09-resultant-pso-kevin-carter.png)
 
 This confirmed that the standard user tier received the intended PSO.
 
@@ -357,7 +365,7 @@ Validation confirmed:
 - Directly Associated Password Settings showed `PSO-Privileged-Admins`
 - Associated precedence was `20`
 
-![Resultant PSO John Smith Admin](images/Lab-10-10-Resultant-PSO-John-Smith-Admin.png)
+![Resultant PSO John Smith Admin](screenshots/lab-10-10-resultant-pso-john-smith-admin.png)
 
 This confirmed that the privileged admin tier received stronger authentication controls than the standard user tier.
 
@@ -373,7 +381,7 @@ Validation confirmed:
 - Directly Associated Password Settings showed `PSO-Service-Accounts`
 - Associated precedence was `10`
 
-![Resultant PSO service account](images/Lab-10-11-Resultant-PSO-Service-Account.png)
+![Resultant PSO service account](screenshots/lab-10-11-resultant-pso-service-account.png)
 
 This confirmed that the service account tier received its own password policy.
 
@@ -383,7 +391,7 @@ This confirmed that the service account tier received its own password policy.
 
 The Password Settings Container was reviewed with all three PSOs visible.
 
-![AD user policy tier validation](images/Lab-10-12-AD-User-Policy-Tier-Validation.png)
+![AD user policy tier validation](screenshots/lab-10-12-ad-user-policy-tier-validation.png)
 
 This confirmed that the environment contained a complete tiered FGPP design:
 
@@ -425,6 +433,7 @@ This lab reduces the risk of:
 - Manual per-user password policy assignment
 - Weak privileged account authentication standards
 - Poor service account password governance
+- One-size-fits-all authentication control
 
 ---
 
@@ -470,18 +479,18 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Pre-FGPP checkpoint | `images/Lab-10-01-Pre-FGPP-Checkpoint.png` |
-| PSO groups created | `images/Lab-10-02-PSO-Groups-Created.png` |
-| PSO group membership | `images/Lab-10-03-PSO-Group-Membership.png` |
-| ADAC Password Settings Container | `images/Lab-10-04-ADAC-Password-Settings-Container.png` |
-| Standard users PSO | `images/Lab-10-05-Standard-Users-PSO.png` |
-| Privileged admins PSO | `images/Lab-10-06-Privileged-Admins-PSO.png` |
-| Service accounts PSO | `images/Lab-10-07-Service-Accounts-PSO.png` |
-| PSO objects created | `images/Lab-10-08-PSO-Objects-Created.png` |
-| Resultant PSO Kevin Carter | `images/Lab-10-09-Resultant-PSO-Kevin-Carter.png` |
-| Resultant PSO John Smith Admin | `images/Lab-10-10-Resultant-PSO-John-Smith-Admin.png` |
-| Resultant PSO service account | `images/Lab-10-11-Resultant-PSO-Service-Account.png` |
-| AD user policy tier validation | `images/Lab-10-12-AD-User-Policy-Tier-Validation.png` |
+| Pre-FGPP checkpoint | `screenshots/lab-10-01-pre-fgpp-checkpoint.png` |
+| PSO groups created | `screenshots/lab-10-02-pso-groups-created.png` |
+| PSO group membership | `screenshots/lab-10-03-pso-group-membership.png` |
+| Password Settings Container opened | `screenshots/lab-10-04-password-settings-container-opened.png` |
+| Standard users PSO configured | `screenshots/lab-10-05-standard-users-pso-configured.png` |
+| Privileged admins PSO configured | `screenshots/lab-10-06-privileged-admins-pso-configured.png` |
+| Service accounts PSO configured | `screenshots/lab-10-07-service-accounts-pso-configured.png` |
+| PSO objects created | `screenshots/lab-10-08-pso-objects-created.png` |
+| Resultant PSO Kevin Carter | `screenshots/lab-10-09-resultant-pso-kevin-carter.png` |
+| Resultant PSO John Smith Admin | `screenshots/lab-10-10-resultant-pso-john-smith-admin.png` |
+| Resultant PSO service account | `screenshots/lab-10-11-resultant-pso-service-account.png` |
+| AD user policy tier validation | `screenshots/lab-10-12-ad-user-policy-tier-validation.png` |
 
 ---
 
@@ -500,6 +509,7 @@ In a production environment, I would improve this process by:
 - Aligning privileged account policy with compliance requirements
 - Combining FGPP with MFA and privileged access controls where supported
 - Using managed service accounts or gMSAs where appropriate
+- Testing password change behavior after PSO assignment
 
 ---
 
