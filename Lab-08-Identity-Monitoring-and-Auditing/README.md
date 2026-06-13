@@ -13,7 +13,7 @@
 
 The objective of this lab is to implement identity-focused monitoring and auditing in the `mrtg.local` Active Directory domain.
 
-This lab builds on the delegated administration model from Lab 07 by configuring audit policy, applying object-level auditing, performing delegated identity actions, and validating the resulting security events.
+This lab builds on the delegated administration model from Lab 07 by configuring audit policy, applying object-level auditing, performing controlled identity changes, and validating the resulting security events.
 
 The focus is on making identity activity visible, traceable, and reviewable.
 
@@ -23,15 +23,16 @@ The focus is on making identity activity visible, traceable, and reviewable.
 
 Monroe Redstone Technology Group needs visibility into administrative identity actions.
 
-Delegated access is useful, but it must also be monitored. If password resets, user account changes, or directory object modifications are not logged, the organization has weak accountability and poor investigation capability.
+Delegated access is useful, but it must also be monitored. If password resets, user account changes, directory object changes, security group changes, or audit policy changes are not logged, the organization has weak accountability and limited investigation capability.
 
 This lab addresses the need to:
 
 - Configure identity-focused audit policy
 - Apply auditing to domain controllers
-- Apply object-level auditing to user objects
-- Generate controlled delegated identity activity
-- Validate expected security events
+- Validate audit policy application
+- Configure object-level auditing for user objects
+- Perform controlled identity changes
+- Validate security events in Event Viewer
 - Improve visibility into administrative identity changes
 - Support audit readiness for regulated environments
 
@@ -41,11 +42,13 @@ This lab addresses the need to:
 
 In this lab, I created a dedicated identity auditing GPO and linked it to the Domain Controllers OU.
 
-I configured advanced audit policy settings for logon events, user account management, directory service changes, and security group management.
+I configured advanced audit policy settings for logon activity, user account management, directory service changes, and security group management.
 
-I then applied object-level auditing to the `_MRTG/Users` OU so changes to descendant user objects could generate detailed security events.
+I validated the applied audit policy using `gpupdate /force` and `auditpol /get /category:*`.
 
-Using the delegated admin account `john.smith.admin`, I performed controlled identity actions against Kevin Carter and validated the resulting events in Event Viewer on `MRTG-DC01`.
+I then configured object-level auditing on the `_MRTG/Users` OU so changes to descendant user objects could generate detailed directory service change events.
+
+Finally, I performed controlled identity changes against Kevin Carter by resetting the user password and modifying the Description field. The resulting events were validated in Event Viewer using Event IDs `4724`, `4738`, `5136`, and `4719`.
 
 ---
 
@@ -60,8 +63,9 @@ Using the delegated admin account `john.smith.admin`, I performed controlled ide
 | Auditing GPO | `MRTG-DC-Identity-Auditing` |
 | Delegated Admin Account | `john.smith.admin` |
 | Delegated Admin Group | `GG_IT_HelpDesk_Admins` |
-| Validation Target User | `Kevin Carter` |
 | Auditing Target | `_MRTG/Users` |
+| Validation User | `Kevin Carter` |
+| Virtualization Platform | Hyper-V |
 | Lab Organization | Monroe Redstone Technology Group |
 
 ---
@@ -76,8 +80,8 @@ Using the delegated admin account `john.smith.admin`, I performed controlled ide
 - Advanced audit policy configuration
 - Audit policy validation with `gpupdate` and `auditpol`
 - Object-level auditing on `_MRTG/Users`
-- Delegated password reset action
-- Delegated user attribute change
+- Controlled password reset action
+- Controlled user attribute change
 - Event Viewer validation
 - Security event review
 
@@ -102,7 +106,14 @@ This lab used a single-domain Active Directory environment with audit policy app
 mrtg.local
 └── _MRTG
     ├── Users
-    │   └── Kevin Carter
+    │   ├── Engineering
+    │   ├── Executives
+    │   ├── Finance
+    │   ├── HR
+    │   │   └── Kevin Carter
+    │   ├── IT
+    │   ├── Operations
+    │   └── Security
     ├── Admin Accounts
     │   └── john.smith.admin
     └── Groups
@@ -126,11 +137,13 @@ _MRTG/Users
 The high-level flow was:
 
 ```text
-Audit GPO created
+Pre-lab checkpoint created
+→ Delegated admin baseline confirmed
+→ Audit GPO linked to Domain Controllers OU
 → Advanced audit policy configured
 → Audit policy applied and validated
 → Object-level auditing configured
-→ Delegated identity actions performed
+→ Controlled identity changes performed
 → Security events validated
 ```
 
@@ -142,10 +155,10 @@ The auditing strategy focused on identity-related activity that matters for IAM 
 
 | Audit Area | Purpose |
 |---|---|
-| Logon Events | Track successful and failed authentication activity |
-| User Account Management | Track user account changes such as password resets |
-| Directory Service Changes | Track Active Directory object modifications |
-| Security Group Management | Track changes to security groups |
+| Logon Events | Tracks successful and failed authentication activity |
+| User Account Management | Tracks user account changes such as password resets |
+| Directory Service Changes | Tracks Active Directory object modifications |
+| Security Group Management | Tracks changes to security groups |
 
 This provides visibility into actions that affect authentication, access, and identity state.
 
@@ -165,7 +178,20 @@ The auditing entry used:
 | Type | `Success` |
 | Applies To | `Descendant User objects` |
 
-This allowed changes to user objects under `_MRTG/Users` to generate directory service change events.
+This allows changes to user objects under `_MRTG/Users` to generate directory service change events.
+
+---
+
+## Event Validation Strategy
+
+The following security events were validated in Event Viewer.
+
+| Event ID | Event Meaning | Lab Purpose |
+|---|---|---|
+| `4724` | An attempt was made to reset an account password | Validates password reset auditing |
+| `4738` | A user account was changed | Validates user account change auditing |
+| `5136` | A directory service object was modified | Validates object-level directory auditing |
+| `4719` | System audit policy was changed | Validates audit policy change visibility |
 
 ---
 
@@ -177,7 +203,7 @@ A Hyper-V checkpoint was created before changing audit policy.
 
 This preserved the clean post-Lab-07 environment.
 
-![Pre-auditing checkpoint](images/Lab-08-01-Pre-Auditing-Checkpoint.png)
+![Pre-auditing checkpoint](screenshots/lab-08-01-pre-auditing-checkpoint.png)
 
 ---
 
@@ -187,21 +213,23 @@ The delegated administration baseline was reviewed.
 
 `john.smith.admin` remained a member of:
 
-`GG_IT_HelpDesk_Admins`
+```text
+GG_IT_HelpDesk_Admins
+```
 
 The `_MRTG/Users` OU structure was also confirmed.
 
-![Delegated admin baseline](images/Lab-08-02-Delegated-Admin-Baseline.png)
+![Delegated admin baseline](screenshots/lab-08-02-delegated-admin-baseline.png)
 
 This confirmed that the lab started from the intended delegated-access model.
 
 ---
 
-### 3. Auditing GPO Created and Linked
+### 3. Auditing GPO Linked to Domain Controllers OU
 
-A dedicated GPO named `MRTG-DC-Identity-Auditing` was created and linked to the Domain Controllers OU.
+A dedicated GPO named `MRTG-DC-Identity-Auditing` was linked to the Domain Controllers OU.
 
-![Auditing GPO created](images/Lab-08-03-Auditing-GPO-Created.png)
+![DC identity auditing GPO linked](screenshots/lab-08-03-dc-identity-auditing-gpo-linked.png)
 
 A dedicated GPO was used instead of modifying the default policy so the auditing configuration would remain easier to manage, explain, and validate.
 
@@ -211,7 +239,7 @@ A dedicated GPO was used instead of modifying the default policy so the auditing
 
 Audit Logon was enabled for both success and failure events.
 
-![Audit logon configured](images/Lab-08-04-Audit-Logon-Configured.png)
+![Audit logon configured](screenshots/lab-08-04-audit-logon-configured.png)
 
 This provides visibility into authentication activity on the domain controller.
 
@@ -221,7 +249,7 @@ This provides visibility into authentication activity on the domain controller.
 
 Audit User Account Management was enabled for both success and failure events.
 
-![Audit user account management configured](images/Lab-08-05-Audit-User-Account-Management-Configured.png)
+![Audit user account management configured](screenshots/lab-08-05-audit-user-account-management-configured.png)
 
 This supports monitoring of identity actions such as password resets and user account changes.
 
@@ -231,7 +259,7 @@ This supports monitoring of identity actions such as password resets and user ac
 
 Audit Directory Service Changes was enabled for success events.
 
-![Audit directory service changes configured](images/Lab-08-06-Audit-Directory-Service-Changes-Configured.png)
+![Audit directory service changes configured](screenshots/lab-08-06-audit-directory-service-changes-configured.png)
 
 This supports tracking of Active Directory object changes when paired with object-level auditing.
 
@@ -241,7 +269,7 @@ This supports tracking of Active Directory object changes when paired with objec
 
 Audit Security Group Management was enabled for both success and failure events.
 
-![Audit security group management configured](images/Lab-08-07-Audit-Security-Group-Management-Configured.png)
+![Audit security group management configured](screenshots/lab-08-07-audit-security-group-management-configured.png)
 
 This improves visibility into changes affecting access-control groups.
 
@@ -267,7 +295,7 @@ Validated audit areas included:
 - User Account Management
 - Directory Service Changes
 
-![GPUpdate and auditpol verification](images/Lab-08-08-GPUpdate-and-AuditPol-Verification.png)
+![GPUpdate and auditpol verification](screenshots/lab-08-08-gpupdate-and-auditpol-verification.png)
 
 ---
 
@@ -277,7 +305,7 @@ Advanced Features were enabled in Active Directory Users and Computers.
 
 The security settings for `_MRTG/Users` were opened and the Auditing tab was reviewed.
 
-![Users OU auditing tab](images/Lab-08-09-Users-OU-Auditing-Tab.png)
+![Users OU auditing tab](screenshots/lab-08-09-users-ou-auditing-tab.png)
 
 This prepared the OU for object-level auditing.
 
@@ -295,81 +323,105 @@ Configuration used:
 | Type | `Success` |
 | Applies To | `Descendant User objects` |
 
-![Users OU auditing entry](images/Lab-08-10-Users-OU-Auditing-Entry.png)
+![Users OU auditing entry](screenshots/lab-08-10-users-ou-auditing-entry.png)
 
 This step was critical because directory service change auditing requires both audit policy and an object-level auditing entry.
 
 ---
 
-### 11. Delegated Password Reset Performed
+### 11. Controlled Password Reset Performed
 
-Using `john.smith.admin`, the password for Kevin Carter was reset.
+A controlled password reset was performed for Kevin Carter.
 
-The option `User must change password at next logon` was selected.
+The option selected was:
 
-![Password reset action](images/Lab-08-11-Password-Reset-Action.png)
+```text
+User must change password at next logon
+```
 
-This generated controlled delegated identity activity for audit validation.
+![Password reset action](screenshots/lab-08-11-password-reset-action.png)
+
+This created a controlled identity event for user account management auditing.
 
 ---
 
-### 12. Delegated User Attribute Change Performed
+### 12. Controlled User Attribute Change Performed
 
-Using `john.smith.admin`, the Description field for Kevin Carter was modified.
+Kevin Carter’s Description field was updated with a lab validation value.
 
 Description value used:
 
-`Lab 08 audit validation change`
+```text
+Lab 08 audit validation change
+```
 
-![User attribute change](images/Lab-08-12-User-Attribute-Change.png)
+![User attribute change](screenshots/lab-08-12-user-attribute-change.png)
 
-This created a second controlled identity action for audit validation.
-
----
-
-### 13. Event ID 4724 Validated
-
-Event Viewer was used on `MRTG-DC01` to review the Security log.
-
-Event ID `4724` was confirmed.
-
-![Event 4724 password reset](images/Lab-08-13-Event-4724-Password-Reset.png)
-
-This event indicates that an attempt was made to reset an account password.
+This created a controlled directory object modification for directory service change auditing.
 
 ---
 
-### 14. Event ID 4738 Validated
+### 13. Event ID 4724 Password Reset Validated
 
-Event ID `4738` was confirmed in the Security log.
+Event Viewer was used on `MRTG-DC01` to filter the Security log for Event ID `4724`.
 
-![Event 4738 user changed](images/Lab-08-14-Event-4738-User-Changed.png)
+The event showed:
 
-This event indicates that a user account was changed.
+```text
+An attempt was made to reset an account's password.
+```
 
----
+![Event 4724 password reset](screenshots/lab-08-13-event-4724-password-reset.png)
 
-### 15. Event ID 5136 Validated
-
-Event ID `5136` was confirmed in the Security log.
-
-![Event 5136 directory object modified](images/Lab-08-15-Event-5136-Directory-Object-Modified.png)
-
-This event indicates that a directory service object was modified.
-
-This validated that object-level auditing on `_MRTG/Users` was working as intended.
+This confirmed that password reset activity was being captured by the configured audit policy.
 
 ---
 
-### 16. Event ID 4719 Validated
+### 14. Event ID 4738 User Account Change Validated
 
-Event ID `4719` was confirmed in the Security log.
+Event Viewer was used to filter the Security log for Event ID `4738`.
 
-![Event 4719 audit policy changed](images/Lab-08-16-Event-4719-Audit-Policy-Changed.png)
+The event showed:
 
-This event indicates that system audit policy was changed.
+```text
+A user account was changed.
+```
 
-This confirmed that audit policy configuration activity itself was also logged.
+![Event 4738 user account changed](screenshots/lab-08-14-event-4738-user-account-changed.png)
+
+This confirmed that user account modification activity was being captured.
+
+---
+
+### 15. Event ID 5136 Directory Object Modification Validated
+
+Event Viewer was used to filter the Security log for Event ID `5136`.
+
+The event showed:
+
+```text
+A directory service object was modified.
+```
+
+![Event 5136 directory object modified](screenshots/lab-08-15-event-5136-directory-object-modified.png)
+
+This confirmed that object-level auditing on `_MRTG/Users` was working as intended.
+
+---
+
+### 16. Event ID 4719 Audit Policy Change Validated
+
+Event Viewer was used to filter the Security log for Event ID `4719`.
+
+The event showed:
+
+```text
+System audit policy was changed.
+```
+
+![Event 4719 audit policy changed](screenshots/lab-08-16-event-4719-audit-policy-changed.png)
+
+This confirmed that audit policy changes were also being logged.
 
 ---
 
@@ -385,7 +437,7 @@ From a security perspective, this lab supports:
 - Administrative accountability
 - Delegated action visibility
 - Password reset tracking
-- User object change tracking
+- User account change tracking
 - Directory service change monitoring
 - Audit policy change visibility
 - Regulated environment audit readiness
@@ -405,6 +457,7 @@ This lab reduces the risk of:
 - Poor incident investigation capability
 - Missing evidence for audit reviews
 - Unvalidated audit policy configuration
+- Unmonitored audit policy changes
 
 ---
 
@@ -413,13 +466,13 @@ This lab reduces the risk of:
 | Control Area | How This Lab Supports It |
 |---|---|
 | Identity monitoring | Enables auditing for identity-related activity |
-| Delegated administration review | Tracks actions performed by delegated admin accounts |
+| Delegated administration review | Prepares monitoring for delegated admin actions |
 | Password reset accountability | Validates Event ID `4724` |
 | User change tracking | Validates Event ID `4738` |
 | Directory object auditing | Validates Event ID `5136` |
 | Audit policy monitoring | Validates Event ID `4719` |
-| Audit readiness | Captures configuration and event evidence |
-| Least privilege support | Monitors scoped delegated administrative activity |
+| Audit readiness | Captures configuration and validation evidence |
+| Least privilege support | Adds visibility around scoped delegated administrative activity |
 
 ---
 
@@ -431,8 +484,7 @@ The following validation checks were completed:
 |---|---|
 | Pre-lab checkpoint created | Passed |
 | Delegated admin baseline reviewed | Passed |
-| Auditing GPO created | Passed |
-| Auditing GPO linked to Domain Controllers OU | Passed |
+| `MRTG-DC-Identity-Auditing` GPO linked to Domain Controllers OU | Passed |
 | Audit Logon configured | Passed |
 | Audit User Account Management configured | Passed |
 | Audit Directory Service Changes configured | Passed |
@@ -441,8 +493,8 @@ The following validation checks were completed:
 | `auditpol` confirmed audit settings | Passed |
 | `_MRTG/Users` auditing configuration opened | Passed |
 | Object-level auditing entry created | Passed |
-| Delegated password reset performed | Passed |
-| Delegated user attribute change performed | Passed |
+| Kevin Carter password reset performed | Passed |
+| Kevin Carter Description field updated | Passed |
 | Event ID `4724` validated | Passed |
 | Event ID `4738` validated | Passed |
 | Event ID `5136` validated | Passed |
@@ -456,22 +508,22 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Pre-auditing checkpoint | `images/Lab-08-01-Pre-Auditing-Checkpoint.png` |
-| Delegated admin baseline | `images/Lab-08-02-Delegated-Admin-Baseline.png` |
-| Auditing GPO created | `images/Lab-08-03-Auditing-GPO-Created.png` |
-| Audit Logon configured | `images/Lab-08-04-Audit-Logon-Configured.png` |
-| Audit User Account Management configured | `images/Lab-08-05-Audit-User-Account-Management-Configured.png` |
-| Audit Directory Service Changes configured | `images/Lab-08-06-Audit-Directory-Service-Changes-Configured.png` |
-| Audit Security Group Management configured | `images/Lab-08-07-Audit-Security-Group-Management-Configured.png` |
-| GPUpdate and auditpol verification | `images/Lab-08-08-GPUpdate-and-AuditPol-Verification.png` |
-| Users OU auditing tab | `images/Lab-08-09-Users-OU-Auditing-Tab.png` |
-| Users OU auditing entry | `images/Lab-08-10-Users-OU-Auditing-Entry.png` |
-| Password reset action | `images/Lab-08-11-Password-Reset-Action.png` |
-| User attribute change | `images/Lab-08-12-User-Attribute-Change.png` |
-| Event 4724 password reset | `images/Lab-08-13-Event-4724-Password-Reset.png` |
-| Event 4738 user changed | `images/Lab-08-14-Event-4738-User-Changed.png` |
-| Event 5136 directory object modified | `images/Lab-08-15-Event-5136-Directory-Object-Modified.png` |
-| Event 4719 audit policy changed | `images/Lab-08-16-Event-4719-Audit-Policy-Changed.png` |
+| Pre-auditing checkpoint | `screenshots/lab-08-01-pre-auditing-checkpoint.png` |
+| Delegated admin baseline | `screenshots/lab-08-02-delegated-admin-baseline.png` |
+| DC identity auditing GPO linked | `screenshots/lab-08-03-dc-identity-auditing-gpo-linked.png` |
+| Audit Logon configured | `screenshots/lab-08-04-audit-logon-configured.png` |
+| Audit User Account Management configured | `screenshots/lab-08-05-audit-user-account-management-configured.png` |
+| Audit Directory Service Changes configured | `screenshots/lab-08-06-audit-directory-service-changes-configured.png` |
+| Audit Security Group Management configured | `screenshots/lab-08-07-audit-security-group-management-configured.png` |
+| GPUpdate and auditpol verification | `screenshots/lab-08-08-gpupdate-and-auditpol-verification.png` |
+| Users OU auditing tab | `screenshots/lab-08-09-users-ou-auditing-tab.png` |
+| Users OU auditing entry | `screenshots/lab-08-10-users-ou-auditing-entry.png` |
+| Password reset action | `screenshots/lab-08-11-password-reset-action.png` |
+| User attribute change | `screenshots/lab-08-12-user-attribute-change.png` |
+| Event 4724 password reset | `screenshots/lab-08-13-event-4724-password-reset.png` |
+| Event 4738 user account changed | `screenshots/lab-08-14-event-4738-user-account-changed.png` |
+| Event 5136 directory object modified | `screenshots/lab-08-15-event-5136-directory-object-modified.png` |
+| Event 4719 audit policy changed | `screenshots/lab-08-16-event-4719-audit-policy-changed.png` |
 
 ---
 
@@ -490,6 +542,8 @@ In a production environment, I would improve this process by:
 - Using least-privilege admin workstations
 - Documenting audit policy ownership
 - Mapping audit events to incident response playbooks
+- Testing event generation with controlled identity actions
+- Reviewing audit noise before expanding object-level auditing broadly
 
 ---
 
@@ -501,26 +555,30 @@ Delegating password reset permissions helps reduce overuse of Domain Admin right
 
 The biggest takeaway is that audit policy alone is not always enough. For directory object changes, object-level auditing must also be configured on the target OU or object.
 
-Identity monitoring becomes much stronger when policy configuration, scoped permissions, and event validation are all documented together.
+Identity monitoring becomes much stronger when policy configuration, scoped permissions, controlled identity actions, and event validation are all documented together.
 
 ---
 
 ## Outcome
 
-Lab 08 successfully implemented identity monitoring and auditing in the MRTG Active Directory environment.
+Lab 08 successfully implemented identity monitoring and auditing controls in the MRTG Active Directory environment.
 
 The lab confirmed:
 
-- A dedicated auditing GPO was created
+- A pre-lab checkpoint was created
+- The delegated administration baseline was reviewed
+- A dedicated auditing GPO was linked to the Domain Controllers OU
 - Advanced audit policy was configured for identity activity
 - Audit policy was applied and validated with `auditpol`
 - Object-level auditing was configured on `_MRTG/Users`
-- Delegated password reset activity generated Event ID `4724`
-- User account change activity generated Event ID `4738`
-- Directory object modification generated Event ID `5136`
-- Audit policy change activity generated Event ID `4719`
+- A controlled password reset was performed
+- A controlled user attribute change was performed
+- Event ID `4724` confirmed password reset auditing
+- Event ID `4738` confirmed user account change auditing
+- Event ID `5136` confirmed directory service object modification auditing
+- Event ID `4719` confirmed audit policy change auditing
 
-The environment now supports auditable identity operations and improved visibility into delegated administrative activity.
+The environment now has a stronger auditing foundation for delegated identity operations and future SIEM integration.
 
 ---
 
