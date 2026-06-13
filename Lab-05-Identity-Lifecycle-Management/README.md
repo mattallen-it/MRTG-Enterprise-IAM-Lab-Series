@@ -15,7 +15,7 @@ The objective of this lab is to implement identity lifecycle management workflow
 
 This lab focuses on joiner, mover, and leaver operations using department-aligned Organizational Units and group-based access control.
 
-The goal is to show how user identities are created, updated, transferred, and disabled in a controlled enterprise environment.
+The goal is to show how user identities are created, updated, corrected, transferred, and prepared for offboarding in a controlled enterprise environment.
 
 ---
 
@@ -30,23 +30,37 @@ This lab addresses the need to:
 - Create users using a consistent naming standard
 - Place users into the correct department OU
 - Assign access through security groups
+- Correct access when an identity is placed in the wrong group
 - Update access when a user changes departments
-- Disable accounts during offboarding
+- Prepare user accounts for offboarding actions
 - Validate that identity state matches the user lifecycle stage
+- Preserve account history instead of deleting accounts immediately
 
 ---
 
 ## Lab Summary
 
-In this lab, I performed three core identity lifecycle workflows:
+In this lab, I performed identity lifecycle workflows inside Active Directory Users and Computers.
 
-- Joiner workflow for a new HR employee
-- Mover workflow for a user transferring from HR to IT
-- Leaver workflow for a departing Finance employee
+The lab included:
 
-The lab used Active Directory Users and Computers to manage user placement, group membership, and account status.
+- Reviewing the existing MRTG OU structure
+- Reviewing department-based security groups
+- Validating default user group membership
+- Assigning department-based access through security groups
+- Creating a new user account
+- Correcting a user’s group membership after an initial misalignment
+- Updating a user’s access during a department transfer
+- Moving users into the correct department OUs
+- Preparing an account action for a user lifecycle event
 
-The lab reinforced that OU placement and access group membership are related but separate controls. OU placement supports organization and policy targeting, while group membership controls access.
+This lab reinforced that OU placement and group membership are related but separate controls.
+
+OU placement supports organization and policy targeting.
+
+Group membership controls access.
+
+Both must be reviewed during identity lifecycle changes.
 
 ---
 
@@ -69,26 +83,29 @@ The lab reinforced that OU placement and access group membership are related but
 
 ### Included
 
+- OU structure review
+- Department security group review
 - User account creation
-- Department OU placement
-- Security group membership review
-- Security group membership correction
-- Joiner workflow
-- Mover workflow
-- Leaver workflow
-- Account disablement
+- Default group membership validation
+- Department group assignment
+- Group membership correction
+- Department transfer workflow
+- OU placement validation
+- User lifecycle account action review
 - Lifecycle validation through ADUC
 
 ### Not Included
 
-- Entra ID synchronization
+- Microsoft Entra ID synchronization
 - Hybrid identity
 - MFA configuration
 - Automated provisioning
 - HR system integration
 - PowerShell lifecycle automation
 - Access certification campaigns
-- Privileged identity management
+- Privileged Identity Management
+- NTFS or share permission validation
+- Full account deletion workflow
 
 ---
 
@@ -100,16 +117,16 @@ The MRTG directory is structured around department-aligned OUs and global securi
 mrtg.local
 └── _MRTG
     ├── Users
-    │   ├── IT
-    │   ├── Security
-    │   ├── HR
-    │   ├── Finance
-    │   ├── Operations
     │   ├── Engineering
-    │   └── Executives
+    │   ├── Executives
+    │   ├── Finance
+    │   ├── HR
+    │   ├── IT
+    │   ├── Operations
+    │   └── Security
     ├── Computers
-    │   ├── Workstations
-    │   └── Servers
+    │   ├── Servers
+    │   └── Workstations
     ├── Groups
     ├── Admin Accounts
     └── Service Accounts
@@ -133,7 +150,7 @@ This lab uses the joiner, mover, leaver model.
 |---|---|
 | Joiner | A new user account is created, placed in the correct OU, and assigned baseline group access |
 | Mover | An existing user changes department, requiring OU placement and group membership updates |
-| Leaver | A departing user account is disabled to prevent continued access |
+| Leaver | A departing user account is prepared for controlled offboarding actions |
 
 This model reflects how identity teams manage account state in enterprise and government environments.
 
@@ -166,140 +183,240 @@ The following department-based security groups were used:
 | `GG_HR_Users` | Grants HR-aligned access |
 | `GG_IT_Users` | Grants IT-aligned access |
 | `GG_Finance_Users` | Grants Finance-aligned access |
+| `GG_Engineering_Users` | Grants Engineering-aligned access |
+| `GG_Operations_Users` | Grants Operations-aligned access |
+| `GG_Security_Users` | Grants Security-aligned access |
+| `GG_Remote_Desktop_Users` | Grants approved Remote Desktop access |
 
 Access is assigned through group membership instead of direct user-level permissions.
 
 ---
 
+## Lifecycle Workflow Summary
+
+| Workflow | User | Starting State | Ending State |
+|---|---|---|---|
+| Joiner | `Kevin Carter` | New user account needed | Created and corrected into HR access alignment |
+| Mover | `Sarah Jones` | HR-aligned user | Moved to IT OU and assigned to `GG_IT_Users` |
+| Leaver preparation | `Mike Chen` | Finance-aligned user | Account action reviewed for lifecycle handling |
+
+---
+
 ## Implementation and Validation
 
-### 1. Existing MRTG Directory Structure Reviewed
+### 1. Existing MRTG OU Structure Reviewed
 
 The existing MRTG Active Directory structure was reviewed to confirm that department-based OUs were available for lifecycle management.
 
 The structure included dedicated containers for users, computers, service accounts, admin accounts, and groups.
 
-![MRTG directory structure](images/lab05-01.png)
+![MRTG OU structure](screenshots/lab-05-01-mrtg-ou-structure.png)
+
+This confirmed that the environment had the required OU foundation for lifecycle operations.
 
 ---
 
-### 2. Department Security Groups Reviewed
+### 2. Global Security Groups Reviewed
 
-Existing department security groups were reviewed to confirm that access could be assigned using group-based membership.
+Existing global security groups were reviewed to confirm that department access could be assigned through group-based membership.
 
-![Department security groups](images/lab05-02.png)
+![Global security groups created](screenshots/lab-05-02-global-security-groups-created.png)
 
 This confirmed that lifecycle workflows could use role-based access assignment instead of direct permissions.
 
 ---
 
-### 3. Existing HR Group Alignment Validated
+### 3. Default User Membership Reviewed
 
-Sarah Jones’s group membership was reviewed before the mover workflow.
+Sarah Jones’s group membership was reviewed before assigning department access.
 
-Her account was initially only a member of `Domain Users`.
+Her account was initially only a member of:
 
-![Sarah Jones initial group membership](images/lab05-03.png)
+```text
+Domain Users
+```
 
-This showed a gap between department placement and group-based access alignment.
+![Default Domain Users membership](screenshots/lab-05-03-user-default-domain-users-membership.png)
 
----
-
-### 4. HR Group Membership Corrected
-
-Sarah Jones was added to `GG_HR_Users` to establish a clean HR baseline before simulating a transfer to IT.
-
-![Sarah Jones HR group membership](images/lab05-04.png)
-
-This aligned her account with the HR department before the mover scenario.
+This showed that the user did not yet have department-based access alignment.
 
 ---
 
-### 5. Finance Group Membership Validated
+### 4. HR User Group Membership Assigned
 
-Mike Chen’s group membership was reviewed before the leaver workflow.
-
-His account was confirmed to be aligned with Finance through `GG_Finance_Users`.
-
-![Mike Chen Finance group membership](images/lab05-05.png)
-
-This established a clean baseline before account disablement.
-
----
-
-### 6. New User Created Using Naming Standard
-
-A new account was created for Kevin Carter using the MRTG naming convention.
-
-The user account followed the `first.last` naming standard.
-
-![Kevin Carter user creation](images/lab05-06.png)
-
-This began the joiner workflow.
-
----
-
-### 7. New Hire Placed in HR OU
-
-Kevin Carter was placed in the HR Organizational Unit.
-
-![Kevin Carter HR OU placement](images/lab05-07.png)
-
-This aligned the user object with the correct department container.
-
----
-
-### 8. New Hire Assigned to HR Security Group
-
-Kevin Carter was added to `GG_HR_Users`.
-
-![Kevin Carter HR group membership](images/lab05-08.png)
-
-This completed the joiner workflow by aligning both OU placement and group-based access.
-
----
-
-### 9. Department Transfer Group Membership Updated
-
-Sarah Jones was transferred from HR to IT by changing her group membership.
-
-Her membership was updated from:
+Sarah Jones was added to:
 
 ```text
 GG_HR_Users
 ```
 
-to:
+![HR user group membership assigned](screenshots/lab-05-04-hr-user-group-membership-assigned.png)
+
+This aligned her account with HR access before later simulating a department transfer.
+
+---
+
+### 5. Finance User Group Membership Assigned
+
+Mike Chen’s group membership was reviewed and confirmed to be aligned with Finance through:
+
+```text
+GG_Finance_Users
+```
+
+![Finance user group membership assigned](screenshots/lab-05-05-finance-user-group-membership-assigned.png)
+
+This established a Finance-aligned account state before lifecycle handling.
+
+---
+
+### 6. New User Created Using Naming Standard
+
+A new user account was created for Kevin Carter using the MRTG naming convention.
+
+The user account followed the `first.last` naming standard.
+
+Initial creation path shown:
+
+```text
+mrtg.local/_MRTG/Users/Finance
+```
+
+![New finance user Kevin Carter](screenshots/lab-05-06-new-finance-user-kevin-carter.png)
+
+This began the joiner workflow and also created a realistic correction scenario.
+
+---
+
+### 7. Initial Kevin Carter Finance Membership Reviewed
+
+Kevin Carter was initially shown with Finance group membership.
+
+Group shown:
+
+```text
+GG_Finance_Users
+```
+
+![Kevin Carter finance group membership](screenshots/lab-05-07-kevin-carter-finance-group-membership.png)
+
+This was reviewed as an identity alignment issue because Kevin Carter was intended to be HR-aligned.
+
+---
+
+### 8. Kevin Carter Membership Corrected
+
+Kevin Carter’s group membership was corrected from Finance alignment to HR alignment.
+
+Corrected group:
+
+```text
+GG_HR_Users
+```
+
+![Kevin Carter membership correction](screenshots/lab-05-08-kevin-carter-membership-correction.png)
+
+This demonstrated a realistic lifecycle correction: when a user is placed into the wrong access group, the group membership must be corrected instead of leaving inherited access in place.
+
+---
+
+### 9. Sarah Jones IT Group Membership Updated
+
+Sarah Jones was transferred from HR to IT by updating her group membership.
+
+Final IT-aligned group:
 
 ```text
 GG_IT_Users
 ```
 
-![Sarah Jones IT group membership](images/lab05-09.png)
+![Sarah Jones IT group membership updated](screenshots/lab-05-09-sarah-jones-it-group-membership-updated.png)
 
 This demonstrated how access should change when a user changes departments.
 
 ---
 
-### 10. User Object Moved to IT OU
+### 10. IT Users OU Membership Validated
 
-Sarah Jones was moved into the IT OU.
+The IT OU was reviewed to confirm user placement.
 
-![Sarah Jones moved to IT OU](images/lab05-10.png)
+Visible IT users included:
 
-This completed the mover workflow by aligning both access and directory placement with the new department.
+```text
+John Smith
+Sarah Jones
+```
+
+![IT users OU membership](screenshots/lab-05-10-it-users-ou-membership.png)
+
+This confirmed that Sarah Jones’s directory placement aligned with the IT department after the transfer.
 
 ---
 
-### 11. Departing Employee Account Disabled
+### 11. Finance Users OU Membership Validated
 
-Mike Chen’s Finance account was disabled to simulate a leaver workflow.
+The Finance OU was reviewed to confirm Finance-aligned user placement.
 
-![Mike Chen account disabled](images/lab05-11.png)
+Visible Finance user:
 
-The account was retained in a disabled state instead of being deleted immediately.
+```text
+Mike Chen
+```
 
-This supports a safer offboarding model where account history and audit visibility are preserved.
+![Finance users OU membership](screenshots/lab-05-11-finance-users-ou-membership.png)
+
+This confirmed that Mike Chen remained placed in the Finance OU before lifecycle handling.
+
+---
+
+### 12. User Lifecycle Account Action Reviewed
+
+A user account action menu was reviewed for Mike Chen.
+
+Available lifecycle-related actions included:
+
+- Reset password
+- Enable account
+- Move
+- Delete
+- Properties
+
+![User password reset action](screenshots/lab-05-12-user-password-reset-action.png)
+
+This showed where account lifecycle operations can be performed from Active Directory Users and Computers.
+
+---
+
+### 13. HR Users OU Membership Validated
+
+The HR OU was reviewed after correcting Kevin Carter’s membership.
+
+Visible HR users included:
+
+```text
+Kevin Carter
+Sarah Jones
+```
+
+![HR users OU membership](screenshots/lab-05-13-hr-users-ou-membership.png)
+
+This confirmed HR OU membership visibility during the lifecycle workflow.
+
+---
+
+## Correction Note
+
+During the joiner workflow, Kevin Carter was initially created or aligned under Finance.
+
+That was corrected by updating Kevin Carter’s group membership to:
+
+```text
+GG_HR_Users
+```
+
+This is worth documenting because identity teams regularly deal with access correction scenarios.
+
+The important lesson is not that every lifecycle task goes perfectly. The important lesson is that incorrect access must be found, corrected, and documented.
 
 ---
 
@@ -314,15 +431,16 @@ This lab supports:
 - Least privilege
 - Controlled onboarding
 - Controlled department transfers
-- Controlled offboarding
+- Controlled account handling
 - Group-based access assignment
 - Reduced orphaned account risk
 - Cleaner audit review
 - Separation of identity placement and access assignment
+- Correction of misaligned access
 
-A user account should not keep access from a previous department after changing roles.
+A user account should not keep access from a previous or incorrect department.
 
-A departing user account should not remain enabled after offboarding.
+A lifecycle account action should be deliberate, documented, and tied to a business reason.
 
 ---
 
@@ -335,11 +453,12 @@ This lab reduces the risk of:
 - Inconsistent account creation
 - Incorrect OU placement
 - Missing department group membership
+- Wrong department access assignment
 - Retained access after department transfer
-- Active accounts for departed users
 - Direct user-level access assignment
 - Poor auditability
 - Excess privilege over time
+- Unreviewed account lifecycle actions
 
 ---
 
@@ -349,11 +468,12 @@ This lab reduces the risk of:
 |---|---|
 | Joiner process | Creates a new user and assigns department-based access |
 | Mover process | Updates group membership and OU placement after department transfer |
-| Leaver process | Disables a departing user account |
+| Leaver preparation | Reviews user account lifecycle actions |
 | RBAC | Uses department security groups for access alignment |
-| Least privilege | Removes old department access during transfer |
+| Least privilege | Corrects wrong department access and updates transfer access |
 | Audit readiness | Documents identity state before and after lifecycle changes |
 | Operational consistency | Uses repeatable naming, OU placement, and group membership patterns |
+| Access correction | Documents correction of misaligned group membership |
 
 ---
 
@@ -363,17 +483,19 @@ The following validation checks were completed:
 
 | Validation Item | Result |
 |---|---|
-| MRTG directory structure reviewed | Passed |
+| MRTG OU structure reviewed | Passed |
 | Department security groups reviewed | Passed |
-| Sarah Jones initial membership reviewed | Passed |
+| Sarah Jones default membership reviewed | Passed |
 | Sarah Jones added to `GG_HR_Users` | Passed |
 | Mike Chen Finance membership validated | Passed |
 | Kevin Carter account created | Passed |
-| Kevin Carter placed in HR OU | Passed |
-| Kevin Carter added to `GG_HR_Users` | Passed |
-| Sarah Jones moved from HR access to IT access | Passed |
-| Sarah Jones moved to IT OU | Passed |
-| Mike Chen account disabled | Passed |
+| Kevin Carter initial Finance alignment reviewed | Passed |
+| Kevin Carter corrected to `GG_HR_Users` | Passed |
+| Sarah Jones updated to `GG_IT_Users` | Passed |
+| Sarah Jones visible in IT OU | Passed |
+| Mike Chen visible in Finance OU | Passed |
+| User lifecycle account action menu reviewed | Passed |
+| HR OU membership reviewed | Passed |
 
 ---
 
@@ -383,17 +505,19 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| MRTG directory structure | `images/lab05-01.png` |
-| Department security groups | `images/lab05-02.png` |
-| Sarah Jones initial group membership | `images/lab05-03.png` |
-| Sarah Jones HR group membership correction | `images/lab05-04.png` |
-| Mike Chen Finance group membership | `images/lab05-05.png` |
-| Kevin Carter user creation | `images/lab05-06.png` |
-| Kevin Carter HR OU placement | `images/lab05-07.png` |
-| Kevin Carter HR group membership | `images/lab05-08.png` |
-| Sarah Jones IT group membership | `images/lab05-09.png` |
-| Sarah Jones IT OU placement | `images/lab05-10.png` |
-| Mike Chen account disabled | `images/lab05-11.png` |
+| MRTG OU structure | `screenshots/lab-05-01-mrtg-ou-structure.png` |
+| Global security groups | `screenshots/lab-05-02-global-security-groups-created.png` |
+| Default Domain Users membership | `screenshots/lab-05-03-user-default-domain-users-membership.png` |
+| HR user group membership assigned | `screenshots/lab-05-04-hr-user-group-membership-assigned.png` |
+| Finance user group membership assigned | `screenshots/lab-05-05-finance-user-group-membership-assigned.png` |
+| New finance user Kevin Carter | `screenshots/lab-05-06-new-finance-user-kevin-carter.png` |
+| Kevin Carter Finance group membership | `screenshots/lab-05-07-kevin-carter-finance-group-membership.png` |
+| Kevin Carter membership correction | `screenshots/lab-05-08-kevin-carter-membership-correction.png` |
+| Sarah Jones IT group membership updated | `screenshots/lab-05-09-sarah-jones-it-group-membership-updated.png` |
+| IT users OU membership | `screenshots/lab-05-10-it-users-ou-membership.png` |
+| Finance users OU membership | `screenshots/lab-05-11-finance-users-ou-membership.png` |
+| User password reset action | `screenshots/lab-05-12-user-password-reset-action.png` |
+| HR users OU membership | `screenshots/lab-05-13-hr-users-ou-membership.png` |
 
 ---
 
@@ -412,6 +536,7 @@ In a production environment, I would improve this process by:
 - Removing group memberships during offboarding where appropriate
 - Defining retention timelines before account deletion
 - Monitoring lifecycle changes through event logs or SIEM
+- Adding a peer review step for new user creation and group assignment
 
 ---
 
@@ -419,9 +544,11 @@ In a production environment, I would improve this process by:
 
 This lab reinforced that identity lifecycle management is not just account creation.
 
-A complete lifecycle process includes onboarding, role changes, and offboarding.
+A complete lifecycle process includes onboarding, role changes, access correction, and account handling.
 
 The biggest takeaway is that OU placement and group membership must both be maintained. A user can be in the correct OU but still have the wrong access if group membership is not updated.
+
+The Kevin Carter correction was a useful reminder: mistakes in identity lifecycle work are security issues until they are corrected.
 
 Lifecycle management is where IAM becomes operational discipline.
 
@@ -429,19 +556,24 @@ Lifecycle management is where IAM becomes operational discipline.
 
 ## Outcome
 
-Lab 05 successfully implemented joiner, mover, and leaver workflows in the MRTG Active Directory environment.
+Lab 05 successfully implemented identity lifecycle workflows in the MRTG Active Directory environment.
 
 The lab confirmed:
 
+- The MRTG OU structure supported lifecycle management
+- Department security groups existed for group-based access
+- Sarah Jones was assigned HR access before transfer
+- Mike Chen was validated as Finance-aligned
 - Kevin Carter was created using the established naming standard
-- Kevin Carter was placed in the HR OU
-- Kevin Carter was added to `GG_HR_Users`
-- Sarah Jones was transitioned from HR access to IT access
-- Sarah Jones was moved to the IT OU
-- Mike Chen’s Finance account was disabled for offboarding
+- Kevin Carter’s incorrect Finance alignment was identified
+- Kevin Carter’s group membership was corrected to HR
+- Sarah Jones was transitioned to IT access
+- Sarah Jones was visible in the IT OU
+- Mike Chen was visible in the Finance OU
+- User account lifecycle actions were reviewed
 - Access was managed through group membership instead of direct assignment
 
-The environment now supports controlled identity lifecycle management for user onboarding, transfer, and offboarding.
+The environment now supports controlled identity lifecycle management for onboarding, transfer, correction, and account handling.
 
 ---
 
