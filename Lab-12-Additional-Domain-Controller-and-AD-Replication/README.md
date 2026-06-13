@@ -13,9 +13,9 @@
 
 The objective of this lab is to add a second domain controller to the `mrtg.local` Active Directory domain.
 
-This lab improves directory resilience by promoting `MRTG-DC02` as an additional domain controller, enabling DNS and Global Catalog services, validating replication, and proving that identity objects replicate between both domain controllers.
+This lab improves directory resilience by preparing `MRTG-DC02`, joining it to the existing domain, installing Active Directory Domain Services, promoting it as an additional domain controller, enabling DNS and Global Catalog services, and validating Active Directory replication health.
 
-The focus is on Active Directory redundancy, replication health, DNS dependency, and operational rollback readiness.
+The focus is on domain controller redundancy, DNS registration, Global Catalog availability, replication validation, DNS redundancy, and operational rollback readiness.
 
 ---
 
@@ -31,22 +31,25 @@ This lab addresses the need to:
 - Improve identity infrastructure resilience
 - Enable DNS and Global Catalog services on the second domain controller
 - Validate domain controller registration
+- Validate DNS records for both domain controllers
 - Validate Active Directory replication health
 - Prove two-way object replication
 - Configure DNS redundancy between domain controllers
-- Preserve final validated states with Hyper-V checkpoints
+- Preserve validated rollback points with Hyper-V checkpoints
 
 ---
 
 ## Lab Summary
 
-In this lab, I prepared `MRTG-DC02`, joined it to the existing `mrtg.local` domain, installed Active Directory Domain Services, and promoted it as an additional domain controller.
+In this lab, I prepared `MRTG-DC02` as an additional domain controller for the `mrtg.local` domain.
 
-After promotion, I validated domain controller registration in Active Directory Users and Computers, Active Directory Sites and Services, DNS Manager, PowerShell, `repadmin`, and `dcdiag`.
+I configured the server with a static IP address, pointed DNS to the existing domain controller, validated connectivity to `MRTG-DC01`, joined `MRTG-DC02` to the domain, created a pre-AD DS checkpoint, installed Active Directory Domain Services, and promoted the server as an additional domain controller.
 
-I then proved two-way object replication by creating an OU on `MRTG-DC01` and confirming it appeared on `MRTG-DC02`, then creating a user on `MRTG-DC02` and confirming it appeared on `MRTG-DC01`.
+After promotion, I validated that both domain controllers appeared in Active Directory Users and Computers, Active Directory Sites and Services, DNS Manager, PowerShell, `repadmin`, and `dcdiag`.
 
-Finally, I configured DNS redundancy and created final Hyper-V checkpoints for both domain controllers.
+I also proved two-way replication by creating an OU on `MRTG-DC01`, confirming it replicated to `MRTG-DC02`, creating a user on `MRTG-DC02`, and confirming it replicated back to `MRTG-DC01`.
+
+Finally, I configured DNS redundancy between both domain controllers, validated replication again, and created final Hyper-V checkpoints.
 
 ---
 
@@ -73,11 +76,14 @@ Finally, I configured DNS redundancy and created final Hyper-V checkpoints for b
 
 - Second domain controller VM preparation
 - Static IP and DNS configuration for `MRTG-DC02`
+- Domain connectivity validation
 - Domain join for `MRTG-DC02`
 - Pre-AD DS Hyper-V checkpoint
 - AD DS role installation
 - Additional domain controller promotion
 - DNS and Global Catalog configuration
+- Replication source selection
+- Prerequisite validation
 - Domain controller registration validation
 - DNS record validation
 - Replication validation with `repadmin`
@@ -97,6 +103,7 @@ Finally, I configured DNS redundancy and created final Hyper-V checkpoints for b
 - Domain controller backup automation
 - Disaster recovery testing
 - Azure or hybrid identity replication
+- Production hardening baselines
 
 ---
 
@@ -173,6 +180,7 @@ This lab supports the following resilience model:
 | AD Replication | Keeps identity data synchronized between domain controllers |
 | DNS Redundancy | Allows each DC to use the other as a secondary resolver |
 | Hyper-V Checkpoints | Preserve validated rollback points |
+| Replication Validation | Confirms directory synchronization health |
 
 ---
 
@@ -182,15 +190,17 @@ This lab supports the following resilience model:
 
 `MRTG-DC02` was created in Hyper-V and connected to the same internal lab network as `MRTG-DC01`.
 
-![Hyper-V showing DC01 and DC02 running](images/01-hyperv-dc01-dc02-running.png)
+![Hyper-V showing DC01 and DC02 running](screenshots/lab-12-01-hyperv-dc01-dc02-running.png)
 
 ---
 
-### 2. DC02 Renamed and IP Configured
+### 2. DC02 Renamed and Initial IP Configuration Reviewed
 
-`MRTG-DC02` was renamed and configured with the correct IP address.
+`MRTG-DC02` was renamed and reviewed in Server Manager.
 
-![DC02 renamed and IP configured](images/02-dc02-server-renamed-and-ip-configured.png)
+The server showed the expected hostname and initial network configuration.
+
+![DC02 renamed and IP configured](screenshots/lab-12-02-dc02-server-renamed-and-ip-configured.png)
 
 ---
 
@@ -198,7 +208,17 @@ This lab supports the following resilience model:
 
 `MRTG-DC02` was configured with a static IP address and pointed to `MRTG-DC01` for DNS before domain join.
 
-![DC02 static IP and DNS configured](images/03-dc02-static-ip-dns-configured.png)
+Configured values:
+
+| Setting | Value |
+|---|---|
+| IP Address | `192.168.10.11` |
+| Subnet Mask | `255.255.255.0` |
+| Preferred DNS Server | `192.168.10.10` |
+
+![DC02 static IP and DNS configured](screenshots/lab-12-03-dc02-static-ip-dns-configured.png)
+
+This allowed `MRTG-DC02` to locate the existing domain controller and domain DNS records.
 
 ---
 
@@ -215,7 +235,13 @@ nslookup mrtg.local
 nltest /dsgetdc:mrtg.local
 ```
 
-![DC02 connectivity to DC01 validated](images/04-dc02-connectivity-to-dc01-validated.png)
+![DC02 connectivity to DC01 validated](screenshots/lab-12-04-dc02-connectivity-to-dc01-validated.png)
+
+Validated result:
+
+- `MRTG-DC02` could reach `192.168.10.10`
+- `MRTG-DC02` could resolve `mrtg.local`
+- `MRTG-DC02` could locate `MRTG-DC01` as a domain controller
 
 ---
 
@@ -223,7 +249,9 @@ nltest /dsgetdc:mrtg.local
 
 `MRTG-DC02` was joined to the existing `mrtg.local` domain.
 
-![DC02 domain membership confirmed](images/05-dc02-domain-membership-confirmed.png)
+![DC02 domain membership confirmed](screenshots/lab-12-05-dc02-domain-membership-confirmed.png)
+
+This confirmed that `MRTG-DC02` was no longer only a workgroup server and was now a domain-joined server.
 
 ---
 
@@ -233,9 +261,13 @@ Before installing Active Directory Domain Services, a Hyper-V checkpoint was cre
 
 Checkpoint created:
 
-`MRTG-DC02_Pre-ADDS-Install`
+```text
+MRTG-DC02_Pre-ADDS-Install
+```
 
-![DC02 pre-ADDS checkpoint created](images/06-dc02-pre-adds-checkpoint-created.png)
+![DC02 pre-ADDS checkpoint created](screenshots/lab-12-06-dc02-pre-adds-checkpoint-created.png)
+
+This created a safe recovery point before promoting the server to a domain controller.
 
 ---
 
@@ -243,7 +275,9 @@ Checkpoint created:
 
 The Active Directory Domain Services role was selected on `MRTG-DC02`.
 
-![AD DS role selected on DC02](images/07-adds-role-selected-on-dc02.png)
+![AD DS role selected on DC02](screenshots/lab-12-07-adds-role-selected-on-dc02.png)
+
+This prepared the server for domain controller promotion.
 
 ---
 
@@ -253,7 +287,7 @@ The AD DS role installed successfully.
 
 Additional configuration was still required before the server could become a domain controller.
 
-![AD DS role installed on DC02](images/08-adds-role-installed-on-dc02.png)
+![AD DS role installed on DC02](screenshots/lab-12-08-adds-role-installed-on-dc02.png)
 
 ---
 
@@ -271,7 +305,9 @@ Domain:
 mrtg.local
 ```
 
-![Add domain controller to existing domain](images/09-add-domain-controller-to-existing-domain.png)
+![Add domain controller to existing domain](screenshots/lab-12-09-add-domain-controller-to-existing-domain.png)
+
+This ensured `MRTG-DC02` joined the existing forest and domain instead of creating a new forest.
 
 ---
 
@@ -279,7 +315,14 @@ mrtg.local
 
 `MRTG-DC02` was configured as a DNS server and Global Catalog.
 
-![DC02 DNS and Global Catalog selected](images/10-dc02-dns-global-catalog-selected.png)
+Selected options:
+
+```text
+Domain Name System (DNS) server
+Global Catalog (GC)
+```
+
+![DC02 DNS and Global Catalog selected](screenshots/lab-12-10-dc02-dns-global-catalog-selected.png)
 
 This allows the second domain controller to support name resolution and directory search operations.
 
@@ -293,7 +336,9 @@ The replication source was set to the existing domain controller:
 MRTG-DC01.mrtg.local
 ```
 
-![DC02 replication source DC01](images/11-dc02-replication-source-dc01.png)
+![DC02 replication source DC01](screenshots/lab-12-11-dc02-replication-source-dc01.png)
+
+This confirmed that `MRTG-DC02` would receive initial Active Directory data from `MRTG-DC01`.
 
 ---
 
@@ -301,7 +346,9 @@ MRTG-DC01.mrtg.local
 
 The prerequisite check completed successfully before promotion.
 
-![DC02 prerequisite check passed](images/12-dc02-prerequisite-check-passed.png)
+![DC02 prerequisite check passed](screenshots/lab-12-12-dc02-prerequisite-check-passed.png)
+
+The expected DNS delegation warning was reviewed. In this isolated internal lab domain, no external parent DNS delegation was required.
 
 ---
 
@@ -309,7 +356,9 @@ The prerequisite check completed successfully before promotion.
 
 After installation, `MRTG-DC02` rebooted and showed AD DS and DNS roles in Server Manager.
 
-![DC02 promoted and rebooted](images/13-dc02-promoted-and-rebooted.png)
+![DC02 promoted and rebooted](screenshots/lab-12-13-dc02-promoted-and-rebooted.png)
+
+This confirmed that `MRTG-DC02` was promoted and operating as a domain controller.
 
 ---
 
@@ -317,7 +366,14 @@ After installation, `MRTG-DC02` rebooted and showed AD DS and DNS roles in Serve
 
 Active Directory Users and Computers confirmed that both domain controllers were present in the Domain Controllers OU.
 
-![Both domain controllers visible in ADUC](images/14-both-domain-controllers-visible-in-aduc.png)
+Validated domain controllers:
+
+```text
+MRTG-DC01
+MRTG-DC02
+```
+
+![Both domain controllers visible in ADUC](screenshots/lab-12-14-both-domain-controllers-visible-in-aduc.png)
 
 ---
 
@@ -325,7 +381,9 @@ Active Directory Users and Computers confirmed that both domain controllers were
 
 Active Directory Sites and Services confirmed that both domain controllers were registered under the default site.
 
-![Both DCs visible in Sites and Services](images/15-both-dcs-visible-in-sites-and-services.png)
+![Both DCs visible in Sites and Services](screenshots/lab-12-15-both-dcs-visible-in-sites-and-services.png)
+
+This confirmed that both domain controllers were visible in the AD site topology.
 
 ---
 
@@ -333,7 +391,17 @@ Active Directory Sites and Services confirmed that both domain controllers were 
 
 DNS Manager confirmed DNS records for both domain controllers.
 
-![DNS records for both domain controllers](images/16-dns-records-for-both-domain-controllers.png)
+Validated records included:
+
+| Host | IP Address |
+|---|---:|
+| `mrtg-dc01` | `192.168.10.10` |
+| `mrtg-dc02` | `192.168.10.11` |
+| `CLIENT01` | `192.168.10.101` |
+
+![DNS records for both domain controllers](screenshots/lab-12-16-dns-records-for-both-domain-controllers.png)
+
+This confirmed that both domain controllers were registered in DNS.
 
 ---
 
@@ -347,7 +415,14 @@ Command used:
 Get-ADDomainController -Filter * | Select-Object HostName, Site, IPv4Address, IsGlobalCatalog
 ```
 
-![Get-ADDomainController shows both DCs](images/17-get-addomaincontroller-shows-both-dcs.png)
+![Get-ADDomainController shows both DCs](screenshots/lab-12-17-get-addomaincontroller-shows-both-dcs.png)
+
+Validated result:
+
+| Domain Controller | IP Address | Global Catalog |
+|---|---:|---|
+| `MRTG-DC01.mrtg.local` | `192.168.10.10` | `True` |
+| `MRTG-DC02.mrtg.local` | `192.168.10.11` | `True` |
 
 ---
 
@@ -361,37 +436,58 @@ Command used:
 repadmin /replsummary
 ```
 
+![Repadmin replication summary successful](screenshots/lab-12-18-repadmin-replsummary-successful.png)
+
 The output showed zero replication failures for both domain controllers.
 
-![Repadmin replication summary successful](images/18-repadmin-replsummary-successful.png)
+Validated result:
+
+| Domain Controller | Replication Failures |
+|---|---:|
+| `MRTG-DC01` | `0` |
+| `MRTG-DC02` | `0` |
+
+This confirmed successful replication health between both domain controllers.
 
 ---
 
 ### 19. Detailed Replication Status Validated
 
-Detailed replication status was validated using:
+Detailed replication status was validated using `repadmin /showrepl`.
+
+Command used:
 
 ```cmd
 repadmin /showrepl
 ```
 
-The output showed successful inbound replication across the major naming contexts.
+![Repadmin showrepl successful](screenshots/lab-12-19-repadmin-showrepl-successful.png)
 
-![Repadmin showrepl successful](images/19-repadmin-showrepl-successful.png)
+The output showed successful inbound replication from `MRTG-DC02` to `MRTG-DC01` across the major naming contexts.
+
+Validated naming contexts included:
+
+- `DC=mrtg,DC=local`
+- `CN=Configuration,DC=mrtg,DC=local`
+- `CN=Schema,CN=Configuration,DC=mrtg,DC=local`
+- `DC=DomainDnsZones,DC=mrtg,DC=local`
+- `DC=ForestDnsZones,DC=mrtg,DC=local`
 
 ---
 
 ### 20. Replication Health Checked with DCDIAG
 
-Replication-specific domain controller diagnostics were checked with:
+Replication-specific domain controller diagnostics were checked with `dcdiag`.
+
+Command used:
 
 ```cmd
 dcdiag /test:replications /q
 ```
 
-No output was returned, which indicates no replication errors were detected by the replication-specific diagnostic test.
+![DCDIAG replication health check](screenshots/lab-12-20-dcdiag-replication-health-check.png)
 
-![DCDIAG replication health check](images/20-dcdiag-replication-health-check.png)
+No output was returned after running the command, which indicates no replication errors were detected by the replication-specific diagnostic test.
 
 ---
 
@@ -405,21 +501,25 @@ Test OU:
 Lab12-Replication-Test
 ```
 
-![Test OU created on DC01](images/21-test-ou-created-on-dc01.png)
+![Test OU created on DC01](screenshots/lab-12-21-test-ou-created-on-dc01.png)
+
+This created a visible directory object for replication testing.
 
 ---
 
 ### 22. Test OU Replicated to DC02
 
-The same OU appeared on `MRTG-DC02`, proving replication from `DC01` to `DC02`.
+The same OU appeared on `MRTG-DC02`, proving replication from `MRTG-DC01` to `MRTG-DC02`.
 
-![Test OU replicated to DC02](images/22-test-ou-replicated-to-dc02.png)
+![Test OU replicated to DC02](screenshots/lab-12-22-test-ou-replicated-to-dc02.png)
+
+This validated object replication from the original domain controller to the new domain controller.
 
 ---
 
 ### 23. Test User Created on DC02
 
-A test user was created on `MRTG-DC02`.
+A test user was created inside the replicated OU on `MRTG-DC02`.
 
 Test user:
 
@@ -427,15 +527,17 @@ Test user:
 Replication Test
 ```
 
-![Test user created on DC02](images/23-test-user-created-on-dc02.png)
+![Test user created on DC02](screenshots/lab-12-23-test-user-created-on-dc02.png)
+
+This created a second object from the new domain controller to validate replication in the opposite direction.
 
 ---
 
 ### 24. Test User Replicated to DC01
 
-The test user appeared on `MRTG-DC01`, proving replication from `DC02` back to `DC01`.
+The test user appeared on `MRTG-DC01`, proving replication from `MRTG-DC02` back to `MRTG-DC01`.
 
-![Test user replicated to DC01](images/24-test-user-replicated-to-dc01.png)
+![Test user replicated to DC01](screenshots/lab-12-24-test-user-replicated-to-dc01.png)
 
 This confirmed two-way Active Directory object replication between both domain controllers.
 
@@ -443,35 +545,41 @@ This confirmed two-way Active Directory object replication between both domain c
 
 ### 25. DC01 DNS Redundancy Configured
 
-After `MRTG-DC02` was promoted and DNS was installed, DNS client settings were updated.
+After `MRTG-DC02` was promoted and DNS was installed, DNS client settings were updated on `MRTG-DC01`.
 
-`MRTG-DC01` DNS settings:
+Configured DNS settings:
 
-```text
-Preferred DNS: 192.168.10.10
-Alternate DNS: 192.168.10.11
-```
+| Setting | Value |
+|---|---|
+| Preferred DNS Server | `192.168.10.10` |
+| Alternate DNS Server | `192.168.10.11` |
 
-![DC01 DNS redundancy configured](images/25a-dc01-dns-redundancy-configured.png)
+![DC01 DNS redundancy configured](screenshots/lab-12-25-dc01-dns-redundancy-configured.png)
+
+This allows `MRTG-DC01` to use itself first and `MRTG-DC02` as a secondary DNS resolver.
 
 ---
 
 ### 26. DC02 DNS Redundancy Configured
 
-`MRTG-DC02` DNS settings:
+DNS client settings were updated on `MRTG-DC02`.
 
-```text
-Preferred DNS: 192.168.10.11
-Alternate DNS: 192.168.10.10
-```
+Configured DNS settings:
 
-![DC02 DNS redundancy configured](images/25b-dc02-dns-redundancy-configured.png)
+| Setting | Value |
+|---|---|
+| Preferred DNS Server | `192.168.10.11` |
+| Alternate DNS Server | `192.168.10.10` |
+
+![DC02 DNS redundancy configured](screenshots/lab-12-26-dc02-dns-redundancy-configured.png)
+
+This allows `MRTG-DC02` to use itself first and `MRTG-DC01` as a secondary DNS resolver.
 
 ---
 
 ### 27. Final Replication Health Validated
 
-Final replication validation was performed after updating DNS settings.
+Final replication validation was performed after configuring DNS redundancy.
 
 Commands used:
 
@@ -480,9 +588,16 @@ repadmin /replsummary
 dcdiag /test:replications /q
 ```
 
+![Final replication health validation](screenshots/lab-12-27-final-replication-health-validation.png)
+
 The replication summary showed zero failures, and the replication diagnostic test returned no errors.
 
-![Final replication health validation](images/26-final-replication-health-validation.png)
+Validated result:
+
+| Validation | Result |
+|---|---|
+| `repadmin /replsummary` | Zero failures |
+| `dcdiag /test:replications /q` | No replication errors returned |
 
 ---
 
@@ -496,7 +611,9 @@ Checkpoint created:
 MRTG-DC02_Post-Lab12_AD-Replication-Validated
 ```
 
-![DC02 final Lab 12 checkpoint created](images/27a-dc02-final-lab12-checkpoint-created.png)
+![DC02 final Lab 12 checkpoint created](screenshots/lab-12-28-dc02-final-lab12-checkpoint-created.png)
+
+This preserved the validated state of the new domain controller.
 
 ---
 
@@ -510,35 +627,33 @@ Checkpoint created:
 MRTG-DC01_Post-Lab12_AD-Replication-Validated
 ```
 
-![DC01 final Lab 12 checkpoint created](images/27b-dc01-final-lab12-checkpoint-created.png)
+![DC01 final Lab 12 checkpoint created](screenshots/lab-12-29-dc01-final-lab12-checkpoint-created.png)
+
+This preserved the validated state of the original domain controller after replication and DNS redundancy were confirmed.
 
 ---
 
 ## Troubleshooting Note
 
-During replication validation, the initial `repadmin /replsummary` output returned DNS lookup failures.
+During replication validation, replication health was tested with multiple tools rather than relying on a single console view.
 
-Error observed:
-
-```text
-8524 - The DSA operation is unable to proceed because of a DNS lookup failure.
-```
-
-The issue was resolved by validating AD DNS records, confirming domain controller GUID resolution under `_msdcs.mrtg.local`, forcing KCC recalculation, and re-running replication synchronization.
-
-Commands used during troubleshooting:
+The following tools were used:
 
 ```cmd
-nslookup <DC-GUID>._msdcs.mrtg.local
-nslookup -type=SRV _ldap._tcp.dc._msdcs.mrtg.local
-repadmin /kcc
-repadmin /syncall /AdeP
 repadmin /replsummary
+repadmin /showrepl
+dcdiag /test:replications /q
 ```
 
-After correction, replication showed zero failures between `MRTG-DC01` and `MRTG-DC02`.
+This reinforced that Active Directory replication should be validated from multiple angles:
 
-This reinforced the importance of DNS health in Active Directory replication.
+- Replication summary
+- Detailed replication partner status
+- Replication-specific diagnostic testing
+- Object replication between domain controllers
+- DNS record visibility
+
+The key lesson is that DNS and replication are tightly connected in Active Directory. A second domain controller is only useful when DNS, Global Catalog, and replication health are all validated.
 
 ---
 
@@ -556,6 +671,7 @@ From a security and IAM perspective, this lab supports:
 - DNS redundancy
 - Replication health validation
 - Two-way identity object replication
+- Reduced single-domain-controller dependency
 - Operational rollback through checkpoints
 - Resilient identity infrastructure
 
@@ -577,6 +693,7 @@ This lab reduces the risk of:
 - No replication partner for identity data
 - Reduced operational resilience
 - Weak rollback readiness after infrastructure changes
+- Poor visibility into replication health
 
 ---
 
@@ -590,8 +707,8 @@ This lab reduces the risk of:
 | Global Catalog availability | Enables Global Catalog on `MRTG-DC02` |
 | Replication validation | Uses `repadmin` and `dcdiag` |
 | Identity data consistency | Proves OU and user replication both directions |
-| Operational resilience | Creates checkpoints after validated configuration |
-| Troubleshooting readiness | Documents DNS-related replication issue and fix |
+| Operational resilience | Creates checkpoints before and after validated configuration |
+| Troubleshooting readiness | Validates DNS, connectivity, DC discovery, and replication health |
 
 ---
 
@@ -602,15 +719,20 @@ The following validation checks were completed:
 | Validation Item | Result |
 |---|---|
 | `MRTG-DC02` VM prepared | Passed |
+| `MRTG-DC02` renamed | Passed |
 | `MRTG-DC02` static IP configured | Passed |
 | `MRTG-DC02` DNS pointed to `MRTG-DC01` before promotion | Passed |
 | Connectivity to `MRTG-DC01` validated | Passed |
+| `mrtg.local` DNS resolution validated | Passed |
+| Domain controller discovery validated with `nltest` | Passed |
 | `MRTG-DC02` joined to `mrtg.local` | Passed |
 | Pre-AD DS checkpoint created | Passed |
 | AD DS role installed | Passed |
 | `MRTG-DC02` promoted as additional domain controller | Passed |
-| DNS role installed on `MRTG-DC02` | Passed |
+| DNS role selected for `MRTG-DC02` | Passed |
 | Global Catalog enabled on `MRTG-DC02` | Passed |
+| Replication source set to `MRTG-DC01` | Passed |
+| Prerequisite checks passed | Passed |
 | Both DCs visible in ADUC | Passed |
 | Both DCs visible in Sites and Services | Passed |
 | DNS records present for both DCs | Passed |
@@ -618,11 +740,13 @@ The following validation checks were completed:
 | `repadmin /replsummary` showed zero failures | Passed |
 | `repadmin /showrepl` showed successful replication | Passed |
 | `dcdiag /test:replications /q` returned no errors | Passed |
-| OU replicated from DC01 to DC02 | Passed |
-| User replicated from DC02 to DC01 | Passed |
-| DNS redundancy configured | Passed |
+| Test OU replicated from `MRTG-DC01` to `MRTG-DC02` | Passed |
+| Test user replicated from `MRTG-DC02` to `MRTG-DC01` | Passed |
+| DNS redundancy configured on `MRTG-DC01` | Passed |
+| DNS redundancy configured on `MRTG-DC02` | Passed |
 | Final replication validation passed | Passed |
-| Final checkpoints created | Passed |
+| Final checkpoint created for `MRTG-DC02` | Passed |
+| Final checkpoint created for `MRTG-DC01` | Passed |
 
 ---
 
@@ -632,35 +756,35 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Hyper-V showing DC01 and DC02 running | `images/01-hyperv-dc01-dc02-running.png` |
-| DC02 renamed and IP configured | `images/02-dc02-server-renamed-and-ip-configured.png` |
-| DC02 static IP and DNS configured | `images/03-dc02-static-ip-dns-configured.png` |
-| DC02 connectivity to DC01 validated | `images/04-dc02-connectivity-to-dc01-validated.png` |
-| DC02 domain membership confirmed | `images/05-dc02-domain-membership-confirmed.png` |
-| DC02 pre-ADDS checkpoint created | `images/06-dc02-pre-adds-checkpoint-created.png` |
-| AD DS role selected on DC02 | `images/07-adds-role-selected-on-dc02.png` |
-| AD DS role installed on DC02 | `images/08-adds-role-installed-on-dc02.png` |
-| Add domain controller to existing domain | `images/09-add-domain-controller-to-existing-domain.png` |
-| DC02 DNS and Global Catalog selected | `images/10-dc02-dns-global-catalog-selected.png` |
-| DC02 replication source DC01 | `images/11-dc02-replication-source-dc01.png` |
-| DC02 prerequisite check passed | `images/12-dc02-prerequisite-check-passed.png` |
-| DC02 promoted and rebooted | `images/13-dc02-promoted-and-rebooted.png` |
-| Both domain controllers visible in ADUC | `images/14-both-domain-controllers-visible-in-aduc.png` |
-| Both DCs visible in Sites and Services | `images/15-both-dcs-visible-in-sites-and-services.png` |
-| DNS records for both domain controllers | `images/16-dns-records-for-both-domain-controllers.png` |
-| Get-ADDomainController shows both DCs | `images/17-get-addomaincontroller-shows-both-dcs.png` |
-| Repadmin replication summary successful | `images/18-repadmin-replsummary-successful.png` |
-| Repadmin showrepl successful | `images/19-repadmin-showrepl-successful.png` |
-| DCDIAG replication health check | `images/20-dcdiag-replication-health-check.png` |
-| Test OU created on DC01 | `images/21-test-ou-created-on-dc01.png` |
-| Test OU replicated to DC02 | `images/22-test-ou-replicated-to-dc02.png` |
-| Test user created on DC02 | `images/23-test-user-created-on-dc02.png` |
-| Test user replicated to DC01 | `images/24-test-user-replicated-to-dc01.png` |
-| DC01 DNS redundancy configured | `images/25a-dc01-dns-redundancy-configured.png` |
-| DC02 DNS redundancy configured | `images/25b-dc02-dns-redundancy-configured.png` |
-| Final replication health validation | `images/26-final-replication-health-validation.png` |
-| DC02 final Lab 12 checkpoint created | `images/27a-dc02-final-lab12-checkpoint-created.png` |
-| DC01 final Lab 12 checkpoint created | `images/27b-dc01-final-lab12-checkpoint-created.png` |
+| Hyper-V showing DC01 and DC02 running | `screenshots/lab-12-01-hyperv-dc01-dc02-running.png` |
+| DC02 renamed and IP configured | `screenshots/lab-12-02-dc02-server-renamed-and-ip-configured.png` |
+| DC02 static IP and DNS configured | `screenshots/lab-12-03-dc02-static-ip-dns-configured.png` |
+| DC02 connectivity to DC01 validated | `screenshots/lab-12-04-dc02-connectivity-to-dc01-validated.png` |
+| DC02 domain membership confirmed | `screenshots/lab-12-05-dc02-domain-membership-confirmed.png` |
+| DC02 pre-ADDS checkpoint created | `screenshots/lab-12-06-dc02-pre-adds-checkpoint-created.png` |
+| AD DS role selected on DC02 | `screenshots/lab-12-07-adds-role-selected-on-dc02.png` |
+| AD DS role installed on DC02 | `screenshots/lab-12-08-adds-role-installed-on-dc02.png` |
+| Add domain controller to existing domain | `screenshots/lab-12-09-add-domain-controller-to-existing-domain.png` |
+| DC02 DNS and Global Catalog selected | `screenshots/lab-12-10-dc02-dns-global-catalog-selected.png` |
+| DC02 replication source DC01 | `screenshots/lab-12-11-dc02-replication-source-dc01.png` |
+| DC02 prerequisite check passed | `screenshots/lab-12-12-dc02-prerequisite-check-passed.png` |
+| DC02 promoted and rebooted | `screenshots/lab-12-13-dc02-promoted-and-rebooted.png` |
+| Both domain controllers visible in ADUC | `screenshots/lab-12-14-both-domain-controllers-visible-in-aduc.png` |
+| Both DCs visible in Sites and Services | `screenshots/lab-12-15-both-dcs-visible-in-sites-and-services.png` |
+| DNS records for both domain controllers | `screenshots/lab-12-16-dns-records-for-both-domain-controllers.png` |
+| Get-ADDomainController shows both DCs | `screenshots/lab-12-17-get-addomaincontroller-shows-both-dcs.png` |
+| Repadmin replication summary successful | `screenshots/lab-12-18-repadmin-replsummary-successful.png` |
+| Repadmin showrepl successful | `screenshots/lab-12-19-repadmin-showrepl-successful.png` |
+| DCDIAG replication health check | `screenshots/lab-12-20-dcdiag-replication-health-check.png` |
+| Test OU created on DC01 | `screenshots/lab-12-21-test-ou-created-on-dc01.png` |
+| Test OU replicated to DC02 | `screenshots/lab-12-22-test-ou-replicated-to-dc02.png` |
+| Test user created on DC02 | `screenshots/lab-12-23-test-user-created-on-dc02.png` |
+| Test user replicated to DC01 | `screenshots/lab-12-24-test-user-replicated-to-dc01.png` |
+| DC01 DNS redundancy configured | `screenshots/lab-12-25-dc01-dns-redundancy-configured.png` |
+| DC02 DNS redundancy configured | `screenshots/lab-12-26-dc02-dns-redundancy-configured.png` |
+| Final replication health validation | `screenshots/lab-12-27-final-replication-health-validation.png` |
+| DC02 final Lab 12 checkpoint created | `screenshots/lab-12-28-dc02-final-lab12-checkpoint-created.png` |
+| DC01 final Lab 12 checkpoint created | `screenshots/lab-12-29-dc01-final-lab12-checkpoint-created.png` |
 
 ---
 
@@ -686,13 +810,13 @@ In a production environment, I would improve this process by:
 
 ## Lessons Learned
 
-This lab reinforced that Active Directory resilience depends heavily on DNS and replication health.
+This lab reinforced that adding a second domain controller is not just a role installation task.
 
-Adding a second domain controller is not finished when promotion completes. The environment still needs DNS validation, replication validation, object replication testing, and final health checks.
+The server must be prepared with the correct network settings, joined to the domain, promoted correctly, registered in DNS, visible in Active Directory management tools, and validated for replication health.
 
 The biggest takeaway is that directory resilience must be proven, not assumed.
 
-A second domain controller only adds value if authentication, DNS, Global Catalog functionality, and replication are healthy.
+A second domain controller only adds value if authentication, DNS, Global Catalog functionality, object replication, and replication health are validated.
 
 ---
 
@@ -707,12 +831,17 @@ The lab confirmed:
 - AD DS was installed
 - `MRTG-DC02` was promoted as an additional domain controller
 - DNS and Global Catalog were enabled
-- Both domain controllers were visible in ADUC and Sites and Services
+- Both domain controllers were visible in ADUC
+- Both domain controllers were visible in Sites and Services
 - DNS records existed for both domain controllers
-- `repadmin` and `dcdiag` confirmed healthy replication
+- PowerShell confirmed both DCs as Global Catalog servers
+- `repadmin /replsummary` confirmed zero replication failures
+- `repadmin /showrepl` confirmed successful inbound replication
+- `dcdiag /test:replications /q` returned no replication errors
 - A test OU replicated from `MRTG-DC01` to `MRTG-DC02`
 - A test user replicated from `MRTG-DC02` to `MRTG-DC01`
-- DNS redundancy was configured
+- DNS redundancy was configured on both domain controllers
+- Final replication validation passed
 - Final checkpoints were created for both domain controllers
 
 The environment now supports improved identity infrastructure resilience with two healthy domain controllers.
