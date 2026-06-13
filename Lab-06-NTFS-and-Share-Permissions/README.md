@@ -13,7 +13,7 @@
 
 The objective of this lab is to configure department-based resource access using NTFS permissions and SMB share permissions in the `mrtg.local` Active Directory domain.
 
-This lab builds directly on the identity lifecycle work from Lab 05 by applying department security groups to real shared resources.
+This lab builds directly on the identity lifecycle work from Lab 05 by applying department security groups to shared resources.
 
 The focus is on enforcing least privilege through group-based access control.
 
@@ -23,13 +23,14 @@ The focus is on enforcing least privilege through group-based access control.
 
 Monroe Redstone Technology Group needs to control access to departmental file shares in a way that is secure, scalable, and easy to manage.
 
-Without group-based resource permissions, administrators may assign access directly to users, creating inconsistent permissions, excessive access, and poor auditability.
+Without group-based resource permissions, administrators may assign access directly to users. This can create inconsistent permissions, excessive access, permission drift, and poor auditability.
 
 This lab addresses the need to:
 
 - Create department-specific shared folders
 - Assign access through Active Directory security groups
-- Combine share permissions and NTFS permissions correctly
+- Configure SMB share permissions
+- Configure NTFS permissions
 - Validate authorized access
 - Validate unauthorized access denial
 - Reinforce least privilege through group-based resource access
@@ -86,7 +87,8 @@ This lab demonstrated how identity group membership becomes real resource access
 - Advanced auditing
 - Dynamic Access Control
 - Data Loss Prevention
-- Entra ID or cloud file access controls
+- Microsoft Entra ID file access controls
+- Cloud file access controls
 
 ---
 
@@ -96,12 +98,12 @@ The MRTG file access model uses department security groups to control access to 
 
 ```text
 C:\Shares
+├── Finance
 ├── HR
-├── IT
-└── Finance
+└── IT
 ```
 
-Access is assigned through Active Directory groups:
+Access is assigned through Active Directory groups.
 
 ```text
 GG_HR_Users       → HR share
@@ -152,13 +154,19 @@ This supports a cleaner RBAC model because access follows group membership inste
 
 ## Implementation and Validation
 
-### 1. Department Share Structure Created
+### 1. Department Share Folders Created
 
 A central `C:\Shares` directory was created on `MRTG-DC01`.
 
-Department folders were created for HR, IT, and Finance.
+Department folders were created for:
 
-![Department share structure](images/lab06-01.png)
+- Finance
+- HR
+- IT
+
+![Department share folders created](screenshots/lab-06-01-department-share-folders-created.png)
+
+This created the resource structure for department-based access control.
 
 ---
 
@@ -166,9 +174,15 @@ Department folders were created for HR, IT, and Finance.
 
 Share permissions were configured for the HR folder.
 
-The HR share used group-based access through `GG_HR_Users`.
+The HR share used group-based access through:
 
-![HR share permissions](images/lab06-02.png)
+```text
+GG_HR_Users
+```
+
+The HR group was granted Change and Read permissions at the share layer.
+
+![HR share permissions configured](screenshots/lab-06-02-hr-share-permissions-configured.png)
 
 This established the network access layer for the HR department share.
 
@@ -178,9 +192,9 @@ This established the network access layer for the HR department share.
 
 NTFS permissions were configured on the HR folder.
 
-`GG_HR_Users` was granted appropriate access to the HR folder while administrative control remained with privileged accounts.
+`GG_HR_Users` was granted Modify access to the HR folder while administrative control remained with privileged accounts.
 
-![HR NTFS permissions](images/lab06-03.png)
+![HR NTFS permissions configured](screenshots/lab-06-03-hr-ntfs-permissions-configured.png)
 
 This established the file system access layer for the HR department share.
 
@@ -208,7 +222,7 @@ Kevin Carter’s HR-aligned account was used to test access to the HR share.
 
 Kevin was able to open the HR share successfully.
 
-![Authorized HR access](images/lab06-04.png)
+![HR user access allowed](screenshots/lab-06-04-hr-user-access-allowed.png)
 
 This confirmed that HR group membership allowed access to the HR resource.
 
@@ -220,7 +234,7 @@ Kevin Carter’s HR-aligned account was used to test access to the IT share.
 
 Access was denied.
 
-![Denied IT access for HR user](images/lab06-05.png)
+![HR user IT access denied](screenshots/lab-06-05-hr-user-it-access-denied.png)
 
 This confirmed that HR users were not granted access to IT resources.
 
@@ -232,7 +246,7 @@ Sarah Jones’s IT-aligned account was used to test access to the IT share.
 
 Sarah was able to open the IT share successfully.
 
-![Authorized IT access](images/lab06-06.png)
+![IT user access allowed](screenshots/lab-06-06-it-user-access-allowed.png)
 
 This confirmed that IT group membership allowed access to the IT resource.
 
@@ -244,7 +258,7 @@ Sarah Jones’s IT-aligned account was used to test access to the HR share.
 
 Access was denied.
 
-![Denied HR access for IT user](images/lab06-07.png)
+![IT user HR access denied](screenshots/lab-06-07-it-user-hr-access-denied.png)
 
 This confirmed that Sarah’s move from HR to IT changed her effective resource access.
 
@@ -260,7 +274,7 @@ Group membership defines access.
 
 NTFS and share permissions enforce access at the resource layer.
 
-From a security perspective, this lab supports:
+From a security and IAM perspective, this lab supports:
 
 - Least privilege
 - Role-based access control
@@ -328,13 +342,13 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Department share structure | `images/lab06-01.png` |
-| HR share permissions | `images/lab06-02.png` |
-| HR NTFS permissions | `images/lab06-03.png` |
-| Authorized HR access | `images/lab06-04.png` |
-| Denied IT access for HR user | `images/lab06-05.png` |
-| Authorized IT access | `images/lab06-06.png` |
-| Denied HR access for IT user | `images/lab06-07.png` |
+| Department share folders created | `screenshots/lab-06-01-department-share-folders-created.png` |
+| HR share permissions configured | `screenshots/lab-06-02-hr-share-permissions-configured.png` |
+| HR NTFS permissions configured | `screenshots/lab-06-03-hr-ntfs-permissions-configured.png` |
+| HR user access allowed | `screenshots/lab-06-04-hr-user-access-allowed.png` |
+| HR user denied access to IT share | `screenshots/lab-06-05-hr-user-it-access-denied.png` |
+| IT user access allowed | `screenshots/lab-06-06-it-user-access-allowed.png` |
+| IT user denied access to HR share | `screenshots/lab-06-07-it-user-hr-access-denied.png` |
 
 ---
 
