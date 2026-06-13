@@ -45,6 +45,8 @@ I confirmed that named admin accounts were stored separately from standard users
 
 The lab delegated password reset rights over the `_MRTG/Users` OU and validated that `john.smith.admin` received delegated support rights without being added to `Domain Admins`.
 
+This lab demonstrates a practical least-privilege model for routine identity support work.
+
 ---
 
 ## Environment
@@ -58,7 +60,9 @@ The lab delegated password reset rights over the `_MRTG/Users` OU and validated 
 | Management Tool | Active Directory Users and Computers |
 | Privileged Account OU | `_MRTG/Admin Accounts` |
 | Service Account OU | `_MRTG/Service Accounts` |
+| Delegated Support Group | `GG_IT_HelpDesk_Admins` |
 | Delegation Target | `_MRTG/Users` |
+| Named Admin Account | `john.smith.admin` |
 | Lab Organization | Monroe Redstone Technology Group |
 
 ---
@@ -69,9 +73,10 @@ The lab delegated password reset rights over the `_MRTG/Users` OU and validated 
 
 - Named administrative account review
 - Service account OU review
-- Delegated administration group creation
+- Delegated administration group review
 - Delegated support group membership assignment
 - Delegation of password reset rights
+- Delegation of force password change at next logon rights
 - Validation of delegated group membership
 - Validation that delegated admin account is not a Domain Admin
 - Least-privilege administrative access model
@@ -84,8 +89,9 @@ The lab delegated password reset rights over the `_MRTG/Users` OU and validated 
 - Tiered admin workstation deployment
 - Just-in-time access
 - Just Enough Administration
-- Entra ID Privileged Identity Management
+- Microsoft Entra ID Privileged Identity Management
 - Advanced privileged access monitoring
+- SIEM alerting for privileged activity
 
 ---
 
@@ -106,7 +112,7 @@ mrtg.local
         └── Service Backup
 ```
 
-Delegated administration is applied through a support group:
+Delegated administration is applied through a support group.
 
 ```text
 GG_IT_HelpDesk_Admins
@@ -186,13 +192,30 @@ The goal was to delegate a realistic support task without assigning full domain-
 
 ---
 
+## Delegated Permissions
+
+The delegated support group was granted the ability to:
+
+- Reset user passwords
+- Force password change at next logon
+
+The delegation was scoped to:
+
+```text
+_MRTG/Users
+```
+
+This means the delegated account received limited support rights over user objects without becoming a Domain Admin.
+
+---
+
 ## Implementation and Validation
 
 ### 1. Named Administrative Accounts Reviewed
 
 The dedicated Admin Accounts OU was reviewed to confirm that privileged human identities were separated from standard user accounts.
 
-![Named administrative accounts](images/lab07-01.png)
+![Admin accounts created](screenshots/lab-07-01-admin-accounts-created.png)
 
 This supports administrative accountability by separating privileged access from day-to-day user activity.
 
@@ -202,27 +225,39 @@ This supports administrative accountability by separating privileged access from
 
 The dedicated Service Accounts OU was reviewed to confirm that non-human operational identities were stored separately.
 
-![Dedicated service accounts](images/lab07-02.png)
+![Service accounts created](screenshots/lab-07-02-service-accounts-created.png)
 
 This supports cleaner identity governance by separating service identities from standard users and named administrators.
 
 ---
 
-### 3. Delegated Administration Group Created
+### 3. Security Groups Reviewed
 
-The `GG_IT_HelpDesk_Admins` security group was created in the Groups OU.
+The Groups OU was reviewed to confirm that the delegated Help Desk administration group existed alongside the other role-based security groups.
 
-![Delegated administration group](images/lab07-03.png)
+Group reviewed:
 
-This group represents a scoped support role for delegated administrative tasks.
+```text
+GG_IT_HelpDesk_Admins
+```
+
+![Security groups updated](screenshots/lab-07-03-security-groups-updated.png)
+
+This confirmed that delegated administration would be assigned through a dedicated group instead of direct user-level permissions.
 
 ---
 
-### 4. Named Admin Account Assigned to Delegated Group
+### 4. Help Desk Admin Group Membership Validated
 
-`john.smith.admin` was added to `GG_IT_HelpDesk_Admins`.
+The `GG_IT_HelpDesk_Admins` group membership was reviewed.
 
-![Delegated group membership](images/lab07-04.png)
+Confirmed member:
+
+```text
+john.smith.admin
+```
+
+![Help Desk admin group membership](screenshots/lab-07-04-helpdesk-admin-group-membership.png)
 
 This assigned the delegated support role to a named administrative identity while preserving accountability.
 
@@ -230,20 +265,20 @@ This assigned the delegated support role to a named administrative identity whil
 
 ### 5. Password Reset Rights Delegated Over Users OU
 
-The Delegation of Control Wizard was used on `_MRTG/Users`.
+The Delegation of Control Wizard was completed on `_MRTG/Users`.
 
 The delegated group was granted the ability to:
 
 - Reset user passwords
 - Force password change at next logon
 
-![Delegation of password reset rights](images/lab07-05.png)
+![Password reset delegation completed](screenshots/lab-07-05-password-reset-delegation-completed.png)
 
 This provided a realistic Help Desk-style support permission without assigning unrestricted administrative control.
 
 ---
 
-### 6. Scoped Privileged Group Membership Validated
+### 6. Scoped Admin Account Membership Validated
 
 `john.smith.admin` group membership was reviewed.
 
@@ -253,13 +288,13 @@ The account was confirmed as a member of:
 GG_IT_HelpDesk_Admins
 ```
 
-The account was not a member of:
+The account was not shown as a member of:
 
 ```text
 Domain Admins
 ```
 
-![Scoped privileged group membership](images/lab07-06.png)
+![Admin account Help Desk group membership](screenshots/lab-07-06-admin-account-helpdesk-group-membership.png)
 
 This confirmed that the delegated admin account remained scoped to a limited support role.
 
@@ -299,6 +334,7 @@ This lab reduces the risk of:
 - Overuse of Domain Admin membership
 - Poor privileged access boundaries
 - Excessive blast radius from compromised support accounts
+- Weak visibility into who performed administrative actions
 
 ---
 
@@ -326,7 +362,7 @@ The following validation checks were completed:
 | Admin accounts stored in `_MRTG/Admin Accounts` | Passed |
 | Service accounts reviewed | Passed |
 | Service accounts stored in `_MRTG/Service Accounts` | Passed |
-| `GG_IT_HelpDesk_Admins` created | Passed |
+| `GG_IT_HelpDesk_Admins` reviewed in Groups OU | Passed |
 | `john.smith.admin` added to delegated support group | Passed |
 | Password reset rights delegated over `_MRTG/Users` | Passed |
 | Force password change at next logon right delegated | Passed |
@@ -341,12 +377,12 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Named administrative accounts | `images/lab07-01.png` |
-| Dedicated service accounts | `images/lab07-02.png` |
-| Delegated administration group | `images/lab07-03.png` |
-| Delegated group membership | `images/lab07-04.png` |
-| Password reset delegation | `images/lab07-05.png` |
-| Scoped privileged group membership validation | `images/lab07-06.png` |
+| Admin accounts created | `screenshots/lab-07-01-admin-accounts-created.png` |
+| Service accounts created | `screenshots/lab-07-02-service-accounts-created.png` |
+| Security groups updated | `screenshots/lab-07-03-security-groups-updated.png` |
+| Help Desk admin group membership | `screenshots/lab-07-04-helpdesk-admin-group-membership.png` |
+| Password reset delegation completed | `screenshots/lab-07-05-password-reset-delegation-completed.png` |
+| Admin account Help Desk group membership | `screenshots/lab-07-06-admin-account-helpdesk-group-membership.png` |
 
 ---
 
@@ -365,6 +401,7 @@ In a production environment, I would improve this process by:
 - Limiting interactive logon rights for service accounts
 - Applying stronger controls to Domain Admin membership
 - Using privileged access management or just-in-time access where available
+- Reviewing delegated group membership on a scheduled basis
 
 ---
 
@@ -378,7 +415,7 @@ A service account should not be treated the same as a human admin account.
 
 Delegated administration allows support teams to perform necessary tasks without receiving full control over the domain.
 
-The biggest takeaway is that least privilege is not just about users. It also applies to administrators and service accounts.
+The biggest takeaway is that least privilege is not just about standard users. It also applies to administrators and service accounts.
 
 ---
 
@@ -390,7 +427,7 @@ The lab confirmed:
 
 - Named administrative accounts were separated from standard users
 - Service accounts were separated into a dedicated OU
-- A delegated support group was created
+- The delegated Help Desk admin group existed in the Groups OU
 - `john.smith.admin` was assigned to the delegated support group
 - Password reset rights were delegated over `_MRTG/Users`
 - Delegated access was scoped below Domain Admin privilege
