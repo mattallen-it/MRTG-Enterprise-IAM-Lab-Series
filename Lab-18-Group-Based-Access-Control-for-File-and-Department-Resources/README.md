@@ -1,4 +1,4 @@
-# Lab-18 - Group-Based Access Control for File and Department Resources
+# Lab 18 — Group-Based Access Control for File and Department Resources
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -570,10 +570,8 @@ The HR user was able to access the HR folder and was denied access to Finance. T
 This confirmed that department access was controlled through group membership rather than direct user permissions.
 
 ---
-
 ## Next Lab
 
-[Lab-19 - Active Directory Certificate Services](../Lab-19-Active-Directory-Certificate-Services/)
+[Lab 19 — Active Directory Certificate Services](../Lab-19-Active-Directory-Certificate-Services/)
 
 Lab 19 will build on the identity and infrastructure foundation by introducing Active Directory Certificate Services, focusing on enterprise trust, certificate authority configuration, certificate enrollment, and internal PKI validation in the MRTG domain.
-```
