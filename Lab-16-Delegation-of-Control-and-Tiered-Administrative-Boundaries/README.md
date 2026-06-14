@@ -1,4 +1,4 @@
-# Lab-16 — Delegation of Control and Tiered Administrative Boundaries
+# Lab 16  — Delegation of Control and Tiered Administrative Boundaries
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
