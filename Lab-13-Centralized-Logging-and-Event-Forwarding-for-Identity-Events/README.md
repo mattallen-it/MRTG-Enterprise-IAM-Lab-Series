@@ -175,7 +175,7 @@ This model supports centralized audit visibility without requiring a full SIEM d
 
 `MRTG-LOG01` was created in Hyper-V and brought online with the existing MRTG lab systems.
 
-![Hyper-V showing LOG01 created and running](images/01-hyperv-log01-created-and-running.png)
+![Hyper-V showing LOG01 created and running](screenshots/lab-13-01-log01-created-and-running.png)
 
 ---
 
@@ -183,7 +183,7 @@ This model supports centralized audit visibility without requiring a full SIEM d
 
 `MRTG-LOG01` was renamed and confirmed in Server Manager.
 
-![LOG01 server renamed](images/02-log01-server-renamed.png)
+![LOG01 server renamed](screenshots/lab-13-02-log01-server-renamed.png)
 
 ---
 
@@ -199,7 +199,7 @@ Preferred DNS: 192.168.10.10
 Alternate DNS: 192.168.10.11
 ```
 
-![LOG01 static IP and DNS configured](images/03-log01-static-ip-dns-configured.png)
+![LOG01 static IP and DNS configured](screenshots/lab-13-03-log01-static-ip-dns-configured.png)
 
 ---
 
@@ -218,7 +218,7 @@ nslookup mrtg.local
 nltest /dsgetdc:mrtg.local
 ```
 
-![LOG01 domain connectivity validated](images/04-log01-domain-connectivity-validated.png)
+![LOG01 domain connectivity validated](screenshots/lab-13-04-log01-domain-connectivity-validated.png)
 
 ---
 
@@ -226,7 +226,7 @@ nltest /dsgetdc:mrtg.local
 
 `MRTG-LOG01` was joined to the existing `mrtg.local` domain.
 
-![LOG01 domain membership confirmed](images/05-log01-domain-membership-confirmed.png)
+![LOG01 domain membership confirmed](screenshots/lab-13-05-log01-domain-membership-confirmed.png)
 
 This allowed the logging server to participate in domain-based event forwarding.
 
@@ -242,7 +242,7 @@ Command used:
 wecutil qc
 ```
 
-![WECUTIL configured on LOG01](images/06-wecutil-qc-enabled-on-log01.png)
+![WECUTIL configured on LOG01](screenshots/lab-13-06-windows-event-collector-configured.png)
 
 ---
 
@@ -256,7 +256,7 @@ Command used:
 sc query Wecsvc
 ```
 
-![Windows Event Collector service running](images/07-windows-event-collector-service-running.png)
+![Windows Event Collector service running](screenshots/lab-13-07-windows-event-collector-service-running.png)
 
 This confirmed that `MRTG-LOG01` was ready to receive forwarded events.
 
@@ -273,7 +273,7 @@ winrm quickconfig
 winrm enumerate winrm/config/listener
 ```
 
-![WinRM enabled on DC01](images/08-winrm-enabled-on-dc01.png)
+![WinRM enabled on DC01](screenshots/lab-13-08-winrm-enabled-on-dc01.png)
 
 ---
 
@@ -288,7 +288,7 @@ winrm quickconfig
 winrm enumerate winrm/config/listener
 ```
 
-![WinRM enabled on DC02](images/09-winrm-enabled-on-dc02.png)
+![WinRM enabled on DC02](screenshots/lab-13-09-winrm-enabled-on-dc02.png)
 
 Both domain controllers were listening on HTTP port `5985`, which supports Windows Event Forwarding communication.
 
@@ -304,7 +304,7 @@ GPO name:
 MRTG-GPO-Centralized-Event-Forwarding
 ```
 
-![Event forwarding GPO created](images/10-event-forwarding-gpo-created.png)
+![Event forwarding GPO created](screenshots/lab-13-10-centralized-event-forwarding-gpo-created.png)
 
 ---
 
@@ -318,7 +318,7 @@ Subscription Manager value:
 Server=http://MRTG-LOG01.mrtg.local:5985/wsman/SubscriptionManager/WEC,Refresh=60
 ```
 
-![Subscription Manager configured in GPO](images/11-subscription-manager-configured-in-gpo.png)
+![Subscription Manager configured in GPO](screenshots/lab-13-11-subscription-manager-configured-in-gpo.png)
 
 This tells the source computers where to check in for event forwarding subscriptions.
 
@@ -328,7 +328,7 @@ This tells the source computers where to check in for event forwarding subscript
 
 The event forwarding GPO was linked to the Domain Controllers OU.
 
-![GPO linked to Domain Controllers OU](images/12-gpo-linked-to-domain-controllers-ou.png)
+![GPO linked to Domain Controllers OU](screenshots/lab-13-12-gpo-linked-to-domain-controllers-ou.png)
 
 This ensured only domain controllers received the event forwarding configuration.
 
@@ -345,7 +345,7 @@ gpupdate /force
 gpresult /r
 ```
 
-![Event forwarding GPO applied to domain controllers](images/13-event-forwarding-gpo-applied-to-domain-controllers.png)
+![Event forwarding GPO applied to domain controllers](screenshots/lab-13-13-event-forwarding-gpo-applied-to-domain-controllers.png)
 
 This confirmed that both `MRTG-DC01` and `MRTG-DC02` received the centralized event forwarding policy.
 
@@ -357,7 +357,7 @@ Event Viewer was opened on `MRTG-LOG01`.
 
 The Subscriptions node was confirmed.
 
-![Event Viewer Subscriptions opened on LOG01](images/14-event-viewer-subscriptions-opened-on-log01.png)
+![Event Viewer Subscriptions opened on LOG01](screenshots/lab-13-14-event-viewer-subscriptions-opened-on-log01.png)
 
 ---
 
@@ -371,7 +371,7 @@ A new source-initiated subscription was created.
 | Destination Log | `Forwarded Events` |
 | Subscription Type | Source computer initiated |
 
-![Identity security event subscription created](images/15-identity-security-event-subscription-created.png)
+![Identity security event subscription created](screenshots/lab-13-15-identity-security-event-subscription-created.png)
 
 The event filter was configured to collect identity-related Security log events.
 
@@ -381,7 +381,7 @@ The event filter was configured to collect identity-related Security log events.
 
 The subscription was created and shown as active in Event Viewer.
 
-![Identity security event subscription visible](images/16-identity-security-event-subscription-visible.png)
+![Identity security event subscription visible](screenshots/lab-13-16-identity-security-event-subscription-visible.png)
 
 ---
 
@@ -404,7 +404,7 @@ net stop winrm
 net start winrm
 ```
 
-![Network Service added and WinRM restarted on DCs](images/17-network-service-added-and-winrm-restarted-on-dcs.png)
+![Network Service added and WinRM restarted on DCs](screenshots/lab-13-17-network-service-added-and-winrm-restarted-on-dcs.png)
 
 This ensured the forwarding service had the required access to read and forward events.
 
@@ -414,7 +414,7 @@ This ensured the forwarding service had the required access to read and forward 
 
 The subscription runtime status showed both source domain controllers as active.
 
-![Subscription runtime status shows source DCs](images/18-subscription-runtime-status-shows-source-dcs.png)
+![Subscription runtime status shows source DCs](screenshots/lab-13-18-subscription-runtime-status-shows-source-dcs.png)
 
 Validated source computers:
 
@@ -431,7 +431,7 @@ This confirmed that both domain controllers were successfully checking in to the
 
 The Forwarded Events log on `MRTG-LOG01` began receiving Security events from the domain controllers.
 
-![Forwarded Events log visible on LOG01](images/19-forwarded-events-log-visible-on-log01.png)
+![Forwarded Events log visible on LOG01](screenshots/lab-13-19-forwarded-events-log-visible-on-log01.png)
 
 This confirmed that centralized event collection was working.
 
@@ -453,7 +453,7 @@ Meaning:
 A user account was locked out.
 ```
 
-![Forwarded account lockout event collected](images/20-forwarded-4740-account-lockout-event-collected.png)
+![Forwarded account lockout event collected](screenshots/lab-13-20-forwarded-4740-account-lockout-event-collected.png)
 
 This validated collection of a high-value identity security event.
 
@@ -469,7 +469,7 @@ Expected event ID:
 4720
 ```
 
-![Test user created in ADUC](images/21-test-user-created-in-aduc.png)
+![Test user created in ADUC](screenshots/lab-13-21-test-user-created-in-aduc.png)
 
 ---
 
@@ -477,7 +477,7 @@ Expected event ID:
 
 The account creation event was collected in Forwarded Events on `MRTG-LOG01`.
 
-![Forwarded user created event collected](images/22-forwarded-4720-user-created-event-collected.png)
+![Forwarded user created event collected](screenshots/lab-13-22-forwarded-4720-user-created-event-collected.png)
 
 This confirmed that account lifecycle events were forwarded successfully.
 
@@ -493,7 +493,7 @@ Expected event ID:
 4725
 ```
 
-![Test user disabled in ADUC](images/23-test-user-disabled-in-aduc.png)
+![Test user disabled in ADUC](screenshots/lab-13-23-test-user-disabled-in-aduc.png)
 
 ---
 
@@ -501,7 +501,7 @@ Expected event ID:
 
 The account disabled event was collected in Forwarded Events on `MRTG-LOG01`.
 
-![Forwarded user disabled event collected](images/24-forwarded-4725-user-disabled-event-collected.png)
+![Forwarded user disabled event collected](screenshots/lab-13-24-forwarded-4725-user-disabled-event-collected.png)
 
 This confirmed centralized collection of user disablement activity.
 
@@ -511,7 +511,7 @@ This confirmed centralized collection of user disablement activity.
 
 A final centralized event view confirmed that multiple identity-related events were collected on `MRTG-LOG01`.
 
-![Centralized identity events collected on LOG01](images/25-centralized-identity-events-collected-on-log01.png)
+![Centralized identity events collected on LOG01](screenshots/lab-13-25-centralized-identity-events-collected-on-log01.png)
 
 ---
 
@@ -525,7 +525,7 @@ Checkpoint name:
 MRTG-LOG01_Post-Lab13-WEF-Identity-Events-Validated
 ```
 
-![Final Lab 13 checkpoint created](images/26-final-lab13-checkpoint-created.png)
+![Final Lab 13 checkpoint created](screenshots/lab-13-26-final-lab13-checkpoint-created.png)
 
 ---
 
@@ -617,32 +617,32 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Hyper-V showing LOG01 created and running | `images/01-hyperv-log01-created-and-running.png` |
-| LOG01 server renamed | `images/02-log01-server-renamed.png` |
-| LOG01 static IP and DNS configured | `images/03-log01-static-ip-dns-configured.png` |
-| LOG01 domain connectivity validated | `images/04-log01-domain-connectivity-validated.png` |
-| LOG01 domain membership confirmed | `images/05-log01-domain-membership-confirmed.png` |
-| WECUTIL configured on LOG01 | `images/06-wecutil-qc-enabled-on-log01.png` |
-| Windows Event Collector service running | `images/07-windows-event-collector-service-running.png` |
-| WinRM enabled on DC01 | `images/08-winrm-enabled-on-dc01.png` |
-| WinRM enabled on DC02 | `images/09-winrm-enabled-on-dc02.png` |
-| Event forwarding GPO created | `images/10-event-forwarding-gpo-created.png` |
-| Subscription Manager configured in GPO | `images/11-subscription-manager-configured-in-gpo.png` |
-| GPO linked to Domain Controllers OU | `images/12-gpo-linked-to-domain-controllers-ou.png` |
-| Event forwarding GPO applied to domain controllers | `images/13-event-forwarding-gpo-applied-to-domain-controllers.png` |
-| Event Viewer Subscriptions opened on LOG01 | `images/14-event-viewer-subscriptions-opened-on-log01.png` |
-| Identity security event subscription created | `images/15-identity-security-event-subscription-created.png` |
-| Identity security event subscription visible | `images/16-identity-security-event-subscription-visible.png` |
-| Network Service added and WinRM restarted on DCs | `images/17-network-service-added-and-winrm-restarted-on-dcs.png` |
-| Subscription runtime status shows source DCs | `images/18-subscription-runtime-status-shows-source-dcs.png` |
-| Forwarded Events log visible on LOG01 | `images/19-forwarded-events-log-visible-on-log01.png` |
-| Forwarded account lockout event collected | `images/20-forwarded-4740-account-lockout-event-collected.png` |
-| Test user created in ADUC | `images/21-test-user-created-in-aduc.png` |
-| Forwarded user created event collected | `images/22-forwarded-4720-user-created-event-collected.png` |
-| Test user disabled in ADUC | `images/23-test-user-disabled-in-aduc.png` |
-| Forwarded user disabled event collected | `images/24-forwarded-4725-user-disabled-event-collected.png` |
-| Centralized identity events collected on LOG01 | `images/25-centralized-identity-events-collected-on-log01.png` |
-| Final Lab 13 checkpoint created | `images/26-final-lab13-checkpoint-created.png` |
+| Hyper-V showing LOG01 created and running | `screenshots/lab-13-01-log01-created-and-running.png` |
+| LOG01 server renamed | `screenshots/lab-13-02-log01-server-renamed.png` |
+| LOG01 static IP and DNS configured | `screenshots/lab-13-03-log01-static-ip-dns-configured.png` |
+| LOG01 domain connectivity validated | `screenshots/lab-13-04-log01-domain-connectivity-validated.png` |
+| LOG01 domain membership confirmed | `screenshots/lab-13-05-log01-domain-membership-confirmed.png` |
+| WECUTIL configured on LOG01 | `screenshots/lab-13-06-windows-event-collector-configured.png` |
+| Windows Event Collector service running | `screenshots/lab-13-07-windows-event-collector-service-running.png` |
+| WinRM enabled on DC01 | `screenshots/lab-13-08-winrm-enabled-on-dc01.png` |
+| WinRM enabled on DC02 | `screenshots/lab-13-09-winrm-enabled-on-dc02.png` |
+| Event forwarding GPO created | `screenshots/lab-13-10-centralized-event-forwarding-gpo-created.png` |
+| Subscription Manager configured in GPO | `screenshots/lab-13-11-subscription-manager-configured-in-gpo.png` |
+| GPO linked to Domain Controllers OU | `screenshots/lab-13-12-gpo-linked-to-domain-controllers-ou.png` |
+| Event forwarding GPO applied to domain controllers | `screenshots/lab-13-13-event-forwarding-gpo-applied-to-domain-controllers.png` |
+| Event Viewer Subscriptions opened on LOG01 | `screenshots/lab-13-14-event-viewer-subscriptions-opened-on-log01.png` |
+| Identity security event subscription created | `screenshots/lab-13-15-identity-security-event-subscription-created.png` |
+| Identity security event subscription visible | `screenshots/lab-13-16-identity-security-event-subscription-visible.png` |
+| Network Service added and WinRM restarted on DCs | `screenshots/lab-13-17-network-service-added-and-winrm-restarted-on-dcs.png` |
+| Subscription runtime status shows source DCs | `screenshots/lab-13-18-subscription-runtime-status-shows-source-dcs.png` |
+| Forwarded Events log visible on LOG01 | `screenshots/lab-13-19-forwarded-events-log-visible-on-log01.png` |
+| Forwarded account lockout event collected | `screenshots/lab-13-20-forwarded-4740-account-lockout-event-collected.png` |
+| Test user created in ADUC | `screenshots/lab-13-21-test-user-created-in-aduc.png` |
+| Forwarded user created event collected | `screenshots/lab-13-22-forwarded-4720-user-created-event-collected.png` |
+| Test user disabled in ADUC | `screenshots/lab-13-23-test-user-disabled-in-aduc.png` |
+| Forwarded user disabled event collected | `screenshots/lab-13-24-forwarded-4725-user-disabled-event-collected.png` |
+| Centralized identity events collected on LOG01 | `screenshots/lab-13-25-centralized-identity-events-collected-on-log01.png` |
+| Final Lab 13 checkpoint created | `screenshots/lab-13-26-final-lab13-checkpoint-created.png` |
 
 ---
 
