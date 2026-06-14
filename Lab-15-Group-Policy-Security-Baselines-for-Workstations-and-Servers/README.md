@@ -23,7 +23,7 @@ The focus is on workstation and server policy separation, OU-based targeting, en
 
 Monroe Redstone Technology Group needs a consistent way to apply baseline security settings to domain-joined systems.
 
-Without role-based Group Policy baselines, workstations and servers may rely on manual configuration, leading to inconsistent settings, configuration drift, weak auditing, and unnecessary endpoint exposure.
+Without role-based Group Policy baselines, workstations and servers may rely on manual configuration. That can lead to inconsistent settings, configuration drift, weak auditing, and unnecessary endpoint exposure.
 
 This lab addresses the need to:
 
@@ -46,7 +46,7 @@ I created separate Group Policy Objects for workstation and server security base
 
 The workstation baseline was configured with endpoint-focused security controls, while the server baseline was configured with stronger auditing and firewall enforcement for server assets.
 
-The available domain-joined member server, `MRTG-LOG01`, was moved into the Servers OU and used to validate Group Policy application with `gpupdate`, `gpresult`, and an HTML Group Policy report.
+The available domain-joined member server, `MRTG-LOG01`, was moved into the `Servers` OU and used to validate Group Policy application with `gpupdate`, `gpresult`, and an HTML Group Policy report.
 
 ---
 
@@ -73,8 +73,8 @@ The available domain-joined member server, `MRTG-LOG01`, was moved into the Serv
 ### Included
 
 - Existing OU structure review
-- Dedicated Servers OU creation
-- Dedicated Workstations OU creation
+- Dedicated `Servers` OU creation
+- Dedicated `Workstations` OU creation
 - Workstation security baseline GPO creation
 - Server security baseline GPO creation
 - GPO linking to role-based OUs
@@ -95,7 +95,7 @@ The available domain-joined member server, `MRTG-LOG01`, was moved into the Serv
 - Microsoft Security Compliance Toolkit import
 - CIS benchmark import
 - Intune security baselines
-- Defender for Endpoint integration
+- Microsoft Defender for Endpoint integration
 - Advanced firewall rule design
 - Local administrator password management
 - Windows LAPS configuration
@@ -145,7 +145,7 @@ This lab uses separate GPOs for workstation and server assets.
 
 This model avoids applying the same baseline blindly to every system.
 
-Workstations and servers have different security needs, so their baseline controls should be separated and validated independently.
+Workstations and servers have different security needs, so their baseline controls should be separated, scoped, and validated independently.
 
 ---
 
@@ -181,7 +181,7 @@ Workstations and servers have different security needs, so their baseline contro
 
 The existing MRTG Active Directory OU structure was reviewed before creating dedicated endpoint OUs.
 
-![Existing MRTG OU structure](./images/01-aduc-ou-structure-before-gpo-baselines.png)
+![Existing MRTG OU structure](screenshots/lab-15-01-aduc-ou-structure-before-gpo-baselines.png)
 
 This confirmed the starting OU structure before role-based computer segmentation.
 
@@ -191,7 +191,7 @@ This confirmed the starting OU structure before role-based computer segmentation
 
 Dedicated `Servers` and `Workstations` OUs were created under the existing `_MRTG > Computers` OU.
 
-![Servers and Workstations OUs created](./images/02-aduc-workstations-and-servers-ous-created.png)
+![Servers and Workstations OUs created](screenshots/lab-15-02-workstations-and-servers-ous-created.png)
 
 This created separate policy targets for workstation and server security baselines.
 
@@ -201,7 +201,7 @@ This created separate policy targets for workstation and server security baselin
 
 Group Policy Management was opened to confirm the endpoint OU structure before creating baseline GPOs.
 
-![GPMC endpoint OU structure before baselines](./images/03-gpmc-endpoint-ou-structure-before-baselines.png)
+![GPMC endpoint OU structure before baselines](screenshots/lab-15-03-gpmc-endpoint-ou-structure-before-baselines.png)
 
 This confirmed that both endpoint OUs were visible and ready for GPO linking.
 
@@ -217,7 +217,7 @@ GPO created:
 MRTG-GPO-Workstation-Security-Baseline
 ```
 
-![Workstation baseline GPO linked](./images/04-gpmc-workstation-security-baseline-gpo-linked.png)
+![Workstation baseline GPO linked](screenshots/lab-15-04-workstation-security-baseline-gpo-linked.png)
 
 This prepared workstation-specific baseline enforcement for future domain-joined workstation assets.
 
@@ -244,7 +244,7 @@ Configured setting:
 Interactive logon: Don't display last signed-in = Enabled
 ```
 
-![Workstation hide last signed-in user enabled](./images/05-workstation-gpo-hide-last-signed-in-user-enabled.png)
+![Workstation hide last signed-in user enabled](screenshots/lab-15-05-workstation-hide-last-signed-in-enabled.png)
 
 This reduces username exposure on domain-joined workstations.
 
@@ -262,7 +262,7 @@ Inbound connections: Block
 Outbound connections: Allow
 ```
 
-![Workstation domain firewall enabled](./images/06-workstation-gpo-domain-firewall-enabled.png)
+![Workstation domain firewall enabled](screenshots/lab-15-06-workstation-domain-firewall-enabled.png)
 
 This provides baseline firewall enforcement for workstation assets.
 
@@ -278,7 +278,7 @@ Configured setting:
 Audit logon events = Success, Failure
 ```
 
-![Workstation audit logon events enabled](./images/07-workstation-gpo-audit-logon-events-enabled.png)
+![Workstation audit logon events enabled](screenshots/lab-15-07-workstation-audit-logon-events-enabled.png)
 
 This improves visibility into authentication activity on workstation assets.
 
@@ -294,7 +294,7 @@ GPO created:
 MRTG-GPO-Server-Security-Baseline
 ```
 
-![Server baseline GPO linked](./images/08-gpmc-server-security-baseline-gpo-linked.png)
+![Server baseline GPO linked](screenshots/lab-15-08-server-security-baseline-gpo-linked.png)
 
 This prepared server-specific baseline enforcement for domain-joined server assets.
 
@@ -310,7 +310,7 @@ Configured setting:
 Interactive logon: Don't display last signed-in = Enabled
 ```
 
-![Server hide last signed-in user enabled](./images/09-server-gpo-hide-last-signed-in-user-enabled.png)
+![Server hide last signed-in user enabled](screenshots/lab-15-09-server-hide-last-signed-in-enabled.png)
 
 This reduces username exposure on domain-joined servers.
 
@@ -328,7 +328,7 @@ Inbound connections: Block
 Outbound connections: Allow
 ```
 
-![Server domain firewall enabled](./images/10-server-gpo-domain-firewall-enabled.png)
+![Server domain firewall enabled](screenshots/lab-15-10-server-domain-firewall-enabled.png)
 
 This provides baseline firewall enforcement for server assets.
 
@@ -346,7 +346,7 @@ Audit logon events = Success, Failure
 Audit policy change = Success, Failure
 ```
 
-![Server audit policy baseline enabled](./images/11-server-gpo-audit-policy-baseline-enabled.png)
+![Server audit policy baseline enabled](screenshots/lab-15-11-server-audit-policy-baseline-enabled.png)
 
 This improves monitoring of privileged and security-relevant activity on server assets.
 
@@ -354,7 +354,7 @@ This improves monitoring of privileged and security-relevant activity on server 
 
 ### 12. MRTG-LOG01 Moved into Servers OU
 
-The `MRTG-LOG01` computer object was moved from the default Computers container into the role-based Servers OU.
+The `MRTG-LOG01` computer object was moved from the default Computers container into the role-based `Servers` OU.
 
 Target OU:
 
@@ -364,7 +364,7 @@ _MRTG
     └── Servers
 ```
 
-![MRTG-LOG01 moved into Servers OU](./images/12-aduc-server-object-moved-to-servers-ou.png)
+![MRTG-LOG01 moved into Servers OU](screenshots/lab-15-12-log01-moved-to-servers-ou.png)
 
 This allowed the server security baseline GPO to apply through OU-based targeting.
 
@@ -380,7 +380,7 @@ Command used:
 gpupdate /force
 ```
 
-![MRTG-LOG01 gpupdate success](./images/13-mrtg-log01-gpupdate-force-success.png)
+![MRTG-LOG01 gpupdate success](screenshots/lab-15-13-log01-gpupdate-success.png)
 
 This forced the server to process the newly linked server security baseline GPO.
 
@@ -402,7 +402,7 @@ Confirmed applied GPO:
 MRTG-GPO-Server-Security-Baseline
 ```
 
-![MRTG-LOG01 gpresult server baseline applied](./images/14-mrtg-log01-gpresult-server-baseline-applied.png)
+![MRTG-LOG01 gpresult server baseline applied](screenshots/lab-15-14-log01-gpresult-server-baseline-applied.png)
 
 This confirmed that `MRTG-LOG01` successfully applied the server security baseline GPO.
 
@@ -420,7 +420,7 @@ gpresult /h C:\Temp\mrtg-log01-gpresult.html
 start C:\Temp\mrtg-log01-gpresult.html
 ```
 
-![MRTG-LOG01 gpresult HTML report](./images/15-mrtg-log01-gpresult-html-report.png)
+![MRTG-LOG01 gpresult HTML report](screenshots/lab-15-15-log01-gpresult-html-report.png)
 
 This provided detailed evidence of applied Group Policy settings.
 
@@ -430,7 +430,7 @@ This provided detailed evidence of applied Group Policy settings.
 
 The final GPMC structure was reviewed to confirm that both security baseline GPOs were linked to their correct role-based OUs.
 
-![Final role-based GPO structure](./images/16-gpmc-final-role-based-security-baseline-structure.png)
+![Final role-based GPO structure](screenshots/lab-15-16-final-role-based-security-baseline-structure.png)
 
 This confirmed the final workstation and server baseline structure.
 
@@ -440,7 +440,9 @@ This confirmed the final workstation and server baseline structure.
 
 A Hyper-V checkpoint was created for `MRTG-DC01` after completing the Group Policy configuration.
 
-![MRTG-DC01 post Lab 15 checkpoint](./images/17a-hyperv-mrtg-dc01-post-lab15-checkpoint.png)
+![MRTG-DC01 post Lab 15 checkpoint](screenshots/lab-15-17-final-lab15-checkpoint-dc01-created.png)
+
+This preserved the domain controller state after the baseline GPO configuration was completed.
 
 ---
 
@@ -448,7 +450,9 @@ A Hyper-V checkpoint was created for `MRTG-DC01` after completing the Group Poli
 
 A Hyper-V checkpoint was created for `MRTG-LOG01` after validating the server baseline GPO.
 
-![MRTG-LOG01 post Lab 15 checkpoint](./images/17b-hyperv-mrtg-log01-post-lab15-checkpoint.png)
+![MRTG-LOG01 post Lab 15 checkpoint](screenshots/lab-15-18-final-lab15-checkpoint-log01-created.png)
+
+This preserved the member server state after successful baseline policy validation.
 
 ---
 
@@ -456,7 +460,9 @@ A Hyper-V checkpoint was created for `MRTG-LOG01` after validating the server ba
 
 At the time of validation, `MRTG-LOG01` was the available domain-joined member server object in the lab environment.
 
-The workstation security baseline GPO was created, linked, and configured for future domain-joined workstation assets. Live policy validation was performed against the server baseline because `MRTG-LOG01` was the available role-based endpoint object.
+The workstation security baseline GPO was created, linked, and configured for future domain-joined workstation assets.
+
+Live policy validation was performed against the server baseline because `MRTG-LOG01` was the available role-based endpoint object.
 
 This keeps the lab accurate: the workstation baseline exists and is ready for workstation assets, while the server baseline was fully validated against an actual server object.
 
@@ -488,13 +494,13 @@ Without role-based security baselines, endpoint configuration can become inconsi
 This lab reduces the risk of:
 
 - Manual local security configuration
-- Workstations and servers receiving the same baseline without review
-- Inconsistent firewall enforcement
-- Username exposure at sign-in
-- Weak audit policy coverage
-- Poor endpoint hardening visibility
-- Unvalidated Group Policy application
-- Configuration drift over time
+- Workstations and servers receiving the wrong policy set
+- Weak or inconsistent firewall enforcement
+- Username exposure at interactive sign-in
+- Limited endpoint audit visibility
+- Configuration drift across domain-joined systems
+- Poor documentation of applied endpoint controls
+- Unclear validation of Group Policy enforcement
 
 ---
 
@@ -502,14 +508,15 @@ This lab reduces the risk of:
 
 | Control Area | How This Lab Supports It |
 |---|---|
-| Endpoint hardening | Applies workstation and server security baselines |
-| Role-based policy targeting | Uses separate Servers and Workstations OUs |
-| Group Policy enforcement | Links baseline GPOs to role-based OUs |
-| Logon privacy | Hides last signed-in user |
-| Firewall enforcement | Enables Domain Profile firewall settings |
-| Identity monitoring | Enables logon and account management auditing |
-| Validation | Uses `gpupdate`, `gpresult`, and HTML report evidence |
-| Operational resilience | Creates final Hyper-V checkpoints |
+| Endpoint hardening | Applies workstation and server security baselines through Group Policy |
+| Policy enforcement | Uses GPO links to apply settings centrally |
+| OU-based targeting | Separates workstation and server policy scope |
+| Least privilege administration | Avoids manual local configuration where centralized policy is appropriate |
+| Audit readiness | Captures evidence of policy configuration and application |
+| Identity security | Reduces exposure of signed-in usernames |
+| Network security | Enforces Windows Defender Firewall baseline settings |
+| Monitoring readiness | Enables audit settings for logon, account management, and policy change activity |
+| Operational consistency | Creates repeatable baseline configuration for future endpoints |
 
 ---
 
@@ -520,25 +527,24 @@ The following validation checks were completed:
 | Validation Item | Result |
 |---|---|
 | Existing MRTG OU structure reviewed | Passed |
-| Servers OU created | Passed |
-| Workstations OU created | Passed |
-| Endpoint OUs visible in GPMC | Passed |
-| Workstation baseline GPO created | Passed |
-| Workstation baseline GPO linked | Passed |
-| Workstation logon privacy control configured | Passed |
+| `Servers` OU created | Passed |
+| `Workstations` OU created | Passed |
+| Workstation security baseline GPO created | Passed |
+| Workstation security baseline linked to `Workstations` OU | Passed |
+| Workstation logon privacy policy configured | Passed |
 | Workstation firewall baseline configured | Passed |
 | Workstation audit logon policy configured | Passed |
-| Server baseline GPO created | Passed |
-| Server baseline GPO linked | Passed |
-| Server logon privacy control configured | Passed |
+| Server security baseline GPO created | Passed |
+| Server security baseline linked to `Servers` OU | Passed |
+| Server logon privacy policy configured | Passed |
 | Server firewall baseline configured | Passed |
 | Server audit policy baseline configured | Passed |
-| `MRTG-LOG01` moved into Servers OU | Passed |
+| `MRTG-LOG01` moved into `Servers` OU | Passed |
 | `gpupdate /force` completed on `MRTG-LOG01` | Passed |
 | `gpresult` confirmed server baseline applied | Passed |
 | HTML Group Policy report generated | Passed |
 | Final GPO structure reviewed | Passed |
-| Hyper-V checkpoints created | Passed |
+| Final Hyper-V checkpoints created | Passed |
 
 ---
 
@@ -548,24 +554,24 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Existing MRTG OU structure | `images/01-aduc-ou-structure-before-gpo-baselines.png` |
-| Servers and Workstations OUs created | `images/02-aduc-workstations-and-servers-ous-created.png` |
-| GPMC endpoint OU structure before baselines | `images/03-gpmc-endpoint-ou-structure-before-baselines.png` |
-| Workstation baseline GPO linked | `images/04-gpmc-workstation-security-baseline-gpo-linked.png` |
-| Workstation hide last signed-in user enabled | `images/05-workstation-gpo-hide-last-signed-in-user-enabled.png` |
-| Workstation domain firewall enabled | `images/06-workstation-gpo-domain-firewall-enabled.png` |
-| Workstation audit logon events enabled | `images/07-workstation-gpo-audit-logon-events-enabled.png` |
-| Server baseline GPO linked | `images/08-gpmc-server-security-baseline-gpo-linked.png` |
-| Server hide last signed-in user enabled | `images/09-server-gpo-hide-last-signed-in-user-enabled.png` |
-| Server domain firewall enabled | `images/10-server-gpo-domain-firewall-enabled.png` |
-| Server audit policy baseline enabled | `images/11-server-gpo-audit-policy-baseline-enabled.png` |
-| MRTG-LOG01 moved into Servers OU | `images/12-aduc-server-object-moved-to-servers-ou.png` |
-| MRTG-LOG01 gpupdate success | `images/13-mrtg-log01-gpupdate-force-success.png` |
-| MRTG-LOG01 gpresult server baseline applied | `images/14-mrtg-log01-gpresult-server-baseline-applied.png` |
-| MRTG-LOG01 gpresult HTML report | `images/15-mrtg-log01-gpresult-html-report.png` |
-| Final role-based GPO structure | `images/16-gpmc-final-role-based-security-baseline-structure.png` |
-| MRTG-DC01 post Lab 15 checkpoint | `images/17a-hyperv-mrtg-dc01-post-lab15-checkpoint.png` |
-| MRTG-LOG01 post Lab 15 checkpoint | `images/17b-hyperv-mrtg-log01-post-lab15-checkpoint.png` |
+| Existing MRTG OU structure | `screenshots/lab-15-01-aduc-ou-structure-before-gpo-baselines.png` |
+| Servers and Workstations OUs created | `screenshots/lab-15-02-workstations-and-servers-ous-created.png` |
+| GPMC endpoint OU structure before baselines | `screenshots/lab-15-03-gpmc-endpoint-ou-structure-before-baselines.png` |
+| Workstation baseline GPO linked | `screenshots/lab-15-04-workstation-security-baseline-gpo-linked.png` |
+| Workstation hide last signed-in user enabled | `screenshots/lab-15-05-workstation-hide-last-signed-in-enabled.png` |
+| Workstation domain firewall enabled | `screenshots/lab-15-06-workstation-domain-firewall-enabled.png` |
+| Workstation audit logon events enabled | `screenshots/lab-15-07-workstation-audit-logon-events-enabled.png` |
+| Server baseline GPO linked | `screenshots/lab-15-08-server-security-baseline-gpo-linked.png` |
+| Server hide last signed-in user enabled | `screenshots/lab-15-09-server-hide-last-signed-in-enabled.png` |
+| Server domain firewall enabled | `screenshots/lab-15-10-server-domain-firewall-enabled.png` |
+| Server audit policy baseline enabled | `screenshots/lab-15-11-server-audit-policy-baseline-enabled.png` |
+| MRTG-LOG01 moved into Servers OU | `screenshots/lab-15-12-log01-moved-to-servers-ou.png` |
+| MRTG-LOG01 gpupdate success | `screenshots/lab-15-13-log01-gpupdate-success.png` |
+| MRTG-LOG01 gpresult server baseline applied | `screenshots/lab-15-14-log01-gpresult-server-baseline-applied.png` |
+| MRTG-LOG01 gpresult HTML report | `screenshots/lab-15-15-log01-gpresult-html-report.png` |
+| Final role-based security baseline structure | `screenshots/lab-15-16-final-role-based-security-baseline-structure.png` |
+| MRTG-DC01 final Lab 15 checkpoint created | `screenshots/lab-15-17-final-lab15-checkpoint-dc01-created.png` |
+| MRTG-LOG01 final Lab 15 checkpoint created | `screenshots/lab-15-18-final-lab15-checkpoint-log01-created.png` |
 
 ---
 
@@ -573,51 +579,48 @@ The following evidence was collected during the lab:
 
 In a production environment, I would improve this process by:
 
-- Importing Microsoft Security Baselines where appropriate
-- Comparing settings against CIS or DISA STIG guidance
-- Separating baseline, role-specific, and exception GPOs
-- Testing baselines in a pilot OU before broad rollout
-- Documenting GPO owners and review cycles
-- Using change management for GPO updates
-- Enabling GPO change monitoring
-- Reviewing firewall rules against application requirements
-- Validating workstation baseline on an actual workstation object
-- Using security filtering only when needed
-- Documenting rollback procedures for baseline changes
-- Exporting GPO backups for version control
+- Starting from an approved baseline such as Microsoft Security Baselines or CIS Benchmarks
+- Testing baseline GPOs in a pilot OU before broad deployment
+- Using change control before modifying production Group Policy
+- Documenting every configured setting and the business reason for it
+- Using separate test, pilot, and production GPO rollout phases
+- Reviewing exceptions for servers that require inbound firewall rules
+- Monitoring Group Policy changes through event forwarding or SIEM alerts
+- Using Group Policy backup before major changes
+- Defining GPO ownership and review frequency
+- Validating endpoint compliance on a recurring schedule
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that endpoint hardening should be centralized and role-based.
+This lab reinforced that Group Policy baselines should be role-based, not one-size-fits-all.
 
-Workstations and servers should not automatically receive identical security settings.
+Workstations and servers have different security needs, so separating their baselines makes the environment easier to manage, troubleshoot, and expand.
 
-The biggest takeaway is that Group Policy baselines need both careful scoping and real validation. Creating a GPO is not enough. The policy must be linked to the correct OU, applied to the correct computer object, and confirmed with tools like `gpupdate` and `gpresult`.
+The most important lesson is that configuration is not enough. Security baselines need validation. `gpupdate`, `gpresult`, and HTML reports provide evidence that policy was actually applied.
 
-This lab also showed why OU design matters. Clean OU structure makes security baseline targeting easier and more reliable.
+This lab also reinforced the value of clean OU design. Group Policy becomes much easier to manage when computer objects are placed into the correct organizational containers.
 
 ---
 
 ## Outcome
 
-Lab 15 successfully created role-based Group Policy security baselines for workstation and server assets in the MRTG Active Directory environment.
+Lab 15 successfully implemented role-based Group Policy security baselines for workstation and server assets in the MRTG Active Directory environment.
 
 The lab confirmed:
 
-- Servers and Workstations OUs were created
-- Workstation baseline GPO was created and linked
-- Server baseline GPO was created and linked
-- Workstation security controls were configured
-- Server security controls were configured
-- `MRTG-LOG01` was moved into the Servers OU
-- Group Policy was refreshed on `MRTG-LOG01`
-- `gpresult` confirmed the server baseline applied successfully
-- An HTML Group Policy report was generated
-- Final checkpoints were created
+- Dedicated endpoint OUs were created
+- Workstation and server baselines were separated
+- GPOs were linked to the correct OUs
+- Security settings were configured through centralized policy
+- `MRTG-LOG01` was moved into the correct server OU
+- Group Policy was refreshed successfully
+- Applied server policy was validated with `gpresult`
+- HTML reporting was generated for evidence
+- Final checkpoints were created after validation
 
-The environment now supports centralized, role-based security baseline enforcement through Active Directory Group Policy.
+The environment now has a stronger foundation for centralized endpoint hardening and future policy-based security control enforcement.
 
 ---
 
