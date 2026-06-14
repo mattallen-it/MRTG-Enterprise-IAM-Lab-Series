@@ -43,7 +43,7 @@ In this lab, I configured Active Directory Sites and Services for the MRTG envir
 
 The default site was renamed to `MRTG-HQ-Site`, and the `192.168.10.0/24` subnet was associated with that site.
 
-I validated site awareness from both domain controllers, confirmed site-aware domain controller discovery with `nltest`, verified site membership with PowerShell, checked replication health with `repadmin` and `dcdiag`, confirmed DNS site records, and created final Hyper-V checkpoints for both domain controllers.
+I validated site awareness from both domain controllers, confirmed site-aware domain controller discovery with `nltest`, verified domain controller site membership with PowerShell, checked replication health with `repadmin` and `dcdiag`, confirmed DNS site records, and created final Hyper-V checkpoints for both domain controllers.
 
 ---
 
@@ -115,7 +115,7 @@ Both domain controllers remain in the same Active Directory site because both sy
 
 ## Architecture
 
-Before this lab, the domain controllers were assigned to the default Active Directory site.
+Before this lab, both domain controllers were assigned to the default Active Directory site.
 
 ```text
 Sites
@@ -178,7 +178,7 @@ MRTG-DC01
 MRTG-DC02
 ```
 
-![Active Directory Sites and Services baseline](images/01-active-directory-sites-and-services-baseline.png)
+![Active Directory Sites and Services baseline](screenshots/lab-14-01-ad-sites-and-services-baseline.png)
 
 ---
 
@@ -190,7 +190,7 @@ The default Active Directory site was renamed to:
 MRTG-HQ-Site
 ```
 
-![Site renamed to MRTG-HQ-Site](images/02-site-renamed-to-mrtg-hq-site.png)
+![Site renamed to MRTG-HQ-Site](screenshots/lab-14-02-site-renamed-to-mrtg-hq-site.png)
 
 This replaced the default placeholder name with a clearer enterprise-style site name.
 
@@ -212,17 +212,17 @@ Site object:
 MRTG-HQ-Site
 ```
 
-![New subnet created](images/03-new-subnet-created-192-168-10-0-24.png)
+![Subnet created and associated with MRTG-HQ-Site](screenshots/lab-14-03-subnet-created-192-168-10-0-24.png)
 
 This allows Active Directory to map systems on the lab subnet to the correct site.
 
 ---
 
-### 4. Subnet Associated with MRTG-HQ-Site
+### 4. Subnet Association Validated
 
 The subnet was confirmed under the Subnets container and associated with `MRTG-HQ-Site`.
 
-![Subnet associated with MRTG-HQ-Site](images/04-subnet-associated-with-mrtg-hq-site.png)
+![Subnet associated with MRTG-HQ-Site](screenshots/lab-14-04-subnet-associated-with-mrtg-hq-site.png)
 
 This completed the subnet-to-site mapping.
 
@@ -239,7 +239,7 @@ Sites
         └── DEFAULTIPSITELINK
 ```
 
-![DEFAULTIPSITELINK reviewed](images/05-defaultipsitelink-reviewed.png)
+![Default IP site link reviewed](screenshots/lab-14-05-default-ip-site-link-reviewed.png)
 
 Because this lab uses a single Active Directory site, no site link changes were required.
 
@@ -259,10 +259,10 @@ Expected result:
 
 ```text
 MRTG-HQ-Site
-The command completed successfully
+The command completed successfully.
 ```
 
-![DC01 site awareness validated](images/06-dc01-nltest-dsgetsite-validates-mrtg-hq-site.png)
+![DC01 site discovery validated](screenshots/lab-14-06-dc01-site-discovery-validated.png)
 
 ---
 
@@ -280,10 +280,10 @@ Expected result:
 
 ```text
 MRTG-HQ-Site
-The command completed successfully
+The command completed successfully.
 ```
 
-![DC02 site awareness validated](images/07-dc02-nltest-dsgetsite-validates-mrtg-hq-site.png)
+![DC02 site discovery validated](screenshots/lab-14-07-dc02-site-discovery-validated.png)
 
 Both domain controllers correctly identified their Active Directory site as `MRTG-HQ-Site`.
 
@@ -299,14 +299,14 @@ Command used:
 nltest /dsgetdc:mrtg.local
 ```
 
-![Site-aware domain controller discovery](images/08-nltest-dsgetdc-shows-site-aware-dc-discovery.png)
+![Site-aware domain controller discovery validated](screenshots/lab-14-08-site-aware-dc-discovery-validated.png)
 
 The output confirmed:
 
 ```text
 DC Site Name: MRTG-HQ-Site
 Our Site Name: MRTG-HQ-Site
-The command completed successfully
+The command completed successfully.
 ```
 
 This confirmed site-aware domain controller discovery.
@@ -323,7 +323,7 @@ Command used:
 Get-ADDomainController -Filter * | Select-Object HostName,Site,IPv4Address,IsGlobalCatalog
 ```
 
-![Get-ADDomainController shows site membership](images/09-get-addomaincontroller-shows-site-membership.png)
+![Domain controllers site membership validated](screenshots/lab-14-09-domain-controllers-site-membership-validated.png)
 
 Validation confirmed:
 
@@ -344,7 +344,7 @@ Command used:
 repadmin /replsummary
 ```
 
-![Replication summary successful after site configuration](images/10-repadmin-replsummary-successful-after-site-config.png)
+![Replication summary successful after site configuration](screenshots/lab-14-10-repadmin-replsummary-successful-after-site-config.png)
 
 The replication summary showed zero failures.
 
@@ -363,11 +363,9 @@ Additional replication validation was performed with:
 repadmin /showrepl
 ```
 
-![Replication validation after site configuration](images/11-replication-validation-after-site-config.png)
+![Detailed replication validation after site configuration](screenshots/lab-14-11-repadmin-showrepl-validation-after-site-config.png)
 
-A previous DNS lookup failure was observed during validation but cleared after DNS registration, KCC recalculation, and replication synchronization.
-
-The final replication summary showed zero failures between `MRTG-DC01` and `MRTG-DC02`.
+A previous DNS lookup warning appeared during validation, but replication itself completed successfully. The final validation showed successful replication attempts between `MRTG-DC01` and `MRTG-DC02`.
 
 ---
 
@@ -379,7 +377,7 @@ Replication diagnostics were checked with:
 dcdiag /test:replications /q
 ```
 
-![DCDIAG replication test successful](images/12-dcdiag-replication-test-successful-after-site-config.png)
+![DCDIAG replication test successful after site configuration](screenshots/lab-14-12-dcdiag-replication-test-successful-after-site-config.png)
 
 No output was returned, which indicates no replication errors were detected by that test.
 
@@ -399,7 +397,7 @@ Forward Lookup Zones
             └── MRTG-HQ-Site
 ```
 
-![DNS site records visible](images/13-dns-site-records-visible.png)
+![DNS site records visible](screenshots/lab-14-13-dns-site-records-visible.png)
 
 This confirmed that Active Directory DNS was publishing site-aware records for `MRTG-HQ-Site`.
 
@@ -421,7 +419,7 @@ Sites
         └── MRTG-DC02
 ```
 
-![Final Active Directory Sites and Services validation](images/14-final-ad-sites-and-services-validated.png)
+![Final Active Directory Sites and Services validation](screenshots/lab-14-14-final-ad-sites-and-services-validated.png)
 
 This confirmed that both domain controllers were assigned to the correct site and the subnet mapping was present.
 
@@ -437,7 +435,7 @@ Checkpoint name:
 MRTG-DC01_Post-Lab14_AD-Sites-and-Services-Validated
 ```
 
-![Final Lab 14 checkpoint for DC01](images/15-final-lab14-checkpoint-dc01-created.png)
+![Final Lab 14 checkpoint for DC01](screenshots/lab-14-15-final-lab14-checkpoint-dc01-created.png)
 
 ---
 
@@ -451,7 +449,7 @@ Checkpoint name:
 MRTG-DC02_Post-Lab14_AD-Sites-and-Services-Validated
 ```
 
-![Final Lab 14 checkpoint for DC02](images/16-final-lab14-checkpoint-dc02-created.png)
+![Final Lab 14 checkpoint for DC02](screenshots/lab-14-16-final-lab14-checkpoint-dc02-created.png)
 
 ---
 
@@ -539,22 +537,22 @@ The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
-| Active Directory Sites and Services baseline | `images/01-active-directory-sites-and-services-baseline.png` |
-| Site renamed to MRTG-HQ-Site | `images/02-site-renamed-to-mrtg-hq-site.png` |
-| New subnet created | `images/03-new-subnet-created-192-168-10-0-24.png` |
-| Subnet associated with MRTG-HQ-Site | `images/04-subnet-associated-with-mrtg-hq-site.png` |
-| DEFAULTIPSITELINK reviewed | `images/05-defaultipsitelink-reviewed.png` |
-| DC01 site awareness validated | `images/06-dc01-nltest-dsgetsite-validates-mrtg-hq-site.png` |
-| DC02 site awareness validated | `images/07-dc02-nltest-dsgetsite-validates-mrtg-hq-site.png` |
-| Site-aware domain controller discovery | `images/08-nltest-dsgetdc-shows-site-aware-dc-discovery.png` |
-| Get-ADDomainController site membership | `images/09-get-addomaincontroller-shows-site-membership.png` |
-| Replication summary after site config | `images/10-repadmin-replsummary-successful-after-site-config.png` |
-| Replication validation after site config | `images/11-replication-validation-after-site-config.png` |
-| DCDIAG replication test successful | `images/12-dcdiag-replication-test-successful-after-site-config.png` |
-| DNS site records visible | `images/13-dns-site-records-visible.png` |
-| Final AD Sites and Services validation | `images/14-final-ad-sites-and-services-validated.png` |
-| Final checkpoint for DC01 | `images/15-final-lab14-checkpoint-dc01-created.png` |
-| Final checkpoint for DC02 | `images/16-final-lab14-checkpoint-dc02-created.png` |
+| Active Directory Sites and Services baseline | `screenshots/lab-14-01-ad-sites-and-services-baseline.png` |
+| Site renamed to MRTG-HQ-Site | `screenshots/lab-14-02-site-renamed-to-mrtg-hq-site.png` |
+| Subnet created and associated with MRTG-HQ-Site | `screenshots/lab-14-03-subnet-created-192-168-10-0-24.png` |
+| Subnet association validated | `screenshots/lab-14-04-subnet-associated-with-mrtg-hq-site.png` |
+| Default IP site link reviewed | `screenshots/lab-14-05-default-ip-site-link-reviewed.png` |
+| DC01 site discovery validated | `screenshots/lab-14-06-dc01-site-discovery-validated.png` |
+| DC02 site discovery validated | `screenshots/lab-14-07-dc02-site-discovery-validated.png` |
+| Site-aware domain controller discovery validated | `screenshots/lab-14-08-site-aware-dc-discovery-validated.png` |
+| Domain controller site membership validated | `screenshots/lab-14-09-domain-controllers-site-membership-validated.png` |
+| Replication summary successful after site configuration | `screenshots/lab-14-10-repadmin-replsummary-successful-after-site-config.png` |
+| Detailed replication validation after site configuration | `screenshots/lab-14-11-repadmin-showrepl-validation-after-site-config.png` |
+| DCDIAG replication test successful after site configuration | `screenshots/lab-14-12-dcdiag-replication-test-successful-after-site-config.png` |
+| DNS site records visible | `screenshots/lab-14-13-dns-site-records-visible.png` |
+| Final AD Sites and Services validation | `screenshots/lab-14-14-final-ad-sites-and-services-validated.png` |
+| Final checkpoint for DC01 | `screenshots/lab-14-15-final-lab14-checkpoint-dc01-created.png` |
+| Final checkpoint for DC02 | `screenshots/lab-14-16-final-lab14-checkpoint-dc02-created.png` |
 
 ---
 
