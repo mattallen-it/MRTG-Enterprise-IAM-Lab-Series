@@ -1,4 +1,4 @@
-# Lab-17 - Windows LAPS and Local Administrator Control
+# Lab 17 — Windows LAPS and Local Administrator Control
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
