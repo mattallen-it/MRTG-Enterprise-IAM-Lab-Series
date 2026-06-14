@@ -507,7 +507,9 @@ MRTG-DC01_Post-Lab-18-Group-Based-Access-Control-Validated
 
 ## Real-World Relevance
 
-Group-based access control is a core evidence capture
+Group-based access control is a core IAM practice used to manage access to shared resources at scale.
+
+Instead of assigning permissions directly to individual users, access is granted through security groups. This supports least privilege, cleaner audits, easier troubleshooting, and more consistent access reviews.
 
 ---
 
