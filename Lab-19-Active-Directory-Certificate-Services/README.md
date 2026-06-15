@@ -364,7 +364,7 @@ Checkpoint name:
 MRTG-DC01_Post-Lab-19-ADCS-Enterprise-Root-CA-Validated
 ```
 
-![Post-Lab AD CS Enterprise Root CA Checkpoint](screenshots/lab-19-26-post-lab-adcs-enterprise-root-ca-checkpoint.png)
+![Post-Lab AD CS Enterprise Root CA Checkpoint](screenshots/lab-19-26-post-lab-dc01-checkpoint.png)
 
 ### Client Certificate Enrollment Checkpoint
 
@@ -376,7 +376,7 @@ Checkpoint name:
 Post-Lab-19-User-Certificate-Enrollment-Validated
 ```
 
-![Post-Lab User Certificate Enrollment Checkpoint](screenshots/lab-19-27-post-lab-user-certificate-enrollment-checkpoint.png)
+![Post-Lab User Certificate Enrollment Checkpoint](screenshots/lab-19-27-post-lab-client-checkpoint.png)
 
 ## Validation Summary
 
@@ -541,8 +541,8 @@ The biggest lesson was that certificate enrollment troubleshooting requires chec
 | 23 | `screenshots/lab-19-23-user-certificate-installed-in-personal-store.png` |
 | 24 | `screenshots/lab-19-24-issued-certificate-visible-on-ca.png` |
 | 25 | `screenshots/lab-19-25-root-ca-trusted-on-client.png` |
-| 26 | `screenshots/lab-19-26-post-lab-adcs-enterprise-root-ca-checkpoint.png` |
-| 27 | `screenshots/lab-19-27-post-lab-user-certificate-enrollment-checkpoint.png` |
+| 26 | `screenshots/lab-19-26-post-lab-dc01-checkpoint.png` |
+| 27 | `screenshots/lab-19-27-post-lab-client-checkpoint.png` |
 
 ## Outcome
 
