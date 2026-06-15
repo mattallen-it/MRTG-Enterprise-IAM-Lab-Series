@@ -552,7 +552,6 @@ By the end of the lab, the environment had a working Enterprise Root CA, certifi
 
 ## Next Lab
 
-[Lab 20 — Certificate Template Governance and Auto-Enrollment](../Lab-20-Certificate-Template-Governance-and-Auto-Enrollment/)
+[Lab 20 — Identity Lifecycle Automation with PowerShell](../Lab-20-Identity-Lifecycle-Automation-with-PowerShell/)
 
-Lab 20 will build on this PKI foundation by focusing on certificate template control, enrollment permissions, and automated certificate deployment through Group Policy.
-````
+Lab 20 will build on the IAM foundation by using PowerShell to automate identity lifecycle tasks such as user creation, group assignment, account updates, and repeatable administrative workflows.
