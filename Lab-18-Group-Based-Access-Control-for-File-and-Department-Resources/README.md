@@ -18,10 +18,37 @@ The goal was to control access to shared department folders using Active Directo
 This lab used an AGDLP-style access model:
 
 ```text
-Accounts -> Global Groups -> Domain Local Groups -> Permissions
+Accounts → Global Groups → Domain Local Groups → Permissions
 ```
 
-This design supports least privilege, cleaner access reviews, and better identity lifecycle management.
+This design supports least privilege, cleaner access reviews, stronger audit evidence, and better identity lifecycle management.
+
+---
+
+## Business Problem
+
+MRTG needed a scalable way to control access to department file resources without assigning permissions directly to individual users.
+
+Direct user permissions become difficult to manage as users join, move between departments, or leave the organization. They also make access reviews harder because permissions are scattered across individual accounts instead of being tied to business roles and resource groups.
+
+This lab solves that problem by using Active Directory security groups to control access to department folders. Users receive access through department membership, and folder permissions are assigned to resource access groups.
+
+---
+
+## Lab Summary
+
+In this lab, I created a department file share structure and applied group-based access control using Active Directory security groups, SMB share permissions, and NTFS permissions.
+
+The design used department Global Groups for user membership and Domain Local Groups for resource permissions. Department Global Groups were nested into matching Domain Local resource groups, and those resource groups were assigned NTFS Modify permissions on the appropriate department folders.
+
+The lab validated both authorized access and denied access:
+
+- HR users could access the HR folder.
+- HR users could not access the Finance folder.
+- Finance users could access the Finance folder.
+- Finance users could not access the HR folder.
+
+This confirmed that access was controlled through group membership and that department boundaries were enforced through NTFS permissions.
 
 ---
 
@@ -42,7 +69,7 @@ This design supports least privilege, cleaner access reviews, and better identit
 
 ## Scope
 
-This lab includes:
+### Included
 
 - Department folder structure creation
 - Active Directory group-based access control
@@ -52,16 +79,18 @@ This lab includes:
 - User access validation
 - Access denied testing
 - Evidence collection through screenshots
+- Hyper-V checkpoint creation after validation
 
-This lab does not include:
+### Not Included
 
 - DFS Namespace configuration
 - File Server Resource Manager quotas
 - Access-based enumeration
-- Advanced auditing
+- Advanced file access auditing
 - Classification labels
 - Data Loss Prevention controls
 - Microsoft Entra ID group-based access
+- Production file server hardening
 
 ---
 
@@ -84,20 +113,20 @@ This lab does not include:
 
 ## Scenario
 
-Monroe Redstone Technology Group needed a scalable way to control access to department file resources.
+Monroe Redstone Technology Group needed a clean and repeatable way to control access to department file resources.
 
-Instead of granting access directly to users, permissions were assigned through security groups. This allows access to be managed by changing group membership instead of modifying folder permissions every time a user joins, moves, or leaves a department.
+Instead of granting folder permissions directly to users, permissions were assigned through security groups. This allows access to be managed by changing group membership instead of modifying folder permissions every time a user joins, moves, or leaves a department.
 
 The access design used in this lab was:
 
 ```text
-User Account -> Department Global Group -> Resource Domain Local Group -> Folder Permission
+User Account → Department Global Group → Resource Domain Local Group → Folder Permission
 ```
 
 Example:
 
 ```text
-kevin.carter -> GG_HR_Users -> DL_HR_Share_RW -> HR Folder
+kevin.carter → GG_HR_Users → DL_HR_Share_RW → HR Folder
 ```
 
 ---
@@ -151,7 +180,7 @@ Instead of asking, "Which users are directly assigned to this folder?", the bett
 
 ## Implementation Steps
 
-### Step 1 - Created Pre-Lab Checkpoint
+### Step 1 — Created Pre-Lab Checkpoint
 
 Created a Hyper-V checkpoint before making Lab 18 changes.
 
@@ -161,7 +190,7 @@ This provided a rollback point before configuring shared folders, groups, and pe
 
 ---
 
-### Step 2 - Created Department Folder Structure
+### Step 2 — Created Department Folder Structure
 
 Created the department folder structure on `MRTG-DC01`.
 
@@ -184,7 +213,7 @@ Operations
 
 ---
 
-### Step 3 - Created and Verified Security Groups
+### Step 3 — Created and Verified Security Groups
 
 Created Domain Local resource access groups for department folder permissions.
 
@@ -194,14 +223,14 @@ The environment already contained department Global Groups used for user members
 
 ---
 
-### Step 4 - Configured Group Membership
+### Step 4 — Configured Group Membership
 
 Nested department Global Groups into their matching Domain Local resource groups.
 
 Example:
 
 ```text
-GG_HR_Users -> DL_HR_Share_RW
+GG_HR_Users → DL_HR_Share_RW
 ```
 
 This allows HR users to receive access through group membership instead of direct folder assignment.
@@ -210,7 +239,7 @@ This allows HR users to receive access through group membership instead of direc
 
 ---
 
-### Step 5 - Configured Share Permissions
+### Step 5 — Configured Share Permissions
 
 Shared the root department resource folder as:
 
@@ -226,12 +255,12 @@ Department-level access control was handled through NTFS permissions on each fol
 
 ---
 
-### Step 6 - Configured HR NTFS Permissions
+### Step 6 — Configured HR NTFS Permissions
 
 Configured the HR folder with the matching Domain Local resource group.
 
 ```text
-DL_HR_Share_RW -> Modify
+DL_HR_Share_RW → Modify
 ```
 
 Broad inherited access was removed so access would be controlled by the assigned resource group.
@@ -240,48 +269,45 @@ Broad inherited access was removed so access would be controlled by the assigned
 
 ---
 
-### Step 7 - Configured Finance NTFS Permissions
+### Step 7 — Configured Finance NTFS Permissions
 
 Configured the Finance folder with the matching Domain Local resource group.
 
 ```text
-DL_Finance_Share_RW -> Modify
+DL_Finance_Share_RW → Modify
 ```
 
 ![Finance NTFS Permissions Configured](screenshots/lab-18-07-finance-ntfs-permissions-configured.png)
 
 ---
 
-### Step 8 - Configured IT NTFS Permissions
+### Step 8 — Configured IT NTFS Permissions
 
 Configured the IT folder with the matching Domain Local resource group.
 
 ```text
-DL_IT_Share_RW -> Modify
+DL_IT_Share_RW → Modify
 ```
 
 ![IT NTFS Permissions Configured](screenshots/lab-18-08-it-ntfs-permissions-configured.png)
 
 ---
 
-### Step 9 - Configured Operations NTFS Permissions
+### Step 9 — Configured Operations NTFS Permissions
 
 Configured the Operations folder with the matching Domain Local resource group.
 
 ```text
-DL_Operations_Share_RW -> Modify
+DL_Operations_Share_RW → Modify
 ```
 
-![Operations NTFS Permissions Configured](screens resource group.
-
-```text
-DL_Operationshots/lab-18-09-operations-ntfs-permissions-configured.png)
+![Operations NTFS Permissions Configured](screenshots/lab-18-09-operations-ntfs-permissions-configured.png)
 
 ---
 
 ## Validation
 
-### Step 10 - Accessed the Shared Folder from the Client
+### Step 10 — Accessed the Shared Folder from the Client
 
 Accessed the shared folder from `MRTG-CLIENT-01` using the UNC path:
 
@@ -295,9 +321,11 @@ The department folders were visible from the client workstation.
 
 ---
 
-### Step 11 - Verified HR User Context
+### Step 11 — Verified HR User Context
 
 Confirmed the signed-in user context on the client workstation.
+
+Command used:
 
 ```cmd
 whoami
@@ -313,9 +341,11 @@ mrtg\kevin.carter
 
 ---
 
-### Step 12 - Validated HR Group Membership
+### Step 12 — Validated HR Group Membership
 
 Validated the HR user's group membership.
+
+Command used:
 
 ```cmd
 whoami /groups
@@ -332,7 +362,7 @@ DL_HR_Share_RW
 
 ---
 
-### Step 13 - Validated HR Authorized Access
+### Step 13 — Validated HR Authorized Access
 
 Confirmed that the HR user could access the HR folder.
 
@@ -352,7 +382,7 @@ HR-access-test.txt
 
 ---
 
-### Step 14 - Validated HR Unauthorized Access Denial
+### Step 14 — Validated HR Unauthorized Access Denial
 
 Confirmed that the HR user could not access the Finance folder.
 
@@ -368,7 +398,7 @@ The access attempt was denied as expected.
 
 ---
 
-### Step 15 - Confirmed Finance User Remote Desktop Access
+### Step 15 — Confirmed Finance User Remote Desktop Access
 
 Confirmed that the Finance test user was part of the Remote Desktop access group so the account could sign in to the client workstation for validation.
 
@@ -376,7 +406,7 @@ Confirmed that the Finance test user was part of the Remote Desktop access group
 
 ---
 
-### Step 16 - Validated Finance User Group Membership
+### Step 16 — Validated Finance User Group Membership
 
 Confirmed the signed-in Finance user context and validated group membership.
 
@@ -397,7 +427,7 @@ DL_Finance_Share_RW
 
 ---
 
-### Step 17 - Validated Finance Authorized Access
+### Step 17 — Validated Finance Authorized Access
 
 Confirmed that the Finance user could access the Finance folder.
 
@@ -417,7 +447,7 @@ Finance-access-test.txt
 
 ---
 
-### Step 18 - Validated Finance Unauthorized Access Denial
+### Step 18 — Validated Finance Unauthorized Access Denial
 
 Confirmed that the Finance user could not access the HR folder.
 
@@ -433,7 +463,7 @@ The access attempt was denied as expected.
 
 ---
 
-### Step 19 - Created Post-Lab Checkpoint
+### Step 19 — Created Post-Lab Checkpoint
 
 Created a final checkpoint after validating group-based access control.
 
@@ -509,12 +539,6 @@ MRTG-DC01_Post-Lab-18-Group-Based-Access-Control-Validated
 
 Group-based access control is a core IAM practice used to manage access to shared resources at scale.
 
-Instead of assigning permissions directly to individual users, access is granted through security groups. This supports least privilege, cleaner audits, easier troubleshooting, and more consistent access reviews.
-
----
-
-## Real-World identity and access management practice.
-
 In enterprise, government, and defense contractor environments, access should not be granted directly to individual users unless there is a specific exception and approval process.
 
 A cleaner model is to assign users to business-role groups and assign permissions to resource groups.
@@ -533,14 +557,14 @@ This improves:
 
 ## Lessons Learned
 
-- Direct user permissions are harder to manage and audit than group-based access.
-- Global Groups are useful for organizing users by department or role.
-- Domain Local Groups are useful for assigning permissions to resources.
-- NTFS permissions should enforce the actual access boundary.
-- Share permissions should allow users to reach the share, but NTFS should control folder-level access.
-- Successful access testing is not enough.
-- Denied-access testing proves that least privilege is actually working.
-- A clean access model supports better IAM operations and future audits.
+- Direct user permissions are harder to manage and audit than group-based access
+- Global Groups are useful for organizing users by department or role
+- Domain Local Groups are useful for assigning permissions to resources
+- NTFS permissions should enforce the actual access boundary
+- Share permissions should allow users to reach the share, but NTFS should control folder-level access
+- Successful access testing is not enough
+- Denied-access testing proves that least privilege is actually working
+- A clean access model supports better IAM operations and future audits
 
 ---
 
@@ -572,6 +596,7 @@ The HR user was able to access the HR folder and was denied access to Finance. T
 This confirmed that department access was controlled through group membership rather than direct user permissions.
 
 ---
+
 ## Next Lab
 
 [Lab 19 — Active Directory Certificate Services](../Lab-19-Active-Directory-Certificate-Services/)
