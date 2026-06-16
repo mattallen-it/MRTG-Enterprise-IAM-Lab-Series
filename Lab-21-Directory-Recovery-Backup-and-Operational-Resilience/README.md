@@ -1,4 +1,4 @@
-# Lab-21 — Directory Recovery, Backup, and Operational Resilience
+# Lab 21 — Directory Recovery, Backup, and Operational Resilience
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -7,41 +7,112 @@
 ![Focus](https://img.shields.io/badge/Focus-Recovery%20%26%20Resilience-brightgreen)
 ![Validation](https://img.shields.io/badge/Validation-Recovery%20Artifacts-blue)
 
-## Objective
+---
 
-The objective of this lab was to validate directory recovery readiness for the MRTG enterprise Active Directory environment.
+## Overview
+
+In this lab, I validated directory recovery readiness for the Monroe Redstone Technology Group Active Directory environment.
 
 This lab focused on confirming domain controller health, validating replication, documenting FSMO role ownership, creating a dedicated backup disk, performing a System State Backup, backing up Group Policy Objects, exporting critical Active Directory inventory, preserving identity automation artifacts, and creating a recovery runbook.
 
 The goal was to prove that the identity environment is not only functional, but also prepared for recovery and operational continuity.
 
+---
+
+## Business Problem
+
+MRTG needed a recovery-ready Active Directory environment.
+
+Active Directory is the foundation for authentication, authorization, Group Policy, privileged access, certificate trust, and identity lifecycle operations. If the directory becomes unhealthy or unrecoverable, core IT and security operations can fail across the environment.
+
+A working domain is not enough. The organization also needs validated health checks, known FSMO role ownership, recoverable System State data, preserved Group Policy configuration, documented privileged group membership, exported identity inventory, and a runbook that another administrator could follow during a recovery event.
+
+This lab solves that problem by creating and validating a recovery preparation package for the MRTG Active Directory environment.
+
+---
+
+## Lab Summary
+
+In this lab, I prepared the MRTG Active Directory environment for recovery and operational resilience.
+
+I started by creating a pre-lab Hyper-V checkpoint and attaching a dedicated backup VHDX to `MRTG-DC01`. I initialized the disk, assigned it the `E:` drive letter, and labeled it `MRTG-BACKUP`.
+
+I then created a dedicated Lab 21 workspace with folders for data, GPO backups, output reports, recovery artifacts, and a recovery runbook.
+
+During health validation, I identified a DNS-related replication issue. I validated domain controller health, confirmed domain controller discovery, restored replication health, documented FSMO role ownership, installed Windows Server Backup, and completed a System State Backup to the dedicated backup disk.
+
+I also backed up all Group Policy Objects, exported AD inventory files, exported privileged group membership, preserved the Lab 20 identity lifecycle automation artifacts, created a recovery runbook, validated the recovery artifacts, and created a final post-lab checkpoint.
+
+---
+
+## Objectives
+
+- Create a pre-lab Hyper-V checkpoint
+- Attach a dedicated backup VHDX to `MRTG-DC01`
+- Initialize and format the backup disk
+- Assign a backup drive letter and label
+- Create a dedicated Lab 21 folder structure
+- Detect and document initial replication health issues
+- Validate domain controller health
+- Validate domain controller discovery
+- Validate Active Directory replication health
+- Document FSMO role ownership
+- Install Windows Server Backup
+- Complete a System State Backup
+- Validate available backup versions
+- Back up all Group Policy Objects
+- Export AD OU, user, group, and GPO inventory
+- Export privileged group membership
+- Back up Lab 20 identity lifecycle automation artifacts
+- Create a directory recovery runbook
+- Validate recovery artifacts
+- Create a post-lab Hyper-V checkpoint after validation
+
+---
+
 ## Scope
 
-This lab included:
+### Included
 
-- Creating a pre-lab Hyper-V checkpoint
-- Attaching a dedicated backup VHDX to `MRTG-DC01`
-- Initializing and formatting the backup disk
-- Creating a dedicated Lab 21 folder structure
-- Validating domain controller health with `dcdiag`
-- Validating domain controller discovery
-- Validating AD replication health
-- Documenting FSMO role ownership
-- Installing Windows Server Backup
-- Running a System State Backup
-- Validating available backup versions
-- Backing up all Group Policy Objects
-- Exporting AD OU, user, group, and GPO inventory
-- Exporting privileged group membership
-- Backing up Lab 20 identity lifecycle automation artifacts
-- Creating a directory recovery runbook
-- Validating recovery artifacts
-- Creating a post-lab Hyper-V checkpoint
+- Hyper-V checkpoint creation
+- Backup VHDX attachment
+- Backup disk initialization and formatting
+- Active Directory health validation
+- Domain controller discovery validation
+- Replication health validation
+- FSMO role documentation
+- Windows Server Backup installation
+- System State Backup execution
+- Backup version validation
+- GPO backup
+- Active Directory inventory exports
+- Privileged group membership export
+- Lab 20 automation artifact preservation
+- Recovery runbook creation
+- Recovery artifact validation
+
+### Not Included
+
+- Destructive Active Directory restore
+- Authoritative restore
+- Non-authoritative restore
+- Bare-metal recovery
+- Offline restore testing
+- Backup encryption configuration
+- Enterprise backup platform deployment
+- Cloud backup integration
+- Ransomware-resistant backup design
+- Production backup retention policy
+- Automated backup scheduling
+- Disaster recovery tabletop exercise
+
+---
 
 ## Environment
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Primary Domain Controller | `MRTG-DC01` |
 | Additional Domain Controller | `MRTG-DC02` |
@@ -54,8 +125,11 @@ This lab included:
 | GPO Backup Path | `C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience\gpo-backup` |
 | Recovery Artifacts Path | `C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience\recovery-artifacts` |
 | Runbook Path | `C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience\runbook` |
-| Tooling | PowerShell, DCDIAG, REPADMIN, NLDIAG/NLTEST, WBADMIN |
+| Tooling | PowerShell, DCDIAG, REPADMIN, NLTEST, WBADMIN |
 | Backup Feature | Windows Server Backup |
+| Hypervisor | Hyper-V |
+
+---
 
 ## Scenario
 
@@ -71,6 +145,8 @@ Validate Health → Confirm Replication → Document Roles → Back Up System St
 
 This lab did not perform a destructive restore. The focus was recovery preparation, evidence collection, and operational resilience.
 
+---
+
 ## Recovery Design
 
 The recovery preparation strategy included multiple layers of evidence and backup readiness.
@@ -85,9 +161,37 @@ The recovery preparation strategy included multiple layers of evidence and backu
 | Recovery Runbook | Provides documented recovery priorities and key commands |
 | Hyper-V Checkpoints | Provides lab rollback points before and after recovery preparation |
 
+---
+
+## Recovery Artifact Model
+
+```text
+C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience
+│
+├── data
+├── gpo-backup
+├── output
+│   ├── ad-group-inventory.csv
+│   ├── ad-ou-inventory.csv
+│   ├── ad-user-inventory.csv
+│   ├── gpo-inventory.csv
+│   └── privileged-group-membership.csv
+│
+├── recovery-artifacts
+│   └── Lab-20-Identity-Lifecycle-Automation
+│       ├── data
+│       ├── output
+│       └── scripts
+│
+└── runbook
+    └── MRTG-Directory-Recovery-Runbook.md
+```
+
+---
+
 ## Implementation Steps
 
-### 1. Created Pre-Lab Checkpoint
+### Step 1 — Created Pre-Lab Checkpoint
 
 A Hyper-V checkpoint was created before beginning Lab 21.
 
@@ -97,9 +201,11 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab-21-Directory-Recovery-Backup-Operational-Resilience
 ```
 
-![Pre-Lab 21 Checkpoint](images/01-pre-lab-21-checkpoint.png)
+![Pre-Lab 21 Directory Recovery Checkpoint](screenshots/lab-21-01-pre-lab21-directory-recovery-checkpoint.png)
 
-### 2. Attached Backup VHDX
+---
+
+### Step 2 — Attached Backup VHDX
 
 A dedicated virtual hard disk was attached to `MRTG-DC01` for System State Backup storage.
 
@@ -119,9 +225,11 @@ VHDX configuration:
 | Attached To | `MRTG-DC01` |
 | Controller | SCSI Controller |
 
-![Backup VHDX Attached](images/02-backup-vhdx-attached.png)
+![Backup VHDX Attached](screenshots/lab-21-02-backup-vhdx-attached.png)
 
-### 3. Initialized Backup Disk
+---
+
+### Step 3 — Initialized Backup Disk
 
 The new backup disk was initialized, formatted, and assigned drive letter `E:`.
 
@@ -134,10 +242,20 @@ Volume configuration:
 | File System | NTFS |
 | Health Status | Healthy |
 | Operational Status | OK |
+| Size | 99.98 GB |
 
-![Backup Disk Initialized](images/03-backup-disk-initialized.png)
+Commands used:
 
-### 4. Created Lab 21 Folder Structure
+```powershell
+Get-Volume -DriveLetter E
+Get-Disk
+```
+
+![Backup Disk Initialized](screenshots/lab-21-03-backup-disk-initialized.png)
+
+---
+
+### Step 4 — Created Lab 21 Folder Structure
 
 A dedicated Lab 21 workspace was created on `MRTG-DC01`.
 
@@ -152,17 +270,41 @@ C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience
 └── runbook
 ```
 
-![Lab 21 Folder Structure Created](images/04-lab-21-folder-structure-created.png)
+![Lab 21 Folder Structure Created](screenshots/lab-21-04-lab-folder-structure-created.png)
+
+---
 
 ## Health Validation
 
-### 5. Validated Domain Controller Health
+### Step 5 — Detected Initial Replication DNS Failure
+
+Initial replication validation identified a DNS-related replication issue.
+
+Command used:
+
+```cmd
+repadmin /replsummary
+```
+
+The output showed a DNS lookup failure affecting replication between domain controllers.
+
+Observed error:
+
+```text
+(8524) The DSA operation is unable to proceed because of a DNS lookup failure.
+```
+
+![Replication DNS Failure Detected](screenshots/lab-21-05-replication-dns-failure-detected.png)
+
+---
+
+### Step 6 — Validated Domain Controller Health
 
 Domain controller health was validated using `dcdiag`.
 
 Command used:
 
-```powershell
+```cmd
 dcdiag /s:MRTG-DC01 /test:Advertising /test:Services /test:Replications /test:KnowsOfRoleHolders
 ```
 
@@ -176,9 +318,11 @@ Replications
 Services
 ```
 
-![Domain Controller Health Validated](images/05-domain-controller-health-validated.png)
+![Domain Controller Health Validated](screenshots/lab-21-06-domain-controller-health-validated.png)
 
-### 6. Validated Domain Controller Discovery
+---
+
+### Step 7 — Validated Domain Controller Discovery
 
 Domain controller discovery was validated using `nltest`, the logon server environment variable, and Active Directory domain controller discovery.
 
@@ -200,15 +344,17 @@ Validated domain controllers:
 | `MRTG-DC01.mrtg.local` | `192.168.10.10` | `MRTG-HQ-Site` | True |
 | `MRTG-DC02.mrtg.local` | `192.168.10.11` | `MRTG-HQ-Site` | True |
 
-![Domain Controller Discovery Validated](images/06-domain-controller-discovery-validated.png)
+![Domain Controller Discovery Validated](screenshots/lab-21-07-domain-controller-discovery-validated.png)
 
-### 7. Validated Replication Health
+---
 
-Replication health was validated using `repadmin`.
+### Step 8 — Validated Replication Health
+
+Replication health was revalidated using `repadmin`.
 
 Commands used:
 
-```powershell
+```cmd
 repadmin /replsummary
 repadmin /showrepl
 ```
@@ -221,15 +367,17 @@ MRTG-DC02 replication failures: 0 / 5
 Last replication attempts: Successful
 ```
 
-![Replication Health Validated](images/07-replication-health-validated.png)
+![Replication Health Validated](screenshots/lab-21-08-replication-health-validated.png)
 
-### 8. Documented FSMO Roles
+---
+
+### Step 9 — Documented FSMO Roles
 
 FSMO role ownership was documented using `netdom`.
 
 Command used:
 
-```powershell
+```cmd
 netdom query fsmo
 ```
 
@@ -249,11 +397,13 @@ Roles documented:
 | RID Pool Manager | `MRTG-DC01.mrtg.local` |
 | Infrastructure Master | `MRTG-DC01.mrtg.local` |
 
-![FSMO Roles Documented](images/08-fsmo-roles-documented.png)
+![FSMO Roles Documented](screenshots/lab-21-09-fsmo-roles-documented.png)
+
+---
 
 ## Backup Configuration
 
-### 9. Installed Windows Server Backup
+### Step 10 — Installed Windows Server Backup
 
 Windows Server Backup was installed on `MRTG-DC01`.
 
@@ -265,21 +415,23 @@ Install-WindowsFeature Windows-Server-Backup
 
 The feature installed successfully and did not require a restart.
 
-![Windows Server Backup Installed](images/09-windows-server-backup-installed.png)
+![Windows Server Backup Installed](screenshots/lab-21-10-windows-server-backup-installed.png)
 
-### 10. Completed System State Backup
+---
+
+### Step 11 — Completed System State Backup
 
 A System State Backup was completed to the dedicated backup disk.
 
 Command used:
 
-```powershell
+```cmd
 wbadmin start systemstatebackup -backuptarget:E: -quiet
 ```
 
 Backup versions were validated using:
 
-```powershell
+```cmd
 wbadmin get versions -backuptarget:E:
 ```
 
@@ -291,24 +443,33 @@ Backup target: E:
 Can recover: Volumes, Files, Applications, System State
 ```
 
-![System State Backup Completed](images/10-system-state-backup-completed.png)
+![System State Backup Completed](screenshots/lab-21-11-system-state-backup-completed.png)
+
+---
 
 ## Recovery Artifacts
 
-### 11. Created GPO Backup
+### Step 12 — Created GPO Backup
 
 All Group Policy Objects were backed up to the Lab 21 `gpo-backup` folder.
 
-Command used:
+Commands used:
 
 ```powershell
 $LabRoot = "C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience"
 $GpoBackupPath = "$LabRoot\gpo-backup"
 
 Backup-GPO -All -Path $GpoBackupPath
-```
 
-A summary was captured showing the backup path, total GPO backup folders, and sample backup folders.
+$GpoBackups = Get-ChildItem $GpoBackupPath
+
+Write-Host "GPO backup path: $GpoBackupPath"
+Write-Host "Total GPO backup folders created:" $GpoBackups.Count
+
+$GpoBackups |
+Select-Object -First 10 Name, LastWriteTime |
+Format-Table -AutoSize
+```
 
 Validated GPO backup count:
 
@@ -316,15 +477,20 @@ Validated GPO backup count:
 Total GPO backup folders created: 10
 ```
 
-![GPO Backup Created](images/11-gpo-backup-created.png)
+![GPO Backup Created](screenshots/lab-21-12-gpo-backup-created.png)
 
-### 12. Exported Critical AD Inventory
+---
+
+### Step 13 — Exported Critical AD Inventory
 
 Critical Active Directory inventory was exported to CSV files.
 
-Commands exported:
+Commands used:
 
 ```powershell
+$LabRoot = "C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience"
+$OutputPath = "$LabRoot\output"
+
 Get-ADOrganizationalUnit -Filter * -Properties Description |
 Select-Object Name,DistinguishedName,Description |
 Export-Csv "$OutputPath\ad-ou-inventory.csv" -NoTypeInformation
@@ -340,6 +506,8 @@ Export-Csv "$OutputPath\ad-user-inventory.csv" -NoTypeInformation
 Get-GPO -All |
 Select-Object DisplayName,Id,Owner,CreationTime,ModificationTime,GpoStatus |
 Export-Csv "$OutputPath\gpo-inventory.csv" -NoTypeInformation
+
+Get-ChildItem $OutputPath
 ```
 
 Exported inventory files:
@@ -351,9 +519,11 @@ ad-user-inventory.csv
 gpo-inventory.csv
 ```
 
-![AD Inventory Exports Created](images/12-ad-inventory-exports-created.png)
+![AD Inventory Exports Created](screenshots/lab-21-13-ad-inventory-exports-created.png)
 
-### 13. Exported Privileged Group Membership
+---
+
+### Step 14 — Exported Privileged Group Membership
 
 Privileged group membership was exported to support recovery and access review.
 
@@ -375,9 +545,11 @@ Output file:
 privileged-group-membership.csv
 ```
 
-![Privileged Groups Exported](images/13-privileged-groups-exported.png)
+![Privileged Groups Exported](screenshots/lab-21-14-privileged-groups-exported.png)
 
-### 14. Backed Up Lab 20 Automation Artifacts
+---
+
+### Step 15 — Backed Up Lab 20 Automation Artifacts
 
 Lab 20 identity lifecycle automation artifacts were backed up into the Lab 21 recovery artifacts folder.
 
@@ -401,9 +573,11 @@ output
 scripts
 ```
 
-![Lab 20 Automation Artifacts Backed Up](images/14-lab-20-automation-artifacts-backed-up.png)
+![Lab 20 Automation Artifacts Backed Up](screenshots/lab-21-15-lab-20-automation-artifacts-backed-up.png)
 
-### 15. Created Recovery Runbook
+---
+
+### Step 16 — Created Recovery Runbook
 
 A directory recovery runbook was created.
 
@@ -424,9 +598,11 @@ The runbook documented:
 - Privileged group membership reference
 - Lab 20 automation artifact backup reference
 
-![Recovery Runbook Created](images/15-recovery-runbook-created.png)
+![Recovery Runbook Created](screenshots/lab-21-16-recovery-runbook-created.png)
 
-### 16. Validated Recovery Artifacts
+---
+
+### Step 17 — Validated Recovery Artifacts
 
 Recovery artifacts were validated across the Lab 21 folder structure.
 
@@ -450,23 +626,23 @@ recovery-artifacts/
 - Lab-20-Identity-Lifecycle-Automation
 ```
 
-![Recovery Artifacts Validated](images/16-recovery-artifacts-validated.png)
+![Recovery Artifacts Validated](screenshots/lab-21-17-recovery-artifacts-validated.png)
 
-## Troubleshooting Note
+---
 
-During the initial health validation process, replication testing identified a DNS-related replication issue.
+### Step 18 — Created Post-Lab Checkpoint
 
-The issue was resolved before backup validation by bringing the replication environment back to a healthy state and rerunning replication and domain controller health checks.
+A post-lab checkpoint was created after validating backup, recovery artifacts, and operational resilience.
 
-Final validation confirmed:
+Checkpoint name:
 
 ```text
-Replication failures: 0
-DCDIAG replication test: Passed
-Domain controller discovery: Successful
+MRTG-DC01_Post-Lab-21-Directory-Recovery-Backup-Operational-Resilience-Validated
 ```
 
-This was a valuable recovery-readiness checkpoint because backups should not be treated as complete until the directory environment is validated as healthy.
+![Post-Lab 21 Directory Recovery Checkpoint](screenshots/lab-21-18-post-lab21-directory-recovery-backup-operational-resilience-checkpoint.png)
+
+---
 
 ## Validation Summary
 
@@ -476,6 +652,7 @@ This was a valuable recovery-readiness checkpoint because backups should not be 
 | Backup VHDX attached | 100 GB backup disk attached to `MRTG-DC01` | Backup VHDX attached | Passed |
 | Backup disk initialized | `E:` drive created with `MRTG-BACKUP` label | Disk initialized and healthy | Passed |
 | Lab folder structure created | Required Lab 21 folders exist | Folder structure validated | Passed |
+| Replication issue detected | Initial health issue identified | DNS-related replication issue documented | Passed |
 | DC health validated | `dcdiag` tests pass | Health tests passed | Passed |
 | DC discovery validated | Domain controllers discoverable | DC01 and DC02 discovered | Passed |
 | Replication health validated | Replication failures show `0` | Replication validated | Passed |
@@ -491,45 +668,67 @@ This was a valuable recovery-readiness checkpoint because backups should not be 
 | Recovery artifacts validated | Recovery evidence exists | Artifacts validated | Passed |
 | Post-lab checkpoint created | Checkpoint exists after validation | Post-lab checkpoint created | Passed |
 
-## Post-Lab Checkpoint
+---
 
-A post-lab checkpoint was created after validating backup, recovery artifacts, and operational resilience.
+## Evidence Collected
 
-Checkpoint name:
+| Evidence | Screenshot |
+|---|---|
+| Pre-lab directory recovery checkpoint | `screenshots/lab-21-01-pre-lab21-directory-recovery-checkpoint.png` |
+| Backup VHDX attached | `screenshots/lab-21-02-backup-vhdx-attached.png` |
+| Backup disk initialized | `screenshots/lab-21-03-backup-disk-initialized.png` |
+| Lab folder structure created | `screenshots/lab-21-04-lab-folder-structure-created.png` |
+| Replication DNS failure detected | `screenshots/lab-21-05-replication-dns-failure-detected.png` |
+| Domain controller health validated | `screenshots/lab-21-06-domain-controller-health-validated.png` |
+| Domain controller discovery validated | `screenshots/lab-21-07-domain-controller-discovery-validated.png` |
+| Replication health validated | `screenshots/lab-21-08-replication-health-validated.png` |
+| FSMO roles documented | `screenshots/lab-21-09-fsmo-roles-documented.png` |
+| Windows Server Backup installed | `screenshots/lab-21-10-windows-server-backup-installed.png` |
+| System State Backup completed | `screenshots/lab-21-11-system-state-backup-completed.png` |
+| GPO backup created | `screenshots/lab-21-12-gpo-backup-created.png` |
+| AD inventory exports created | `screenshots/lab-21-13-ad-inventory-exports-created.png` |
+| Privileged groups exported | `screenshots/lab-21-14-privileged-groups-exported.png` |
+| Lab 20 automation artifacts backed up | `screenshots/lab-21-15-lab-20-automation-artifacts-backed-up.png` |
+| Recovery runbook created | `screenshots/lab-21-16-recovery-runbook-created.png` |
+| Recovery artifacts validated | `screenshots/lab-21-17-recovery-artifacts-validated.png` |
+| Post-lab directory recovery checkpoint | `screenshots/lab-21-18-post-lab21-directory-recovery-backup-operational-resilience-checkpoint.png` |
+
+---
+
+## Troubleshooting Notes
+
+During the initial health validation process, replication testing identified a DNS-related replication issue.
+
+The issue was resolved before backup validation by bringing the replication environment back to a healthy state and rerunning replication and domain controller health checks.
+
+Final validation confirmed:
 
 ```text
-MRTG-DC01_Post-Lab-21-Directory-Recovery-Backup-Operational-Resilience-Validated
+Replication failures: 0
+DCDIAG replication test: Passed
+Domain controller discovery: Successful
 ```
 
-![Post-Lab 21 Checkpoint](images/17-post-lab-21-checkpoint.png)
+This was a valuable recovery-readiness checkpoint because backups should not be treated as complete until the directory environment is validated as healthy.
 
-## Outcome
+---
 
-Lab 21 successfully validated directory recovery readiness for the MRTG enterprise Active Directory environment.
+## Security Concepts Reinforced
 
-The lab confirmed that the environment was healthy, replication was functioning, FSMO roles were documented, Windows Server Backup was installed, a System State Backup was completed, GPOs were backed up, AD inventory was exported, privileged group membership was documented, Lab 20 automation artifacts were preserved, and a recovery runbook was created.
-
-The final result was a documented recovery package that supports identity infrastructure resilience and operational continuity.
-
-## Skills Demonstrated
-
-- Active Directory health validation
-- Domain controller discovery validation
+- Directory recovery readiness
+- Active Directory System State Backup
+- Domain controller health validation
 - Replication health validation
 - FSMO role documentation
-- Hyper-V virtual disk attachment
-- Disk initialization and formatting
-- Windows Server Backup installation
-- System State Backup execution
-- Backup version validation with `wbadmin`
-- Group Policy Object backup
-- Active Directory inventory export
-- Privileged group membership export
+- Group Policy backup
+- AD inventory export
+- Privileged group membership review
 - Recovery artifact preservation
-- Recovery runbook creation
-- PowerShell-based recovery documentation
-- Operational resilience planning
-- IAM recovery readiness validation
+- IAM operational resilience
+- Recovery runbook documentation
+- Backup validation
+
+---
 
 ## Real-World Relevance
 
@@ -550,6 +749,8 @@ This lab connects directly to real-world IAM and infrastructure responsibilities
 - Supporting audit readiness and continuity planning
 
 The key lesson is that identity infrastructure must be recoverable, not just functional.
+
+---
 
 ## Security Considerations
 
@@ -573,20 +774,24 @@ Production-ready improvements would include:
 - Performing regular recovery exercises
 - Reviewing privileged access after recovery
 
+---
+
 ## Lessons Learned
 
-- Directory recovery readiness starts with health validation.
-- Backups should not be treated as complete if replication is unhealthy.
-- System State Backup is important for Active Directory recovery preparation.
-- GPO backups preserve security and identity-related configuration.
-- AD inventory exports provide useful recovery reference data.
-- Privileged group membership must be documented before a recovery event.
-- IAM automation scripts are operational assets and should be preserved.
-- Recovery runbooks make recovery steps repeatable and easier to hand off.
-- Operational resilience is part of identity security.
-- A recoverable IAM environment is stronger than one that is only configured correctly.
+- Directory recovery readiness starts with health validation
+- Backups should not be treated as complete if replication is unhealthy
+- System State Backup is important for Active Directory recovery preparation
+- GPO backups preserve security and identity-related configuration
+- AD inventory exports provide useful recovery reference data
+- Privileged group membership must be documented before a recovery event
+- IAM automation scripts are operational assets and should be preserved
+- Recovery runbooks make recovery steps repeatable and easier to hand off
+- Operational resilience is part of identity security
+- A recoverable IAM environment is stronger than one that is only configured correctly
 
-## What I Would Do Differently
+---
+
+## What I Would Do Differently in Production
 
 In a production or government-regulated environment, I would expand this recovery workflow beyond a single lab backup disk.
 
@@ -610,8 +815,42 @@ A stronger production design would include:
 
 For this lab, the goal was to validate the core recovery readiness process without performing a destructive restore.
 
+---
+
+## Skills Demonstrated
+
+- Active Directory health validation
+- Domain controller discovery validation
+- Replication health validation
+- FSMO role documentation
+- Hyper-V virtual disk attachment
+- Disk initialization and formatting
+- Windows Server Backup installation
+- System State Backup execution
+- Backup version validation with `wbadmin`
+- Group Policy Object backup
+- Active Directory inventory export
+- Privileged group membership export
+- Recovery artifact preservation
+- Recovery runbook creation
+- PowerShell-based recovery documentation
+- Operational resilience planning
+- IAM recovery readiness validation
+
+---
+
+## Outcome
+
+Lab 21 successfully validated directory recovery readiness for the MRTG enterprise Active Directory environment.
+
+The lab confirmed that the environment was healthy, replication was functioning, FSMO roles were documented, Windows Server Backup was installed, a System State Backup was completed, GPOs were backed up, AD inventory was exported, privileged group membership was documented, Lab 20 automation artifacts were preserved, and a recovery runbook was created.
+
+The final result was a documented recovery package that supports identity infrastructure resilience and operational continuity.
+
+---
+
 ## Next Lab
 
-[**Lab-22 — IAM Security Review and Access Control Audit**](../Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
+[Lab 22 — IAM Security Review and Access Control Audit](../Lab-22-IAM-Security-Review-and-Access-Control-Audit/)
 
-The next lab will build on this recovery and resilience work by reviewing identity security posture, privileged access, group membership, disabled accounts, delegation boundaries, and access control risks across the MRTG Active Directory environment.
+Lab 22 will build on this recovery and resilience work by reviewing identity security posture, privileged access, group membership, disabled accounts, delegation boundaries, and access control risks across the MRTG Active Directory environment.
