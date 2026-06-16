@@ -1,4 +1,4 @@
-# Lab-20 — Identity Lifecycle Automation with PowerShell
+# Lab 20 — Identity Lifecycle Automation with PowerShell
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -7,67 +7,143 @@
 ![Automation](https://img.shields.io/badge/Automation-Joiner%20Mover%20Leaver-red)
 ![Validation](https://img.shields.io/badge/Validation-CSV%20Output%20Reports-brightgreen)
 
-## Objective
+---
 
-The objective of this lab was to automate identity lifecycle tasks in the MRTG enterprise Active Directory environment using PowerShell.
+## Overview
 
-This lab focused on building repeatable workflows for common IAM operations, including user onboarding, department movement, access group updates, account disablement, and audit-style output reporting.
+In this lab, I automated identity lifecycle tasks in the MRTG Active Directory environment using PowerShell.
 
-The core lifecycle model used in this lab was:
+This lab focused on building repeatable workflows for common IAM operations, including user onboarding, department movement, group membership updates, account disablement, and audit-style output reporting.
 
-```text
-Joiner → Mover → Leaver
-```
+The lifecycle model used in this lab was:
+
+`Joiner → Mover → Leaver`
+
+This lab connects Active Directory administration with real IAM operations by showing how identity changes can be driven from structured input files, executed through repeatable scripts, validated in Active Directory, and documented through output reports.
+
+---
+
+## Business Problem
+
+MRTG needed a repeatable and auditable way to manage user lifecycle events in Active Directory.
+
+Manual account creation, department transfers, and offboarding tasks can create inconsistent results. A missed group assignment, forgotten account disablement, or incorrect OU placement can create security and operational risk.
+
+In real IAM environments, user lifecycle work should be standardized so that approved changes can be executed consistently and validated afterward.
+
+This lab solves that problem by using CSV-driven PowerShell scripts to automate Joiner, Mover, and Leaver workflows.
+
+---
+
+## Lab Summary
+
+In this lab, I created a dedicated Lab 20 workspace with separate folders for data, scripts, and output files.
+
+I validated the existing Active Directory OU and group structure, created CSV input files, and wrote PowerShell scripts to automate three identity lifecycle workflows:
+
+- Joiner workflow for new user onboarding
+- Mover workflow for department transfer
+- Leaver workflow for account disablement and access removal
+
+The Joiner workflow created new AD users from CSV input, placed them into the correct department OUs, and assigned department-based security groups.
+
+The Mover workflow updated an existing user's department and title, moved the user to a new OU, removed old department access, and assigned new department access.
+
+The Leaver workflow disabled a user account, removed department group access, added a leaver note to the account description, and exported the result.
+
+Each workflow generated output reports that provided audit-style evidence of the actions performed.
+
+---
+
+## Objectives
+
+- Create a pre-lab Hyper-V checkpoint
+- Create a dedicated Lab 20 workspace
+- Validate existing Active Directory OUs and department groups
+- Create CSV input files for identity lifecycle automation
+- Create a Joiner PowerShell script
+- Create new AD users from CSV input
+- Place users in department-based OUs
+- Assign department-based Global Groups
+- Validate created user accounts and attributes
+- Validate department group membership
+- Create a Mover PowerShell script
+- Update a user's department and title
+- Move a user to a new department OU
+- Remove old department group access
+- Add new department group access
+- Create a Leaver PowerShell script
+- Disable a user account
+- Remove department group access
+- Add a leaver note to the account description
+- Validate output reports for Joiner, Mover, and Leaver workflows
+- Create a post-lab Hyper-V checkpoint after validation
+
+---
 
 ## Scope
 
-This lab included:
+### Included
 
-- Creating a pre-lab Hyper-V checkpoint
-- Creating a dedicated Lab 20 workspace
-- Validating existing Active Directory OUs and groups
-- Creating CSV input files for lifecycle automation
-- Creating a Joiner script for new user onboarding
-- Creating new AD users from CSV input
-- Placing users in department-based OUs
-- Assigning department-based Global Groups
-- Validating created user accounts and attributes
-- Validating group membership assignments
-- Creating a Mover workflow for department transfer
-- Updating user department and title attributes
-- Moving a user to a new department OU
-- Removing old department group access
-- Adding new department group access
-- Creating a Leaver workflow for account disablement
-- Disabling a user account
-- Removing department access
-- Adding a leaver note to the account description
-- Exporting Joiner, Mover, and Leaver results to CSV output files
-- Creating a post-lab Hyper-V checkpoint
+- Active Directory OU and group validation
+- CSV-driven identity lifecycle automation
+- Joiner workflow scripting
+- Mover workflow scripting
+- Leaver workflow scripting
+- New user creation
+- Department OU placement
+- Department group assignment
+- User attribute updates
+- User object movement
+- Group membership removal
+- Account disablement
+- Output report generation
+- PowerShell validation
+- Hyper-V checkpoint creation after validation
 
-## Environment
+### Not Included
+
+- HR system integration
+- Identity Governance and Administration platform integration
+- Microsoft Entra ID user lifecycle automation
+- ServiceNow or ticketing workflow integration
+- Approval workflow automation
+- Production password generation process
+- Secure credential vault integration
+- Email notifications
+- SIEM forwarding
+- Automated rollback workflow
+
+---
+
+## Lab Environment
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
 | Lab Root Path | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation` |
-| Data Path | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data` |
-| Scripts Path | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts` |
-| Output Path | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\output` |
+| Data Folder | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data` |
+| Scripts Folder | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts` |
+| Output Folder | `C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\output` |
 | Tooling | Windows PowerShell |
 | PowerShell Module | ActiveDirectory |
 | Joiner Script | `New-MRTGUsers.ps1` |
 | Mover Script | `Move-MRTGUser.ps1` |
 | Leaver Script | `Disable-MRTGUser.ps1` |
+| Joiner Input | `new-users.csv` |
+| Mover Input | `mover-users.csv` |
+| Leaver Input | `leaver-users.csv` |
+| Hypervisor | Hyper-V |
+
+---
 
 ## Scenario
 
-Monroe Redstone Technology Group needed a repeatable way to manage identity lifecycle tasks.
+Monroe Redstone Technology Group needed a repeatable way to manage identity lifecycle tasks in Active Directory.
 
-Manual account creation and access changes can be inconsistent, slow, and prone to mistakes. In a real IAM environment, common identity operations should be standardized and repeatable.
-
-This lab simulated three common lifecycle events:
+This lab simulated three common IAM lifecycle events:
 
 | Lifecycle Event | Description |
 |---|---|
@@ -77,9 +153,9 @@ This lab simulated three common lifecycle events:
 
 The workflow model used in this lab was:
 
-```text
-CSV Input → PowerShell Automation → Active Directory Change → Output Report → Validation
-```
+`CSV Input → PowerShell Automation → Active Directory Change → Output Report → Validation`
+
+---
 
 ## Identity Lifecycle Design
 
@@ -90,11 +166,11 @@ The Joiner workflow created new user accounts from a CSV file.
 The script performed the following actions:
 
 - Imported user data from `new-users.csv`
-- Created user accounts in Active Directory
+- Checked whether each user already existed
+- Created new user accounts in Active Directory
 - Placed users in the correct department OUs
-- Set basic identity attributes
+- Set user identity attributes
 - Enabled the accounts
-- Required password change at next logon
 - Added users to department-based Global Groups
 - Exported results to `joiner-results.csv`
 
@@ -105,8 +181,8 @@ The Mover workflow simulated a department transfer.
 The script performed the following actions:
 
 - Imported mover data from `mover-users.csv`
-- Updated the user’s department
-- Updated the user’s title
+- Updated the user's department
+- Updated the user's title
 - Moved the user object to the new department OU
 - Removed the old department group
 - Added the new department group
@@ -124,36 +200,49 @@ The script performed the following actions:
 - Added a leaver note to the account description
 - Exported results to `leaver-results.csv`
 
+---
+
+## Automation Design
+
+| Workflow | Input File | Script | Output File |
+|---|---|---|---|
+| Joiner | `new-users.csv` | `New-MRTGUsers.ps1` | `joiner-results.csv` |
+| Mover | `mover-users.csv` | `Move-MRTGUser.ps1` | `mover-results.csv` |
+| Leaver | `leaver-users.csv` | `Disable-MRTGUser.ps1` | `leaver-results.csv` |
+
+---
+
 ## Implementation Steps
 
-### 1. Created Pre-Lab Checkpoint
+### Step 1 — Created Pre-Lab Checkpoint
 
 A Hyper-V checkpoint was created before making Lab 20 changes.
 
 Checkpoint name:
 
-```text
-MRTG-DC01_Pre-Lab-20-Identity-Lifecycle-Automation
-```
+`MRTG-DC01_Pre-Lab-20-Identity-Lifecycle-Automation`
 
-![Pre-Lab 20 Checkpoint](images/01-pre-lab-20-checkpoint.png)
+![Pre-Identity Lifecycle Automation Checkpoint](screenshots/lab-20-01-pre-identity-lifecycle-automation-checkpoint.png)
 
-### 2. Created Lab 20 Folder Structure
+---
+
+### Step 2 — Created Lab 20 Folder Structure
 
 A dedicated lab workspace was created on `MRTG-DC01`.
 
 The workspace included separate folders for data, scripts, and output files.
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation
-├── data
-├── output
-└── scripts
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation`
 
-![Lab 20 Folder Structure Created](images/02-lab-20-folder-structure-created.png)
+- `data`
+- `output`
+- `scripts`
 
-### 3. Validated Existing OUs and Groups
+![Lab Folder Structure Created](screenshots/lab-20-02-lab-folder-structure-created.png)
+
+---
+
+### Step 3 — Validated Existing OUs and Groups
 
 Before creating automation scripts, the existing Active Directory OUs and department groups were validated.
 
@@ -161,69 +250,85 @@ This confirmed that the automation had valid targets for user placement and grou
 
 Validated department groups included:
 
-```text
-GG_HR_Users
-GG_Finance_Users
-GG_IT_Users
-GG_Operations_Users
-GG_Security_Users
-```
+- `GG_HR_Users`
+- `GG_Finance_Users`
+- `GG_IT_Users`
+- `GG_Operations_Users`
+- `GG_Security_Users`
 
-![Existing OUs and Groups Validated](images/03-existing-ous-and-groups-validated.png)
+![Existing OUs and Groups Validated](screenshots/lab-20-03-existing-ous-and-groups-validated.png)
 
-### 4. Created New Users CSV
+---
+
+## Joiner Workflow
+
+### Step 4 — Created New Users CSV
 
 A CSV input file was created for the Joiner workflow.
 
 CSV file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\new-users.csv
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\new-users.csv`
 
 The CSV included new users, departments, titles, target OUs, and department group assignments.
 
-![New Users CSV Created](images/04-new-users-csv-created.png)
+New users included:
 
-### 5. Created Joiner Script
+| User | SAM Account Name | Department | Title | Group |
+|---|---|---|---|---|
+| Ava Brooks | `ava.brooks` | HR | HR Coordinator | `GG_HR_Users` |
+| Noah Bennett | `noah.bennett` | Finance | Financial Analyst | `GG_Finance_Users` |
+| Ethan Walker | `ethan.walker` | IT | IT Support Technician | `GG_IT_Users` |
+| Sophia Carter | `sophia.carter` | Operations | Operations Specialist | `GG_Operations_Users` |
+| Maya Reed | `maya.reed` | Security | Security Analyst | `GG_Security_Users` |
+
+![New Users CSV Created](screenshots/lab-20-04-new-users-csv-created.png)
+
+---
+
+### Step 5 — Created Joiner Script
 
 The Joiner automation script was created.
 
 Script file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\New-MRTGUsers.ps1
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\New-MRTGUsers.ps1`
 
 The script was designed to import the CSV file, create new AD users, place users into department OUs, assign department groups, and export the results.
 
-![Joiner Script Created](images/05-joiner-script-created.png)
+![Joiner Script Created](screenshots/lab-20-05-joiner-script-created.png)
 
-### 6. Executed Joiner Script
+---
+
+### Step 6 — Executed Joiner Script
 
 The Joiner script was executed successfully.
 
 The script processed the users from the CSV file and created the accounts in Active Directory.
 
-![Joiner Script Executed Successfully](images/06-joiner-script-executed-successfully.png)
+![Joiner Script Executed Successfully](screenshots/lab-20-06-joiner-script-executed-successfully.png)
 
-### 7. Validated Users Created in Active Directory
+---
+
+### Step 7 — Validated Users Created in Active Directory
 
 The newly created users were validated in Active Directory using PowerShell.
 
 Validated users included:
 
-| User | Department | Title | Enabled |
-|---|---|---|---|
-| Ava Brooks | HR | HR Coordinator | True |
-| Noah Bennett | Finance | Financial Analyst | True |
-| Ethan Walker | IT | IT Support Technician | True |
-| Sophia Carter | Operations | Operations Specialist | True |
-| Maya Reed | Security | Security Analyst | True |
+| User | SAM Account Name | Department | Title | Enabled |
+|---|---|---|---|---|
+| Ava Brooks | `ava.brooks` | HR | HR Coordinator | True |
+| Noah Bennett | `noah.bennett` | Finance | Financial Analyst | True |
+| Ethan Walker | `ethan.walker` | IT | IT Support Technician | True |
+| Sophia Carter | `sophia.carter` | Operations | Operations Specialist | True |
+| Maya Reed | `maya.reed` | Security | Security Analyst | True |
 
-![Users Created in Active Directory](images/07-users-created-in-active-directory.png)
+![Users Created in Active Directory](screenshots/lab-20-07-users-created-in-active-directory.png)
 
-### 8. Validated Department Group Membership
+---
+
+### Step 8 — Validated Department Group Membership
 
 Department group membership was validated for each created user.
 
@@ -235,160 +340,186 @@ Department group membership was validated for each created user.
 | `sophia.carter` | `GG_Operations_Users` |
 | `maya.reed` | `GG_Security_Users` |
 
-![Department Group Membership Validated](images/08-department-group-membership-validated.png)
+![Department Group Membership Validated](screenshots/lab-20-08-department-group-membership-validated.png)
 
-### 9. Validated Joiner Output Results
+---
+
+### Step 9 — Validated Joiner Output Results
 
 The Joiner script exported an output file showing the result of each processed user.
 
 Output file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\output\joiner-results.csv
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\output\joiner-results.csv`
 
 The output confirmed that each user was created and added to the correct department group.
 
-![Joiner Results Output Validated](images/09-joiner-results-output-validated.png)
+![Joiner Results Output Validated](screenshots/lab-20-09-joiner-results-output-validated.png)
+
+---
 
 ## Mover Workflow
 
-### 10. Created Mover CSV
+### Step 10 — Created Mover CSV
 
 A CSV input file was created for the Mover workflow.
 
 CSV file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\mover-users.csv
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\mover-users.csv`
 
 The scenario used in this workflow was:
 
-```text
-ethan.walker moves from IT to Security
-```
+`ethan.walker moves from IT to Security`
 
 The CSV defined the new department, new title, new target OU, old group, and new group.
 
-![Mover CSV Created](images/10-mover-csv-created.png)
+![Mover CSV Created](screenshots/lab-20-10-mover-csv-created.png)
 
-### 11. Created Mover Script
+---
+
+### Step 11 — Created Mover Script
 
 The Mover automation script was created.
 
 Script file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\Move-MRTGUser.ps1
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\Move-MRTGUser.ps1`
 
-The script was designed to update the user’s department and title, move the user object to the new OU, remove the old department group, add the new department group, and export the results.
+The script was designed to update the user's department and title, move the user object to the new OU, remove the old department group, add the new department group, and export the results.
 
-![Mover Script Created](images/11-mover-script-created.png)
+![Mover Script Created](screenshots/lab-20-11-mover-script-created.png)
 
-### 12. Executed Mover Script
+---
+
+### Step 12 — Executed Mover Script
 
 The Mover script was executed successfully.
 
 The script updated Ethan Walker from IT to Security.
 
-![Mover Script Executed Successfully](images/12-mover-script-executed-successfully.png)
+Mover result:
 
-### 13. Validated Mover Update
+| User | New Department | New Title | Old Group | New Group | Result |
+|---|---|---|---|---|---|
+| `ethan.walker` | Security | Security Support Analyst | `GG_IT_Users` | `GG_Security_Users` | Success |
+
+![Mover Script Executed Successfully](screenshots/lab-20-12-mover-script-executed-successfully.png)
+
+---
+
+### Step 13 — Validated Mover Update
 
 The Mover update was validated using PowerShell.
 
 Validation confirmed:
 
-```text
-User: ethan.walker
-Department: Security
-Title: Security Support Analyst
-OU: OU=Security,OU=Users,OU=_MRTG,DC=mrtg,DC=local
-Group: GG_Security_Users
-```
+- User: `ethan.walker`
+- Department: Security
+- Title: Security Support Analyst
+- OU: `OU=Security,OU=Users,OU=_MRTG,DC=mrtg,DC=local`
+- Group: `GG_Security_Users`
 
 The old `GG_IT_Users` department access was removed, and the new `GG_Security_Users` access was applied.
 
-![Mover Update Validated](images/13-mover-update-validated.png)
+![Mover Update Validated](screenshots/lab-20-13-mover-update-validated.png)
+
+---
 
 ## Leaver Workflow
 
-### 14. Created Leaver CSV
+### Step 14 — Created Leaver CSV
 
 A CSV input file was created for the Leaver workflow.
 
 CSV file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\leaver-users.csv
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\data\leaver-users.csv`
 
 The scenario used in this workflow was:
 
-```text
-maya.reed leaves MRTG
-```
+`maya.reed leaves MRTG`
 
-![Leaver CSV Created](images/14-leaver-csv-created.png)
+![Leaver CSV Created](screenshots/lab-20-14-leaver-csv-created.png)
 
-### 15. Created Leaver Script
+---
+
+### Step 15 — Created Leaver Script
 
 The Leaver automation script was created.
 
 Script file:
 
-```text
-C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\Disable-MRTGUser.ps1
-```
+`C:\MRTG-Labs\Lab-20-Identity-Lifecycle-Automation\scripts\Disable-MRTGUser.ps1`
 
 The script was designed to disable the account, remove department group access, add a leaver note to the account description, and export the results.
 
-![Leaver Script Created](images/15-leaver-script-created.png)
+![Leaver Script Created](screenshots/lab-20-15-leaver-script-created.png)
 
-### 16. Executed Leaver Script
+---
+
+### Step 16 — Executed Leaver Script
 
 The Leaver script was executed successfully.
 
-The script disabled Maya Reed’s account and removed department access.
+The script disabled Maya Reed's account and removed department access.
 
-![Leaver Script Executed Successfully](images/16-leaver-script-executed-successfully.png)
+Leaver result:
 
-### 17. Validated Leaver Account Disabled and Access Removed
+| User | Account Status | Group Status | Result |
+|---|---|---|---|
+| `maya.reed` | Disabled | Removed from `GG_Security_Users` | Success |
+
+![Leaver Script Executed Successfully](screenshots/lab-20-16-leaver-script-executed-successfully.png)
+
+---
+
+### Step 17 — Validated Leaver Account Disabled and Access Removed
 
 The Leaver workflow was validated using PowerShell.
 
 Validation confirmed:
 
-```text
-User: maya.reed
-Enabled: False
-Description: Disabled during Lab 20 leaver workflow
-Department group access: Removed
-```
+- User: `maya.reed`
+- Enabled: False
+- Description: Disabled during Lab 20 leaver workflow
+- Department group access: Removed
 
 No `GG_*_Users` department group membership was returned for the user after the leaver workflow completed.
 
-![Leaver Account Disabled and Access Removed](images/17-leaver-account-disabled-and-access-removed.png)
+![Leaver Account Disabled and Access Removed](screenshots/lab-20-17-leaver-account-disabled-and-access-removed.png)
+
+---
 
 ## Output Validation
 
-### 18. Validated Lifecycle Output Files
+### Step 18 — Validated Lifecycle Output Files
 
 The output folder was validated to confirm that each lifecycle workflow created an audit-style result file.
 
 Output files created:
 
-```text
-joiner-results.csv
-mover-results.csv
-leaver-results.csv
-```
+- `joiner-results.csv`
+- `mover-results.csv`
+- `leaver-results.csv`
 
 Each workflow returned a successful result.
 
-![Lifecycle Output Files Validated](images/18-lifecycle-output-files-validated.png)
+![Lifecycle Output Files Validated](screenshots/lab-20-18-lifecycle-output-files-validated.png)
+
+---
+
+### Step 19 — Created Post-Lab Checkpoint
+
+A post-lab checkpoint was created after validating the full Joiner, Mover, and Leaver automation workflow.
+
+Checkpoint name:
+
+`MRTG-DC01_Post-Lab-20-Identity-Lifecycle-Automation-Validated`
+
+![Post-Lab 20 Identity Lifecycle Automation Checkpoint](screenshots/lab-20-19-post-lab20-identity-lifecycle-automation-checkpoint.png)
+
+---
 
 ## Validation Summary
 
@@ -406,52 +537,62 @@ Each workflow returned a successful result.
 | Mover CSV created | Mover input file exists | CSV created | Passed |
 | Mover script created | Script exists in scripts folder | `Move-MRTGUser.ps1` created | Passed |
 | Mover script executed | User updated and moved | Script completed successfully | Passed |
-| Mover access updated | Old group removed and new group added | Security group assigned | Passed |
+| Mover user attributes updated | Department, title, and OU changed | User validated in Security OU | Passed |
+| Mover access updated | Old group removed and new group added | `GG_Security_Users` assigned | Passed |
+| Mover output created | Results exported to CSV | `mover-results.csv` created | Passed |
 | Leaver CSV created | Leaver input file exists | CSV created | Passed |
 | Leaver script created | Script exists in scripts folder | `Disable-MRTGUser.ps1` created | Passed |
 | Leaver script executed | Account disabled and group removed | Script completed successfully | Passed |
 | Leaver account disabled | Account status disabled | `Enabled: False` confirmed | Passed |
 | Leaver access removed | Department group removed | No `GG_*_Users` membership returned | Passed |
+| Leaver output created | Results exported to CSV | `leaver-results.csv` created | Passed |
 | Output files validated | Joiner, Mover, and Leaver results exist | All output files present | Passed |
+| Post-lab checkpoint created | Checkpoint created after validation | Checkpoint confirmed | Passed |
 
-## Post-Lab Checkpoint
+---
 
-A post-lab checkpoint was created after validating the full Joiner, Mover, and Leaver automation workflow.
+## Evidence Collected
 
-Checkpoint name:
+| Evidence | Screenshot |
+|---|---|
+| Pre-lab identity lifecycle automation checkpoint | `screenshots/lab-20-01-pre-identity-lifecycle-automation-checkpoint.png` |
+| Lab folder structure created | `screenshots/lab-20-02-lab-folder-structure-created.png` |
+| Existing OUs and groups validated | `screenshots/lab-20-03-existing-ous-and-groups-validated.png` |
+| New users CSV created | `screenshots/lab-20-04-new-users-csv-created.png` |
+| Joiner script created | `screenshots/lab-20-05-joiner-script-created.png` |
+| Joiner script executed successfully | `screenshots/lab-20-06-joiner-script-executed-successfully.png` |
+| Users created in Active Directory | `screenshots/lab-20-07-users-created-in-active-directory.png` |
+| Department group membership validated | `screenshots/lab-20-08-department-group-membership-validated.png` |
+| Joiner results output validated | `screenshots/lab-20-09-joiner-results-output-validated.png` |
+| Mover CSV created | `screenshots/lab-20-10-mover-csv-created.png` |
+| Mover script created | `screenshots/lab-20-11-mover-script-created.png` |
+| Mover script executed successfully | `screenshots/lab-20-12-mover-script-executed-successfully.png` |
+| Mover update validated | `screenshots/lab-20-13-mover-update-validated.png` |
+| Leaver CSV created | `screenshots/lab-20-14-leaver-csv-created.png` |
+| Leaver script created | `screenshots/lab-20-15-leaver-script-created.png` |
+| Leaver script executed successfully | `screenshots/lab-20-16-leaver-script-executed-successfully.png` |
+| Leaver account disabled and access removed | `screenshots/lab-20-17-leaver-account-disabled-and-access-removed.png` |
+| Lifecycle output files validated | `screenshots/lab-20-18-lifecycle-output-files-validated.png` |
+| Post-lab identity lifecycle automation checkpoint | `screenshots/lab-20-19-post-lab20-identity-lifecycle-automation-checkpoint.png` |
 
-```text
-MRTG-DC01_Post-Lab-20-Identity-Lifecycle-Automation-Validated
-```
+---
 
-![Post-Lab 20 Checkpoint](images/19-post-lab-20-checkpoint.png)
+## Security Concepts Reinforced
 
-## Outcome
-
-Lab 20 successfully automated identity lifecycle tasks in the MRTG enterprise Active Directory environment.
-
-The lab demonstrated that PowerShell can be used to standardize and validate Joiner, Mover, and Leaver workflows. New users were created from CSV input, placed in the correct OUs, assigned department groups, moved between departments, removed from old groups, added to new groups, disabled during offboarding, and documented through CSV output files.
-
-The final result was a repeatable IAM automation workflow that supports operational consistency, access control accuracy, and audit-style evidence capture.
-
-## Skills Demonstrated
-
-- PowerShell scripting for Active Directory administration
-- Active Directory module usage
-- CSV-driven user creation
-- Joiner workflow automation
-- Mover workflow automation
-- Leaver workflow automation
-- User attribute management
-- OU placement and object movement
-- Group membership assignment
-- Group membership removal
+- Identity lifecycle management
+- Joiner, Mover, and Leaver workflows
+- Active Directory automation
+- CSV-driven identity operations
+- Department-based access assignment
+- Group-based access control
+- Least privilege
 - Account disablement
-- Output reporting with CSV files
-- IAM lifecycle validation
-- Audit-style evidence capture
-- Troubleshooting PowerShell filter syntax
-- Repeatable identity administration workflows
+- Access removal during offboarding
+- Evidence-based validation
+- Repeatable administrative workflows
+- Audit-style output reporting
+
+---
 
 ## Real-World Relevance
 
@@ -471,17 +612,21 @@ This lab connects directly to real IAM operations:
 
 Automation does not remove the need for approval, review, or governance. It helps execute approved changes consistently.
 
+---
+
 ## Lessons Learned
 
-- IAM automation should be built in phases instead of one large script.
-- CSV input files make repeatable user provisioning easier to document and validate.
-- Automation should verify that target OUs and groups exist before making changes.
-- Joiner workflows should create accounts and assign correct access.
-- Mover workflows should update both identity attributes and access.
-- Leaver workflows should disable accounts and remove access.
-- Output files are important because automation should leave evidence.
-- PowerShell syntax matters, especially when using AD cmdlets and filters.
-- A successful script is not enough; the resulting AD state must be validated.
+- IAM automation should be built in phases instead of one large script
+- CSV input files make repeatable user provisioning easier to document and validate
+- Automation should verify that target OUs and groups exist before making changes
+- Joiner workflows should create accounts and assign correct access
+- Mover workflows should update both identity attributes and access
+- Leaver workflows should disable accounts and remove access
+- Output files are important because automation should leave evidence
+- PowerShell syntax matters, especially when using AD cmdlets and filters
+- A successful script is not enough; the resulting AD state must be validated
+
+---
 
 ## Security Considerations
 
@@ -502,7 +647,9 @@ Production-ready improvements would include:
 - Integration with HR or identity governance systems
 - Account expiration or staged onboarding controls
 
-## What I Would Do Differently
+---
+
+## What I Would Improve in Production
 
 In a production or government-regulated environment, I would not rely on standalone scripts alone.
 
@@ -522,8 +669,40 @@ A stronger design would include:
 
 For this lab, standalone PowerShell scripts were appropriate because the goal was to understand and validate the core IAM lifecycle mechanics.
 
+---
+
+## Skills Demonstrated
+
+- PowerShell scripting for Active Directory administration
+- Active Directory module usage
+- CSV-driven user creation
+- Joiner workflow automation
+- Mover workflow automation
+- Leaver workflow automation
+- User attribute management
+- OU placement and object movement
+- Group membership assignment
+- Group membership removal
+- Account disablement
+- Output reporting with CSV files
+- IAM lifecycle validation
+- Audit-style evidence capture
+- Repeatable identity administration workflows
+
+---
+
+## Outcome
+
+Lab 20 successfully automated identity lifecycle tasks in the MRTG enterprise Active Directory environment.
+
+The lab demonstrated that PowerShell can be used to standardize and validate Joiner, Mover, and Leaver workflows. New users were created from CSV input, placed in the correct OUs, assigned department groups, moved between departments, removed from old groups, added to new groups, disabled during offboarding, and documented through CSV output files.
+
+The final result was a repeatable IAM automation workflow that supports operational consistency, access control accuracy, and audit-style evidence capture.
+
+---
+
 ## Next Lab
 
-[**Lab-21 — Directory Recovery, Backup, and Operational Resilience**](../Lab-21-Directory-Recovery-Backup-and-Operational-Resilience/)
+[Lab 21 — Directory Recovery, Backup, and Operational Resilience](../Lab-21-Directory-Recovery-Backup-and-Operational-Resilience/)
 
-The next lab will build on the identity lifecycle automation work by focusing on directory recovery, backup planning, and operational resilience for the MRTG Active Directory environment.
+Lab 21 will build on the identity lifecycle automation work by focusing on directory recovery, backup planning, and operational resilience for the MRTG Active Directory environment.
