@@ -1,4 +1,4 @@
-# Lab 16  — Delegation of Control and Tiered Administrative Boundaries
+# Lab 16 — Delegation of Control and Tiered Administrative Boundaries
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -9,37 +9,78 @@
 
 ---
 
-## Objective
+## Overview
 
-The objective of this lab was to configure and validate delegated administrative access in the MRTG Active Directory environment.
+This lab focused on configuring delegated administration in Active Directory using the Delegation of Control Wizard and a tiered administrative boundary model.
 
-This lab focused on allowing a dedicated help desk-style administrative account to reset passwords for standard user accounts without granting unnecessary elevated privileges such as Domain Admin, Account Operators, or interactive logon access to the domain controller.
+The goal was to allow a help desk-style admin account to reset passwords for standard user accounts without granting unnecessary domain-wide privileges.
+
+This lab validates a core IAM principle: administrators should receive only the permissions required to perform their assigned job function, and those permissions should be scoped to the correct users, systems, and administrative tier.
 
 ---
 
 ## Business Problem
 
-In real enterprise environments, help desk staff often need to perform identity support tasks such as password resets. A common mistake is granting too much access to make that work quickly.
+MRTG needed a controlled way for help desk staff to reset standard user passwords without granting broad administrative access across the domain.
 
-That creates risk.
+In many organizations, password resets are a common help desk task, but giving help desk technicians Domain Admin rights creates unnecessary risk. A compromised help desk account could become a path to privileged account abuse, lateral movement, or unauthorized changes to sensitive administrative accounts.
 
-If a help desk account is overprivileged, it may be able to access domain controllers, reset privileged admin accounts, or modify users outside its required scope. In regulated, government, and defense-contractor environments, that is not acceptable.
-
-This lab solves that problem by creating a scoped delegation model where a help desk admin can reset passwords only for standard users inside the approved OU boundary.
+This lab solves that problem by delegating password reset rights only within the standard user scope while keeping privileged admin accounts separated and protected.
 
 ---
 
 ## Lab Summary
 
-In this lab, a dedicated delegation group was created for help desk password reset permissions. A delegated administrative account was created and added to that group. The Delegation of Control Wizard was then used to assign password reset permissions to the standard Users OU.
+In this lab, I configured a delegated password reset model in Active Directory.
 
-The delegated admin account was tested from a management workstation, `MRTG-CLIENT-01`, instead of directly from the domain controller. The account was granted Remote Desktop access only to the management workstation and was denied interactive logon on the domain controller.
+A dedicated help desk password reset group was created and assigned scoped permissions over the standard Users OU using the Delegation of Control Wizard. A delegated admin account was then tested from a management workstation instead of directly from the domain controller.
 
-The lab validated both sides of least privilege:
+The lab validated that the delegated admin account could reset a standard user password within scope, but could not log on to the domain controller or reset a privileged admin account password outside the delegated boundary.
 
-- The delegated admin could reset a standard user password within the scoped Users OU.
-- The delegated admin could not reset an admin account password outside the delegated scope.
-- The delegated admin could not log on interactively to the domain controller.
+This confirmed that password reset support could be delegated without granting broad domain-level administrative privileges.
+
+---
+
+## Objectives
+
+- Review the existing MRTG Active Directory OU structure
+- Create a dedicated security group for delegated password reset access
+- Create a dedicated help desk admin account
+- Add the delegated admin account to the delegation group
+- Delegate password reset rights to the standard Users OU
+- Validate that the delegated account can sign into a management workstation
+- Confirm the delegated account cannot log on to the domain controller
+- Confirm the delegated account cannot reset privileged admin accounts
+- Confirm the delegated account can reset a standard user password within scope
+- Create clean Hyper-V checkpoints after validation
+
+---
+
+## Scope
+
+### Included
+
+- Review of existing Active Directory OU structure
+- Creation of a delegated password reset security group
+- Creation of a dedicated delegated admin account
+- Group-based delegation of password reset rights
+- Delegation of Control Wizard configuration
+- Management workstation sign-in validation
+- Domain controller logon denial validation
+- Standard user password reset testing
+- Privileged admin account reset denial testing
+- ADSI-based password reset validation
+- Hyper-V checkpoint creation after validation
+
+### Not Included
+
+- Full privileged access management platform deployment
+- MFA enforcement for delegated admin accounts
+- Privileged Access Workstation deployment
+- SIEM forwarding for password reset events
+- Advanced audit policy tuning
+- Just-in-time access approval workflow
+- Automated access review process
 
 ---
 
@@ -58,11 +99,11 @@ The lab validated both sides of least privilege:
 | Delegated Admin Display Name | `Jordan Hale (Admin)` |
 | Standard Test User | `Kevin Carter` |
 | Standard Test Username | `kevin.carter` |
-| Platform | Windows Server / Active Directory Domain Services |
+| Primary Tooling | Active Directory Users and Computers, Delegation of Control Wizard, PowerShell, ADSI, Hyper-V |
 
 ---
 
-## Lab Architecture
+## Architecture
 
 ```text
 mrtg.local
@@ -89,6 +130,17 @@ mrtg.local
             └── Local Remote Desktop Users
                 └── MRTG\adm.hd-reset01
 ```
+
+---
+
+## Delegation Model
+
+| Role | Scope | Permission |
+|---|---|---|
+| Help Desk Password Reset Admin | `_MRTG > Users` | Reset passwords and force password change at next logon |
+| Help Desk Password Reset Admin | `_MRTG > Admin Accounts` | No delegated access |
+| Help Desk Password Reset Admin | Domain Controller | No interactive logon |
+| Help Desk Password Reset Admin | Management Workstation | Remote Desktop access allowed |
 
 ---
 
@@ -173,13 +225,15 @@ No additional delegation tasks were selected.
 
 ### Step 1 — Reviewed the Existing MRTG OU Structure
 
-The existing MRTG Active Directory OU structure was reviewed before configuring delegation. This confirmed that standard users, admin accounts, computers, groups, and service accounts were already separated into dedicated OUs.
+The existing MRTG Active Directory OU structure was reviewed before configuring delegation.
 
-![Baseline ADUC structure](screenshots/lab-16-01-aduc-baseline-before-delegation.png)
+This confirmed that standard users, admin accounts, computers, groups, and service accounts were already separated into dedicated OUs.
+
+![ADUC baseline before delegation](screenshots/lab-16-01-aduc-baseline-before-delegation.png)
 
 ---
 
-### Step 2 — Created the Delegated Password Reset Group
+### Step 2 — Created the Help Desk Password Reset Delegation Group
 
 A dedicated security group was created under `_MRTG > Groups`.
 
@@ -196,7 +250,7 @@ Group scope: Global
 Group type: Security
 ```
 
-![Delegated password reset group created](screenshots/lab-16-02-helpdesk-password-reset-delegated-group-created.png)
+![Helpdesk password reset delegated group created](screenshots/lab-16-02-helpdesk-password-reset-delegated-group-created.png)
 
 ---
 
@@ -204,15 +258,14 @@ Group type: Security
 
 A delegated administrative account was created under `_MRTG > Admin Accounts`.
 
-Account details:
+Account created:
 
 ```text
-Full name: Jordan Hale (Admin)
-User logon name: adm.hd-reset01
-Pre-Windows 2000 logon: MRTG\adm.hd-reset01
+Jordan Hale (Admin)
+adm.hd-reset01
 ```
 
-![Delegated help desk admin account created](screenshots/lab-16-03-delegated-helpdesk-admin-account-created.png)
+![Delegated helpdesk admin account created](screenshots/lab-16-03-delegated-helpdesk-admin-account-created.png)
 
 ---
 
@@ -232,7 +285,7 @@ Member added:
 Jordan Hale (Admin)
 ```
 
-![Delegated admin added to group](screenshots/lab-16-04-delegated-admin-added-to-password-reset-group.png)
+![Delegated admin added to password reset group](screenshots/lab-16-04-delegated-admin-added-to-password-reset-group.png)
 
 ---
 
@@ -246,13 +299,13 @@ Delegation scope:
 mrtg.local/_MRTG/Users
 ```
 
-Selected group:
+Selected delegation group:
 
 ```text
 MRTG-GRP-Helpdesk-Password-Reset-Delegated
 ```
 
-![Delegation group selected](screenshots/lab-16-05-delegation-wizard-group-selected-for-users-ou.png)
+![Delegation wizard group selected for Users OU](screenshots/lab-16-05-delegation-wizard-group-selected-for-users-ou.png)
 
 ---
 
@@ -266,19 +319,19 @@ Selected task:
 Reset user passwords and force password change at next logon
 ```
 
-![Delegation task selected](screenshots/lab-16-06-delegation-task-reset-password-selected.png)
+![Delegation task reset password selected](screenshots/lab-16-06-delegation-task-reset-password-selected.png)
 
 ---
 
 ### Step 7 — Completed the Delegation of Control Wizard
 
-The Delegation of Control Wizard was completed and applied the scoped permission to the selected group.
+The Delegation of Control Wizard was completed and applied the scoped password reset permissions to the selected group.
 
-![Delegation wizard completed](screenshots/lab-16-07-delegation-wizard-completion-summary.png)
+![Delegation wizard completion summary](screenshots/lab-16-07-delegation-wizard-completion-summary.png)
 
 ---
 
-### Step 8 — Identified a Standard User for Testing
+### Step 8 — Identified the Standard User Test Target
 
 A standard HR user account was selected for delegated password reset testing.
 
@@ -294,7 +347,7 @@ Location:
 _MRTG > Users > HR
 ```
 
-![Standard user identified](screenshots/lab-16-08-standard-users-ou-target-accounts.png)
+![Standard users OU target accounts](screenshots/lab-16-08-standard-users-ou-target-accounts.png)
 
 ---
 
@@ -315,7 +368,7 @@ net localgroup "Remote Desktop Users" "MRTG\adm.hd-reset01" /add
 net localgroup "Remote Desktop Users"
 ```
 
-![Delegated admin added to workstation Remote Desktop Users](screenshots/lab-16-09a-delegated-admin-added-to-client-remote-desktop-users.png)
+![Delegated admin added to client Remote Desktop Users](screenshots/lab-16-09-delegated-admin-added-to-client-remote-desktop-users.png)
 
 ---
 
@@ -335,7 +388,7 @@ Expected result:
 mrtg\adm.hd-reset01
 ```
 
-![Delegated admin signed into workstation](screenshots/lab-16-09b-delegated-admin-signed-into-management-workstation.png)
+![Delegated admin signed into management workstation](screenshots/lab-16-10-delegated-admin-signed-into-management-workstation.png)
 
 ---
 
@@ -355,7 +408,9 @@ Result:
 1385: Logon failure: the user has not been granted the requested logon type at this computer.
 ```
 
-![Delegated admin denied DC logon](screenshots/lab-16-10a-delegated-admin-denied-logon-to-domain-controller.png)
+This confirmed that delegated administrative access did not automatically grant domain controller logon rights.
+
+![Delegated admin denied logon to domain controller](screenshots/lab-16-11-delegated-admin-denied-logon-to-domain-controller.png)
 
 ---
 
@@ -381,7 +436,7 @@ Distinguished Name:
 CN=Kevin Carter,OU=HR,OU=Users,OU=_MRTG,DC=mrtg,DC=local
 ```
 
-![Kevin Carter SamAccountName identified](screenshots/lab-16-10b-kevin-carter-samaccountname-identified.png)
+![Kevin Carter SamAccountName identified](screenshots/lab-16-12-kevin-carter-samaccountname-identified.png)
 
 ---
 
@@ -402,7 +457,7 @@ System error 5 has occurred.
 Access is denied.
 ```
 
-![net user access denied](screenshots/lab-16-10c-delegated-admin-net-user-reset-access-denied.png)
+![Delegated admin net user reset access denied](screenshots/lab-16-13-delegated-admin-net-user-reset-access-denied.png)
 
 ---
 
@@ -422,38 +477,11 @@ Confirmed group:
 MRTG\MRTG-GRP-Helpdesk-Password-Reset-Delegated
 ```
 
-![Delegated admin group membership token check](screenshots/lab-16-10d-delegated-admin-group-membership-token-check.png)
+![Delegated admin group membership token check](screenshots/lab-16-14-delegated-admin-group-membership-token-check.png)
 
 ---
 
-### Step 15 — Successfully Reset a Standard User Password with ADSI
-
-The delegated admin account successfully reset Kevin Carter's password using ADSI from the management workstation.
-
-Commands used:
-
-```powershell
-whoami
-
-$user = [ADSI]"LDAP://CN=Kevin Carter,OU=HR,OU=Users,OU=_MRTG,DC=mrtg,DC=local"
-$user.psbase.Invoke("SetPassword", "TempPass123!")
-$user.psbase.Properties["pwdLastSet"].Value = 0
-$user.psbase.CommitChanges()
-```
-
-Successful validation:
-
-```text
-whoami = mrtg\adm.hd-reset01
-No access denied error returned
-CommitChanges completed successfully
-```
-
-![Delegated admin ADSI password reset success](screenshots/lab-16-10e-delegated-admin-adsi-password-reset-success.png)
-
----
-
-### Step 16 — Confirmed the Delegated Admin Could Not Reset an Admin Account Password
+### Step 15 — Confirmed the Delegated Admin Could Not Reset an Admin Account Password
 
 The delegated admin attempted to reset the password of an admin account outside the delegated Users OU scope.
 
@@ -484,7 +512,34 @@ Access is denied.
 Exception from HRESULT: 0x80070005 (E_ACCESSDENIED)
 ```
 
-![Delegated admin denied admin account reset](screenshots/lab-16-11-delegated-admin-denied-reset-admin-account.png)
+![Delegated admin denied reset admin account](screenshots/lab-16-15-delegated-admin-denied-reset-admin-account.png)
+
+---
+
+### Step 16 — Successfully Reset a Standard User Password with ADSI
+
+The delegated admin account successfully reset Kevin Carter's password using ADSI from the management workstation.
+
+Commands used:
+
+```powershell
+whoami
+
+$user = [ADSI]"LDAP://CN=Kevin Carter,OU=HR,OU=Users,OU=_MRTG,DC=mrtg,DC=local"
+$user.psbase.Invoke("SetPassword", "TempPass123!")
+$user.psbase.Properties["pwdLastSet"].Value = 0
+$user.psbase.CommitChanges()
+```
+
+Successful validation:
+
+```text
+whoami = mrtg\adm.hd-reset01
+No access denied error returned
+CommitChanges completed successfully
+```
+
+![Delegated admin ADSI password reset success](screenshots/lab-16-16-delegated-admin-adsi-password-reset-success.png)
 
 ---
 
@@ -495,10 +550,10 @@ A Hyper-V checkpoint was created for the domain controller after delegation was 
 Checkpoint name:
 
 ```text
-Post-Lab-16-Delegation-and-Tiered-Admin-Boundaries-Validated
+MRTG-DC01_Post-Lab-16-Delegation-and-Tiered-Admin-Boundaries-Validated
 ```
 
-![MRTG-DC01 post Lab 16 checkpoint](screenshots/lab-16-12a-hyperv-mrtg-dc01-post-lab16-checkpoint.png)
+![Final Lab 16 checkpoint DC01 created](screenshots/lab-16-17-final-lab16-checkpoint-dc01-created.png)
 
 ---
 
@@ -512,7 +567,7 @@ Checkpoint name:
 Post-Lab-16-Delegation-and-Tiered-Admin-Boundaries-Validated
 ```
 
-![MRTG-CLIENT-01 post Lab 16 checkpoint](screenshots/lab-16-12b-hyperv-mrtg-client01-post-lab16-checkpoint.png)
+![Final Lab 16 checkpoint CLIENT01 created](screenshots/lab-16-18-final-lab16-checkpoint-client01-created.png)
 
 ---
 
@@ -589,8 +644,8 @@ runas /user:MRTG\adm.hd-reset01 cmd
 | Delegated admin denied interactive logon to domain controller | Successful |
 | Delegated admin group membership confirmed with `whoami /groups` | Successful |
 | `net user /domain` password reset attempt returned Access Denied | Documented |
-| ADSI password reset for standard HR user | Successful |
 | Admin account password reset outside delegated scope | Denied |
+| ADSI password reset for standard HR user | Successful |
 | DC01 post-lab checkpoint created | Successful |
 | CLIENT01 post-lab checkpoint created | Successful |
 
@@ -598,7 +653,7 @@ runas /user:MRTG\adm.hd-reset01 cmd
 
 ## Evidence Collected
 
-| Evidence | File |
+| Evidence | Screenshot |
 |---|---|
 | Baseline ADUC structure before delegation | `screenshots/lab-16-01-aduc-baseline-before-delegation.png` |
 | Delegated password reset group created | `screenshots/lab-16-02-helpdesk-password-reset-delegated-group-created.png` |
@@ -608,16 +663,16 @@ runas /user:MRTG\adm.hd-reset01 cmd
 | Password reset delegation task selected | `screenshots/lab-16-06-delegation-task-reset-password-selected.png` |
 | Delegation Wizard completion summary | `screenshots/lab-16-07-delegation-wizard-completion-summary.png` |
 | Standard user target account identified | `screenshots/lab-16-08-standard-users-ou-target-accounts.png` |
-| Delegated admin added to workstation Remote Desktop Users | `screenshots/lab-16-09a-delegated-admin-added-to-client-remote-desktop-users.png` |
-| Delegated admin signed into management workstation | `screenshots/lab-16-09b-delegated-admin-signed-into-management-workstation.png` |
-| Delegated admin denied logon to domain controller | `screenshots/lab-16-10a-delegated-admin-denied-logon-to-domain-controller.png` |
-| Kevin Carter SamAccountName identified | `screenshots/lab-16-10b-kevin-carter-samaccountname-identified.png` |
-| `net user` password reset denied | `screenshots/lab-16-10c-delegated-admin-net-user-reset-access-denied.png` |
-| Delegated admin group membership token checked | `screenshots/lab-16-10d-delegated-admin-group-membership-token-check.png` |
-| ADSI password reset succeeded | `screenshots/lab-16-10e-delegated-admin-adsi-password-reset-success.png` |
-| Admin account password reset denied | `screenshots/lab-16-11-delegated-admin-denied-reset-admin-account.png` |
-| MRTG-DC01 post-lab checkpoint | `screenshots/lab-16-12a-hyperv-mrtg-dc01-post-lab16-checkpoint.png` |
-| MRTG-CLIENT-01 post-lab checkpoint | `screenshots/lab-16-12b-hyperv-mrtg-client01-post-lab16-checkpoint.png` |
+| Delegated admin added to workstation Remote Desktop Users | `screenshots/lab-16-09-delegated-admin-added-to-client-remote-desktop-users.png` |
+| Delegated admin signed into management workstation | `screenshots/lab-16-10-delegated-admin-signed-into-management-workstation.png` |
+| Delegated admin denied logon to domain controller | `screenshots/lab-16-11-delegated-admin-denied-logon-to-domain-controller.png` |
+| Kevin Carter SamAccountName identified | `screenshots/lab-16-12-kevin-carter-samaccountname-identified.png` |
+| `net user` password reset denied | `screenshots/lab-16-13-delegated-admin-net-user-reset-access-denied.png` |
+| Delegated admin group membership token checked | `screenshots/lab-16-14-delegated-admin-group-membership-token-check.png` |
+| Admin account password reset denied | `screenshots/lab-16-15-delegated-admin-denied-reset-admin-account.png` |
+| ADSI password reset succeeded | `screenshots/lab-16-16-delegated-admin-adsi-password-reset-success.png` |
+| MRTG-DC01 post-lab checkpoint | `screenshots/lab-16-17-final-lab16-checkpoint-dc01-created.png` |
+| MRTG-CLIENT-01 post-lab checkpoint | `screenshots/lab-16-18-final-lab16-checkpoint-client01-created.png` |
 
 ---
 
