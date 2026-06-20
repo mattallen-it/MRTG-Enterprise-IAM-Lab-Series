@@ -1,4 +1,4 @@
-# Lab-22 — IAM Security Review and Access Control Audit
+# Lab 22 - IAM Security Review and Access Control Audit
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -7,37 +7,93 @@
 ![Security](https://img.shields.io/badge/Security-Access%20Control%20Audit-red)
 ![Validation](https://img.shields.io/badge/Validation-Audit%20Evidence-brightgreen)
 
-## Objective
+---
 
-The objective of this lab was to perform an IAM security review and access control audit in the MRTG enterprise Active Directory environment.
+## Overview
 
-This lab focused on reviewing privileged access, Domain Admins membership, disabled accounts, department-based access groups, delegated admin groups, LAPS-related groups, AD CS-related groups, and stale or unusual accounts.
+In this lab, I performed an IAM security review and access control audit in the Monroe Redstone Technology Group Active Directory environment.
+
+This lab focused on reviewing privileged access, Domain Admins membership, disabled accounts, department-based access groups, delegated administrative groups, LAPS-related groups, AD CS-related groups, and stale or unusual accounts.
 
 The goal was to move beyond configuration and demonstrate evidence-based IAM auditing using PowerShell and Active Directory administrative tools.
 
+---
+
+## Business Problem
+
+MRTG needed a repeatable way to verify that identity access remained appropriate after multiple rounds of directory configuration, delegation, endpoint administration, certificate services deployment, and identity lifecycle activity.
+
+Configuration alone does not prove that access is still correct. Privileged groups can accumulate unnecessary members, disabled users can retain group memberships, delegated roles can expand beyond their intended scope, and service or administrative accounts can remain active without clear ownership.
+
+This lab addressed that problem by reviewing high-risk identity objects, documenting the observed access state, exporting structured evidence, and creating a written audit summary for operational and compliance review.
+
+---
+
+## Lab Summary
+
+I began by creating a pre-lab Hyper-V checkpoint and a dedicated folder structure for evidence, output files, reports, and scripts. Before auditing access, I validated domain controller services and replication to ensure the review was performed against a healthy directory.
+
+I then reviewed privileged groups, Domain Admins, disabled accounts, department groups, delegated administration groups, LAPS and security groups, AD CS-related groups, and the broader user account inventory.
+
+The review confirmed expected administrative separation, identified the current members of sensitive groups, and verified that the Lab 20 mover and leaver results remained reflected in Active Directory.
+
+Finally, I exported eight CSV evidence files, created an IAM security review summary, and captured a post-lab checkpoint after validation.
+
+---
+
+## Objectives
+
+- Create pre-lab and post-lab Hyper-V checkpoints
+- Create a dedicated Lab 22 audit workspace
+- Validate domain controller and replication health before the review
+- Review privileged and Domain Admins membership
+- Review disabled and potentially unusual accounts
+- Review department-based access groups
+- Review delegated administrative access
+- Review LAPS password-reader and security-related groups
+- Review AD CS and certificate-related groups
+- Export structured audit evidence to CSV
+- Create a written IAM security review summary
+
+---
+
 ## Scope
 
-This lab included:
+### Included
 
-- Creating a pre-lab Hyper-V checkpoint
-- Creating a dedicated Lab 22 folder structure
-- Validating domain health before starting the audit
-- Reviewing privileged group membership
-- Reviewing Domain Admins membership
-- Reviewing disabled accounts
-- Reviewing department-based access groups
-- Reviewing delegated admin groups
-- Reviewing LAPS and security-related groups
-- Reviewing AD CS and certificate-related groups
-- Reviewing stale or unusual accounts
-- Exporting audit evidence to CSV files
-- Creating an IAM security review summary
-- Creating a post-lab Hyper-V checkpoint
+- Hyper-V checkpoint creation
+- Lab folder structure creation
+- Domain health validation
+- Replication health validation
+- Privileged group review
+- Domain Admins review
+- Disabled account review
+- Department group review
+- Delegated admin group review
+- LAPS and security group review
+- AD CS-related group review
+- User account status review
+- CSV evidence exports
+- IAM security review summary
+
+### Not Included
+
+- Changing group membership or account status
+- Approving or certifying access for a business owner
+- Reviewing file system, application, or cloud permissions
+- Performing an exhaustive OU delegation ACL review
+- Reviewing certificate template permissions
+- Correlating access with change tickets or HR records
+- Configuring recurring access certification campaigns
+- Integrating evidence with a GRC or SIEM platform
+
+---
 
 ## Environment
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Primary Domain Controller | `MRTG-DC01` |
 | Additional Domain Controller | `MRTG-DC02` |
@@ -47,7 +103,10 @@ This lab included:
 | Reports Path | `C:\MRTG-Labs\Lab-22-IAM-Security-Review-and-Access-Control-Audit\reports` |
 | Scripts Path | `C:\MRTG-Labs\Lab-22-IAM-Security-Review-and-Access-Control-Audit\scripts` |
 | Evidence Path | `C:\MRTG-Labs\Lab-22-IAM-Security-Review-and-Access-Control-Audit\evidence` |
-| Tools Used | PowerShell, Active Directory Module, DCDIAG, REPADMIN |
+| Tools | PowerShell, Active Directory Module, DCDIAG, REPADMIN |
+| Hypervisor | Hyper-V |
+
+---
 
 ## Scenario
 
@@ -63,27 +122,29 @@ Validate Health → Review Privileged Access → Review Standard Access → Revi
 
 This lab did not make access changes. It focused on reviewing the current identity state and producing audit evidence.
 
-## Audit Design
+---
 
-The audit reviewed key identity and access control areas.
+## Audit Design
 
 | Audit Area | Purpose |
 |---|---|
 | Domain Health | Confirm the directory was healthy before auditing access |
 | Privileged Groups | Identify users or groups with elevated access |
-| Domain Admins | Review the most sensitive day-to-day privileged group |
-| Disabled Accounts | Confirm offboarded or built-in disabled accounts |
-| Department Groups | Review business access groups |
+| Domain Admins | Review the most sensitive daily privileged group |
+| Disabled Accounts | Confirm built-in and offboarded accounts remained disabled |
+| Department Groups | Review business-aligned access groups |
 | Delegated Admin Groups | Review least-privilege administrative delegation |
-| LAPS and Security Groups | Review privileged endpoint and password-reader access |
+| LAPS and Security Groups | Review endpoint and password-reader access |
 | AD CS Groups | Review certificate and PKI-related access |
-| User Account Review | Identify stale, service, admin, disabled, or unusual accounts |
+| User Accounts | Identify disabled, service, admin, stale, or unusual accounts |
 | Audit Exports | Preserve review evidence in CSV format |
 | Summary Report | Document findings and conclusions |
 
+---
+
 ## Implementation Steps
 
-### 1. Created Pre-Lab Checkpoint
+### Step 1 - Created Pre-Lab Checkpoint
 
 A Hyper-V checkpoint was created before beginning the IAM security review.
 
@@ -93,9 +154,11 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab-22-IAM-Security-Review-and-Access-Control-Audit
 ```
 
-![Pre-Lab 22 Checkpoint](images/01-pre-lab-22-checkpoint.png)
+![Pre-Lab 22 Checkpoint](screenshots/lab-22-01-pre-lab-22-checkpoint.png)
 
-### 2. Created Lab 22 Folder Structure
+---
+
+### Step 2 - Created Lab 22 Folder Structure
 
 A dedicated Lab 22 workspace was created on `MRTG-DC01`.
 
@@ -109,13 +172,15 @@ C:\MRTG-Labs\Lab-22-IAM-Security-Review-and-Access-Control-Audit
 └── scripts
 ```
 
-![Lab 22 Folder Structure Created](images/02-lab-22-folder-structure-created.png)
+![Lab 22 Folder Structure Created](screenshots/lab-22-02-folder-structure-created.png)
+
+---
 
 ## Pre-Audit Health Validation
 
-### 3. Validated Domain Health Before Audit
+### Step 3 - Validated Domain Health Before Audit
 
-Before reviewing access, domain controller health and replication were validated.
+Domain controller health and replication were validated before reviewing access.
 
 Commands used:
 
@@ -139,15 +204,17 @@ REPADMIN passed:
 - MRTG-DC02 failures: 0 / 5
 ```
 
-![Domain Health Pre-Audit Validated](images/03-domain-health-pre-audit-validated.png)
+![Domain Health Pre-Audit Validated](screenshots/lab-22-03-domain-health-pre-audit-validated.png)
+
+---
 
 ## Privileged Access Review
 
-### 4. Reviewed Privileged Groups
+### Step 4 - Reviewed Privileged Groups
 
 Privileged groups were reviewed to identify accounts or nested groups with elevated access.
 
-Groups reviewed included:
+Groups reviewed:
 
 ```text
 Domain Admins
@@ -176,6 +243,7 @@ $PrivilegedGroups = @(
 
 $PrivilegedGroups | ForEach-Object {
     $GroupName = $_
+
     Get-ADGroupMember -Identity $GroupName -Recursive | ForEach-Object {
         [PSCustomObject]@{
             GroupName      = $GroupName
@@ -187,7 +255,7 @@ $PrivilegedGroups | ForEach-Object {
 } | Format-Table -AutoSize
 ```
 
-Observed privileged membership included:
+Observed privileged membership:
 
 | Group | Member |
 |---|---|
@@ -196,11 +264,13 @@ Observed privileged membership included:
 | Schema Admins | Administrator |
 | Administrators | Administrator |
 
-![Privileged Groups Reviewed](images/04-privileged-groups-reviewed.png)
+![Privileged Groups Reviewed](screenshots/lab-22-04-privileged-groups-reviewed.png)
 
-### 5. Reviewed Domain Admins Membership
+---
 
-Domain Admins membership was reviewed separately because it is one of the most sensitive groups in an Active Directory environment.
+### Step 5 - Reviewed Domain Admins Membership
+
+Domain Admins membership was reviewed separately because it is one of the most sensitive groups in Active Directory.
 
 Command used:
 
@@ -216,15 +286,17 @@ Validation confirmed:
 Domain Admins → Administrator
 ```
 
-No unexpected standard user accounts were observed in the Domain Admins group.
+No unexpected standard user accounts were observed in Domain Admins.
 
-![Domain Admins Membership Reviewed](images/05-domain-admins-membership-reviewed.png)
+![Domain Admins Membership Reviewed](screenshots/lab-22-05-domain-admins-membership-reviewed.png)
+
+---
 
 ## Account Status Review
 
-### 6. Reviewed Disabled Accounts
+### Step 6 - Reviewed Disabled Accounts
 
-Disabled accounts were reviewed to confirm expected disabled accounts and identify offboarded users.
+Disabled accounts were reviewed to identify expected built-in accounts and previously offboarded users.
 
 Command used:
 
@@ -236,19 +308,21 @@ Format-Table -AutoSize
 
 Disabled accounts reviewed:
 
-| Account | Purpose / Finding |
+| Account | Purpose or Finding |
 |---|---|
-| Guest | Built-in disabled guest account |
-| krbtgt | Built-in Key Distribution Center service account |
-| maya.reed | Disabled during Lab 20 leaver workflow |
+| Guest | Built-in guest account |
+| krbtgt | Built-in Kerberos Key Distribution Center account |
+| maya.reed | Disabled during the Lab 20 leaver workflow |
 
-The `maya.reed` account remained disabled and documented from the Lab 20 offboarding workflow.
+The `maya.reed` account remained disabled following the Lab 20 offboarding workflow.
 
-![Disabled Accounts Reviewed](images/06-disabled-accounts-reviewed.png)
+![Disabled Accounts Reviewed](screenshots/lab-22-06-disabled-accounts-reviewed.png)
+
+---
 
 ## Access Group Review
 
-### 7. Reviewed Department Groups
+### Step 7 - Reviewed Department Groups
 
 Department-based access groups were reviewed to confirm business access group structure and membership.
 
@@ -263,6 +337,7 @@ Format-Table -AutoSize
 ```powershell
 Get-ADGroup -Filter 'Name -like "GG_*_Users"' | ForEach-Object {
     $Group = $_.Name
+
     Get-ADGroupMember $Group | ForEach-Object {
         [PSCustomObject]@{
             GroupName      = $Group
@@ -274,8 +349,6 @@ Get-ADGroup -Filter 'Name -like "GG_*_Users"' | ForEach-Object {
 } | Format-Table -AutoSize
 ```
 
-The review confirmed that department groups existed and had assigned members.
-
 Important findings:
 
 ```text
@@ -283,13 +356,15 @@ ethan.walker was assigned to GG_Security_Users.
 maya.reed was not listed in GG_Security_Users.
 ```
 
-This confirmed that Lab 20 mover and leaver workflows were reflected in the current access state.
+This confirmed that the Lab 20 mover and leaver changes remained reflected in the current access state.
 
-![Department Groups Reviewed](images/07-department-groups-reviewed.png)
+![Department Groups Reviewed](screenshots/lab-22-07-department-groups-reviewed.png)
 
-### 8. Reviewed Delegated Admin Groups
+---
 
-Admin and delegation-related groups were reviewed to identify delegated administrative access.
+### Step 8 - Reviewed Delegated Admin Groups
+
+Administrative and delegation-related groups were reviewed to identify delegated access.
 
 Commands used:
 
@@ -302,6 +377,7 @@ Format-Table -AutoSize
 ```powershell
 Get-ADGroup -Filter 'Name -like "*Admin*" -or Name -like "*Delegat*" -or Name -like "*Tier*"' | ForEach-Object {
     $Group = $_.Name
+
     Get-ADGroupMember $Group -ErrorAction SilentlyContinue | ForEach-Object {
         [PSCustomObject]@{
             GroupName      = $Group
@@ -313,7 +389,7 @@ Get-ADGroup -Filter 'Name -like "*Admin*" -or Name -like "*Delegat*" -or Name -l
 } | Format-Table -AutoSize
 ```
 
-Observed delegated/admin-related access included:
+Observed delegated access:
 
 | Group | Member |
 |---|---|
@@ -321,13 +397,15 @@ Observed delegated/admin-related access included:
 | `GG_PSO_Privileged_Admins` | `john.smith.admin` |
 | `MRTG-GRP-Helpdesk-Password-Reset-Delegated` | `adm.hd-reset01` |
 
-This supports least privilege by separating delegated admin access from broad Domain Admins membership.
+This supports least privilege by separating delegated administration from broad Domain Admins membership.
 
-![Delegated Admin Groups Reviewed](images/08-delegated-admin-groups-reviewed.png)
+![Delegated Admin Groups Reviewed](screenshots/lab-22-08-delegated-admin-groups-reviewed.png)
 
-### 9. Reviewed LAPS and Security Groups
+---
 
-LAPS and security-related groups were reviewed.
+### Step 9 - Reviewed LAPS and Security Groups
+
+LAPS and security-related groups were reviewed to identify users with sensitive endpoint or password-reader access.
 
 Commands used:
 
@@ -340,6 +418,7 @@ Format-Table -AutoSize
 ```powershell
 Get-ADGroup -Filter 'Name -like "*LAPS*" -or Name -like "*Security*" -or Name -like "*Privileged*"' | ForEach-Object {
     $Group = $_.Name
+
     Get-ADGroupMember $Group -ErrorAction SilentlyContinue | ForEach-Object {
         [PSCustomObject]@{
             GroupName      = $Group
@@ -351,19 +430,21 @@ Get-ADGroup -Filter 'Name -like "*LAPS*" -or Name -like "*Security*" -or Name -l
 } | Format-Table -AutoSize
 ```
 
-Observed groups included:
+Observed membership:
 
-| Group | Member(s) |
+| Group | Members |
 |---|---|
 | `GG_Security_Users` | Alex Rivera, Ethan Walker |
 | `GG_PSO_Privileged_Admins` | `john.smith.admin` |
 | `MRTG-GRP-LAPS-Password-Readers` | Administrator |
 
-![LAPS and Security Groups Reviewed](images/09-laps-and-security-groups-reviewed.png)
+![LAPS and Security Groups Reviewed](screenshots/lab-22-09-laps-and-security-groups-reviewed.png)
 
-### 10. Reviewed AD CS Related Groups
+---
 
-Certificate and PKI-related groups were reviewed after the AD CS deployment from Lab 19.
+### Step 10 - Reviewed AD CS-Related Groups
+
+Certificate and PKI-related groups were reviewed after the AD CS deployment completed in Lab 19.
 
 Commands used:
 
@@ -376,6 +457,7 @@ Format-Table -AutoSize
 ```powershell
 Get-ADGroup -Filter 'Name -like "*Cert*" -or Name -like "*CA*" -or Name -like "*PKI*"' | ForEach-Object {
     $Group = $_.Name
+
     Get-ADGroupMember $Group -ErrorAction SilentlyContinue | ForEach-Object {
         [PSCustomObject]@{
             GroupName      = $Group
@@ -402,13 +484,15 @@ Cert Publishers → MRTG-DC01
 
 This aligns with `MRTG-DC01` hosting the AD CS role from Lab 19.
 
-![AD CS Related Groups Reviewed](images/10-adcs-related-groups-reviewed.png)
+![AD CS-Related Groups Reviewed](screenshots/lab-22-10-adcs-related-groups-reviewed.png)
+
+---
 
 ## User Account Review
 
-### 11. Reviewed Stale or Unusual Accounts
+### Step 11 - Reviewed Stale or Unusual Accounts
 
-User accounts were reviewed for status, department/title fields, logon activity, password timestamps, and account purpose indicators.
+User accounts were reviewed for status, department and title fields, logon activity, password timestamps, and account purpose indicators.
 
 Command used:
 
@@ -419,7 +503,7 @@ Sort-Object LastLogonDate |
 Format-Table -AutoSize
 ```
 
-The review identified several account categories:
+Account categories identified:
 
 ```text
 Disabled accounts:
@@ -431,7 +515,7 @@ Service accounts:
 - svc_backup
 - svc_appdeploy
 
-Admin accounts:
+Administrative accounts:
 - alex.rivera.admin
 - john.smith.admin
 - adm.hd-reset01
@@ -443,11 +527,15 @@ Lab-created users:
 - sophia.carter
 ```
 
-![Stale or Unusual Accounts Reviewed](images/11-stale-or-unusual-accounts-reviewed.png)
+This review identified accounts requiring different governance controls. It did not independently prove that an account was stale or unauthorized.
+
+![Stale or Unusual Accounts Reviewed](screenshots/lab-22-11-stale-or-unusual-accounts-reviewed.png)
+
+---
 
 ## Audit Evidence
 
-### 12. Created Audit Exports
+### Step 12 - Created Audit Exports
 
 Audit evidence was exported to CSV files.
 
@@ -464,11 +552,13 @@ privileged-groups-review.csv
 user-account-review.csv
 ```
 
-![Audit Exports Created](images/12-audit-exports-created.png)
+![Audit Exports Created](screenshots/lab-22-12-audit-exports-created.png)
 
-### 13. Created IAM Security Review Summary
+---
 
-An IAM security review summary was created to document the audit areas reviewed, key findings, evidence created, and conclusion.
+### Step 13 - Created IAM Security Review Summary
+
+An IAM security review summary was created to document the audit areas, findings, evidence, and conclusion.
 
 Report file:
 
@@ -488,30 +578,13 @@ The report documented:
 - Audit evidence created
 - IAM security review conclusion
 
-![IAM Security Review Summary Created](images/13-iam-security-review-summary-created.png)
+![IAM Security Review Summary Created](screenshots/lab-22-13-iam-security-review-summary-created.png)
 
-## Validation Summary
+---
 
-| Test | Expected Result | Actual Result | Status |
-|---|---|---|---|
-| Pre-lab checkpoint created | Checkpoint exists before Lab 22 changes | Pre-lab checkpoint created | Passed |
-| Lab folder structure created | Required folders exist | Folder structure validated | Passed |
-| Domain health validated | DCDIAG and replication checks pass | Health checks passed | Passed |
-| Privileged groups reviewed | Elevated groups reviewed | Privileged memberships identified | Passed |
-| Domain Admins reviewed | Domain Admins membership identified | Administrator only | Passed |
-| Disabled accounts reviewed | Disabled accounts listed | Guest, krbtgt, and maya.reed reviewed | Passed |
-| Department groups reviewed | Department access groups and members reviewed | Groups and members listed | Passed |
-| Delegated admin groups reviewed | Delegated admin groups identified | Delegated admin members reviewed | Passed |
-| LAPS/security groups reviewed | LAPS and security groups reviewed | Groups and members listed | Passed |
-| AD CS groups reviewed | Certificate-related groups reviewed | Cert Publishers and related groups reviewed | Passed |
-| Stale/unusual accounts reviewed | User accounts reviewed for status and purpose | Account categories identified | Passed |
-| Audit exports created | CSV evidence files created | Eight CSV files exported | Passed |
-| Security summary created | Markdown audit summary created | Report created | Passed |
-| Post-lab checkpoint created | Checkpoint exists after validation | Post-lab checkpoint created | Passed |
+### Step 14 - Created Post-Lab Checkpoint
 
-## Post-Lab Checkpoint
-
-A post-lab checkpoint was created after completing the IAM security review and access control audit.
+A post-lab checkpoint was created after completing and validating the IAM security review.
 
 Checkpoint name:
 
@@ -519,15 +592,196 @@ Checkpoint name:
 MRTG-DC01_Post-Lab-22-IAM-Security-Review-and-Access-Control-Audit-Validated
 ```
 
-![Post-Lab 22 Checkpoint](images/14-post-lab-22-checkpoint.png)
+![Post-Lab 22 Checkpoint](screenshots/lab-22-14-post-lab-22-checkpoint.png)
 
-## Outcome
+---
 
-Lab 22 successfully completed an IAM security review and access control audit in the MRTG enterprise Active Directory environment.
+## Key Audit Findings
 
-The audit confirmed that privileged access, Domain Admins membership, disabled accounts, department groups, delegated admin groups, LAPS/security groups, AD CS groups, and user account status were reviewed and exported for evidence.
+| Review Area | Finding | Assessment |
+|---|---|---|
+| Domain health | `dcdiag` passed and replication showed `0 / 5` failures for both domain controllers | Healthy audit baseline |
+| Domain Admins | Only the built-in `Administrator` account was returned | No unexpected standard users observed |
+| Disabled accounts | `Guest`, `krbtgt`, and `maya.reed` were disabled | Expected built-in and leaver states observed |
+| Department access | `ethan.walker` appeared in `GG_Security_Users`; `maya.reed` did not | Prior mover and leaver changes remained visible |
+| Delegated administration | Help desk access used dedicated groups and admin accounts | Supports separation from Domain Admins |
+| LAPS readers | `Administrator` belonged to `MRTG-GRP-LAPS-Password-Readers` | Privileged access identified for periodic review |
+| AD CS groups | `MRTG-DC01` appeared in `Cert Publishers` | Consistent with the Lab 19 CA deployment |
+| Account inventory | Service, admin, disabled, and standard accounts were distinguishable | Ownership and inactivity require policy-based review |
 
-The final result was an evidence-based IAM audit package that includes CSV exports and a written security review summary.
+No access was remediated during this lab. The findings document the observed state and would require validation against approved access records before production changes.
+
+---
+
+## Validation Summary
+
+| Test | Expected Result | Actual Result | Status |
+|---|---|---|---|
+| Pre-lab checkpoint created | Checkpoint exists before changes | Pre-lab checkpoint created | Passed |
+| Lab folder structure created | Required folders exist | Folder structure validated | Passed |
+| Domain health validated | DCDIAG and replication checks pass | Health checks passed | Passed |
+| Privileged groups reviewed | Elevated groups reviewed | Privileged memberships identified | Passed |
+| Domain Admins reviewed | Membership identified | Administrator only | Passed |
+| Disabled accounts reviewed | Disabled accounts listed | Guest, krbtgt, and maya.reed reviewed | Passed |
+| Department groups reviewed | Groups and members reviewed | Groups and members listed | Passed |
+| Delegated admin groups reviewed | Delegated groups identified | Delegated members reviewed | Passed |
+| LAPS and security groups reviewed | Sensitive groups reviewed | Groups and members listed | Passed |
+| AD CS groups reviewed | Certificate groups reviewed | Related groups and members reviewed | Passed |
+| User accounts reviewed | Accounts reviewed for status and purpose | Account categories identified | Passed |
+| Audit exports created | CSV evidence created | Eight CSV files exported | Passed |
+| Security summary created | Markdown summary created | Report created | Passed |
+| Post-lab checkpoint created | Checkpoint exists after validation | Post-lab checkpoint created | Passed |
+
+---
+
+## Evidence Collected
+
+| Evidence | Screenshot |
+|---|---|
+| Pre-lab checkpoint | `screenshots/lab-22-01-pre-lab-22-checkpoint.png` |
+| Lab folder structure | `screenshots/lab-22-02-folder-structure-created.png` |
+| Domain health and replication validation | `screenshots/lab-22-03-domain-health-pre-audit-validated.png` |
+| Privileged group review | `screenshots/lab-22-04-privileged-groups-reviewed.png` |
+| Domain Admins review | `screenshots/lab-22-05-domain-admins-membership-reviewed.png` |
+| Disabled account review | `screenshots/lab-22-06-disabled-accounts-reviewed.png` |
+| Department group review | `screenshots/lab-22-07-department-groups-reviewed.png` |
+| Delegated admin group review | `screenshots/lab-22-08-delegated-admin-groups-reviewed.png` |
+| LAPS and security group review | `screenshots/lab-22-09-laps-and-security-groups-reviewed.png` |
+| AD CS-related group review | `screenshots/lab-22-10-adcs-related-groups-reviewed.png` |
+| Stale or unusual account review | `screenshots/lab-22-11-stale-or-unusual-accounts-reviewed.png` |
+| CSV audit exports | `screenshots/lab-22-12-audit-exports-created.png` |
+| IAM security review summary | `screenshots/lab-22-13-iam-security-review-summary-created.png` |
+| Post-lab checkpoint | `screenshots/lab-22-14-post-lab-22-checkpoint.png` |
+
+---
+
+## Troubleshooting Notes
+
+No major technical failures occurred during the audit.
+
+The main challenge was distinguishing observed account state from proof that access was approved or appropriate. Active Directory can show group membership and account status, but it cannot independently confirm business justification, ownership, or current authorization.
+
+A production review would compare the exported evidence against:
+
+- Approved access requests
+- HR employment records
+- Account ownership records
+- Group owner certifications
+- Change tickets
+- Privileged access policies
+- Inactivity thresholds
+
+---
+
+## Security Concepts Reinforced
+
+- Identity governance
+- Access certification
+- Privileged access review
+- Least privilege
+- Administrative account separation
+- Disabled account governance
+- Group-based access control
+- Delegated administration
+- LAPS password-reader governance
+- Certificate services access review
+- Service account governance
+- Evidence-based auditing
+- Audit trail preservation
+- Separation of review and remediation
+
+---
+
+## Real-World Relevance
+
+IAM security is not only about creating users and assigning access. It also requires regular review.
+
+In enterprise and government-regulated environments, identity teams must be able to prove who has access, who has elevated rights, which accounts are disabled, which groups control sensitive permissions, and whether access aligns with policy.
+
+This lab connects directly to real-world IAM and security responsibilities:
+
+- Reviewing privileged access
+- Auditing Domain Admins membership
+- Confirming offboarded users remain disabled
+- Reviewing access after lifecycle changes
+- Reviewing delegated administration boundaries
+- Reviewing LAPS password-reader access
+- Reviewing certificate-related access
+- Producing compliance evidence
+- Creating written security review summaries
+- Separating evidence collection from remediation
+
+The key lesson is that IAM work must be reviewable, documented, and evidence-based.
+
+---
+
+## Security Considerations
+
+This lab reviewed the current access state but did not make access changes.
+
+In production, findings should be reviewed against policy, ticket history, business ownership, and approval records before remediation.
+
+Production-ready improvements would include:
+
+- Comparing privileged access with an approved baseline
+- Identifying inactive administrative accounts
+- Reviewing nested group membership
+- Confirming disabled users were removed from all access groups
+- Reviewing service account ownership
+- Validating administrative account separation
+- Reviewing certificate authority and certificate template permissions
+- Reviewing LAPS password-reader eligibility
+- Reviewing delegated OU permissions
+- Tracking findings in a formal risk register
+- Opening remediation tickets for unauthorized access
+- Creating recurring access review schedules
+- Integrating evidence with SIEM or GRC tooling
+
+---
+
+## Lessons Learned
+
+- IAM audits should begin with domain health validation
+- Privileged access should be reviewed separately from standard user access
+- Domain Admins membership should remain small and tightly controlled
+- Disabled accounts still require review and cleanup
+- Department groups provide useful business-aligned review points
+- Delegated admin groups support least privilege when properly controlled
+- LAPS password-reader access must be treated as privileged access
+- AD CS groups matter because certificates affect trust and authentication
+- Account state alone does not prove authorization
+- Audit evidence should be exported instead of only viewed on screen
+- Written summaries make audit results easier to understand and hand off
+
+---
+
+## What I Would Do Differently in Production
+
+In a production or government-regulated environment, I would expand this audit into a formal access certification process.
+
+A stronger production design would include:
+
+- Defined business and technical owners for each group
+- Formal quarterly access reviews
+- Approved privileged-access baselines
+- Nested group membership analysis
+- Service account ownership and credential rotation reviews
+- Inactive account thresholds
+- Privileged account usage monitoring
+- Certificate template permission reviews
+- Delegated OU permission reviews
+- Separation between reviewers and approvers
+- Ticket references for access approvals
+- Risk ratings for findings
+- Remediation deadlines and tracking
+- Centralized evidence retention
+- Automated reporting
+- SIEM alerts for privileged group changes
+- Documented auditor access controls
+
+For this lab, the goal was to demonstrate the core mechanics of an evidence-based IAM security review using Active Directory and PowerShell.
+
+---
 
 ## Skills Demonstrated
 
@@ -538,95 +792,34 @@ The final result was an evidence-based IAM audit package that includes CSV expor
 - Disabled account review
 - Department group membership review
 - Delegated admin group review
-- LAPS/security group review
+- LAPS and security group review
 - AD CS group review
 - User account status review
 - Active Directory PowerShell reporting
 - CSV evidence export
 - IAM audit documentation
 - Security review summary creation
-- Domain health validation before audit
-- Replication health validation before audit
+- Domain health validation
+- Replication health validation
+- Audit finding documentation
+- Production remediation planning
 
-## Real-World Relevance
+---
 
-IAM security is not only about creating users and assigning access. It also requires regular review.
+## Outcome
 
-In enterprise and government-regulated environments, identity teams must be able to prove who has access, who has elevated rights, which accounts are disabled, which groups control sensitive permissions, and whether access aligns with policy.
+Lab 22 successfully completed an IAM security review and access control audit in the MRTG enterprise Active Directory environment.
 
-This lab connects directly to real-world IAM and security operations:
+The audit reviewed privileged access, Domain Admins membership, disabled accounts, department groups, delegated administrative groups, LAPS and security groups, AD CS-related groups, and the broader user account inventory.
 
-- Reviewing privileged access
-- Auditing Domain Admins membership
-- Confirming offboarded users remain disabled
-- Reviewing access groups after lifecycle changes
-- Reviewing delegated admin boundaries
-- Reviewing LAPS password-reader access
-- Reviewing certificate-related access
-- Producing evidence for audit and compliance
-- Creating written security review summaries
+Eight CSV evidence files and a written IAM security review summary were created to preserve the results.
 
-The key lesson is that IAM work must be reviewable, documented, and evidence-based.
+The final result was an evidence-based IAM audit package that demonstrated how identity access can be reviewed, documented, and prepared for compliance or remediation workflows.
 
-## Security Considerations
+---
 
-This lab reviewed the current access state but did not make access changes.
-
-In a production environment, audit findings would typically be reviewed against policy, ticket history, business ownership, and approval records before changes are made.
-
-Production-ready improvements would include:
-
-- Comparing privileged access to an approved access baseline
-- Identifying stale admin accounts
-- Reviewing nested group membership
-- Reviewing inactive users based on logon data
-- Confirming disabled users are removed from access groups
-- Reviewing service account ownership
-- Reviewing admin account separation
-- Reviewing certificate authority permissions
-- Reviewing LAPS password reader eligibility
-- Tracking findings in a formal risk register
-- Opening remediation tickets for unauthorized access
-- Creating recurring access review schedules
-- Integrating evidence with SIEM or GRC tooling
-
-## Lessons Learned
-
-- IAM audits should begin with domain health validation.
-- Privileged access should be reviewed separately from normal user access.
-- Domain Admins membership should remain small and tightly controlled.
-- Disabled accounts must still be reviewed because disabled does not always mean fully cleaned up.
-- Department groups provide useful business-aligned access review points.
-- Delegated admin groups support least privilege when properly controlled.
-- LAPS/password-reader access should be reviewed as privileged access.
-- AD CS-related groups matter because certificates affect trust and authentication.
-- Audit evidence should be exported, not only viewed on screen.
-- A written summary makes the audit easier to understand and hand off.
-
-## What I Would Do Differently
-
-In a production or government-regulated environment, I would expand this audit into a formal access review process.
-
-A stronger production design would include:
-
-- Defined access owners for each group
-- Formal quarterly access reviews
-- Baseline comparison against approved privileged access
-- Review of nested group membership
-- Review of service accounts and ownership
-- Review of inactive accounts
-- Review of privileged admin account usage
-- Review of certificate template permissions
-- Review of delegated OU permissions
-- Separation between reviewer and approver
-- Ticket references for access approvals
-- Risk ratings for findings
-- Remediation tracking
-- Export to a centralized audit repository
-
-For this lab, the goal was to demonstrate the core mechanics of an evidence-based IAM security review using Active Directory and PowerShell.
 ## Next Lab
 
-[**Lab-23 — IAM Runbooks, SOPs, and Operational Handoff**](../Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
+[Lab 23 - IAM Runbooks, SOPs, and Operational Handoff](../Lab-23-IAM-Runbooks-SOPs-Operational-Handoff/)
 
-The next lab will build on this access review by creating operational runbooks, standard operating procedures, and handoff documentation for the MRTG enterprise IAM environment.
+Lab 23 will build on this access review by creating operational runbooks, standard operating procedures, and handoff documentation for the MRTG enterprise IAM environment.
