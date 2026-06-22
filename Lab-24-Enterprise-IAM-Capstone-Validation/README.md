@@ -1,101 +1,74 @@
-# Lab 24 - Enterprise IAM Capstone Validation
+# Lab 24: Enterprise IAM Capstone Validation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Tooling](https://img.shields.io/badge/Tooling-PowerShell-purple)
 ![Focus](https://img.shields.io/badge/Focus-Enterprise%20IAM%20Capstone-orange)
-![Security](https://img.shields.io/badge/Security-End--to--End%20Validation-red)
-![Validation](https://img.shields.io/badge/Validation-Full%20IAM%20Series-brightgreen)
+![Security](https://img.shields.io/badge/Security-End--to--End%20Review-red)
+![Validation](https://img.shields.io/badge/Validation-Foundation%20Complete-brightgreen)
 
 ---
 
-## Overview
+## Objective
 
-In this lab, I performed a final capstone validation of the Monroe Redstone Technology Group Enterprise IAM Lab Series.
+Perform a capstone review of the MRTG Active Directory and IAM foundation created across Labs 01 through 23.
 
-The lab validated the complete identity environment, including domain health, domain controller discovery, replication, FSMO role ownership, directory structure, Group Policy security baselines, delegated administration, Windows LAPS, Active Directory Certificate Services, identity lifecycle automation, recovery artifacts, audit evidence, and operational handoff documentation.
+This lab reviews domain health, replication, FSMO roles, directory structure, Group Policy, delegated administration, Windows LAPS groups, Active Directory Certificate Services, lifecycle automation, recovery artifacts, audit evidence, and operational documentation.
 
-The goal was to prove that the MRTG environment functions as one connected enterprise IAM platform rather than a collection of isolated configurations.
+The goal is to evaluate the environment as a connected identity system while clearly separating live technical validation from artifact-presence review.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-MRTG needed to verify that the identity platform remained healthy, secure, recoverable, auditable, and operationally supportable after completing the full lab series.
+Monroe Redstone Technology Group requires an integrated review of its identity environment after completing the original foundation series.
 
-Individual configurations can appear successful while dependencies between them are unhealthy or undocumented. A complete IAM environment requires working directory services, controlled access, enforced security policies, trusted certificate services, repeatable lifecycle processes, recovery evidence, audit records, and operational documentation.
+Individual configurations may appear successful while dependencies remain unhealthy, untested, or undocumented.
 
-This capstone addressed that problem by validating the major technical and operational components as one integrated identity system.
+A mature IAM environment requires:
+
+- Healthy directory services
+- Working replication
+- Structured identity objects
+- Controlled administrative access
+- Applied security policy
+- Managed local credentials
+- Internal trust services
+- Repeatable lifecycle operations
+- Recovery preparation
+- Access-review evidence
+- Operational documentation
+
+This capstone reviews those areas and documents remaining production-readiness gaps.
 
 ---
 
 ## Lab Summary
 
-I began by creating a pre-lab Hyper-V checkpoint and a dedicated capstone workspace.
+In this lab, I created a dedicated capstone workspace and reviewed the MRTG identity foundation.
 
-I validated domain controller health, discovery, replication, FSMO role ownership, domain and forest configuration, organizational units, groups, users, Group Policy Objects, security baseline inheritance, delegated administration, privileged groups, LAPS-related groups, and the AD CS Enterprise CA.
+Live technical validation covered:
 
-I then validated the identity lifecycle automation artifacts from Lab 20, recovery artifacts from Lab 21, audit evidence from Lab 22, and the operational handoff package from Lab 23.
+- Selected domain-controller health tests
+- Domain-controller discovery
+- Active Directory replication
+- FSMO role ownership
+- Domain and forest configuration
+- OU, user, and group inventory
+- Group Policy links and inheritance
+- Privileged and delegated group membership
+- AD CS service and RPC availability
 
-Finally, I created a written capstone validation summary and a post-lab checkpoint.
+Artifact review covered:
 
----
+- Identity lifecycle scripts, inputs, and result files
+- Recovery inventory, GPO backups, and runbook
+- IAM audit exports and review summary
+- Operational SOPs, references, and handoff documents
 
-## Objectives
+A capstone summary was created to document results and limitations.
 
-- Create pre-lab and post-lab Hyper-V checkpoints
-- Create a dedicated Lab 24 workspace
-- Validate domain controller health and discovery
-- Validate Active Directory replication
-- Validate FSMO role ownership
-- Validate domain and forest configuration
-- Validate OU, group, and user structure
-- Validate Group Policy and security baselines
-- Validate delegated administration and privileged groups
-- Validate Windows LAPS-related access groups
-- Validate AD CS Enterprise CA availability
-- Validate identity lifecycle automation artifacts
-- Validate backup and recovery artifacts
-- Validate IAM audit evidence
-- Validate operational handoff documentation
-- Create a final capstone validation summary
-
----
-
-## Scope
-
-### Included
-
-- Active Directory health validation
-- Domain controller discovery
-- Replication validation
-- FSMO role validation
-- Domain and forest configuration review
-- Identity structure review
-- Group Policy review
-- Security baseline inheritance review
-- Delegated and privileged access review
-- LAPS group review
-- AD CS service and connectivity validation
-- Identity automation artifact validation
-- Recovery artifact validation
-- Audit evidence validation
-- Operational documentation validation
-- Capstone report creation
-
-### Not Included
-
-- Major Active Directory configuration changes
-- Destructive recovery testing
-- Certificate enrollment testing
-- Certificate template permission remediation
-- Production security control certification
-- Penetration testing
-- Formal compliance assessment
-- SIEM integration validation
-- Business owner access certification
-- Disaster recovery exercise
-- Production readiness approval
+This lab completed the original 24-lab IAM foundation. Labs 25 through 30 later extended the environment into service account governance, encryption recovery, local administrator remediation, SIEM monitoring, and operational governance.
 
 ---
 
@@ -105,77 +78,140 @@ Finally, I created a written capstone validation summary and a post-lab checkpoi
 |---|---|
 | Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
-| Primary Domain Controller | `MRTG-DC01` |
+| Original Domain Controller | `MRTG-DC01` |
 | Additional Domain Controller | `MRTG-DC02` |
-| Site | `MRTG-HQ-Site` |
+| Active Directory Site | `MRTG-HQ-Site` |
 | Domain Mode | `Windows2016Domain` |
 | Forest Mode | `Windows2016Forest` |
 | Enterprise CA | `MRTG-DC01\MRTG-DC01-CA` |
-| Lab Root Path | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation` |
-| Output Path | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation\output` |
-| Evidence Path | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation\evidence` |
-| Reports Path | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation\reports` |
-| References Path | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation\references` |
-| Tools | PowerShell, DCDIAG, REPADMIN, NLTEST, NETDOM, CertUtil, Hyper-V Manager |
+| Lab Root | `C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation` |
+| Output Folder | `output` |
+| Evidence Folder | `evidence` |
+| Reports Folder | `reports` |
+| References Folder | `references` |
+| Tools | PowerShell, `dcdiag`, `repadmin`, `nltest`, `netdom`, and `certutil` |
 | Hypervisor | Hyper-V |
 
 ---
 
-## Scenario
+## Prerequisites
 
-MRTG has completed an enterprise-style IAM lab series containing:
+- Completed Labs 01 through 23
+- Operational `mrtg.local` domain
+- Both domain controllers online
+- Active Directory PowerShell module
+- Group Policy PowerShell module
+- Access to previous lifecycle, recovery, audit, and handoff artifacts
+- Administrative read access
+- Defined capstone validation criteria
 
-- Active Directory Domain Services
-- Redundant domain controllers
-- Organizational Units
-- Department-based security groups
-- Standard, administrative, and service accounts
-- Group Policy controls
-- Security baselines
-- Delegated administration
-- Windows LAPS
-- Active Directory Certificate Services
-- Identity lifecycle automation
-- Backup and recovery artifacts
-- IAM audit evidence
-- Operational handoff documentation
+---
 
-The capstone validation model was:
+## Scope
+
+### Included
+
+- Selected domain-controller health tests
+- Domain-controller discovery
+- Replication review
+- FSMO role review
+- Domain and forest configuration review
+- OU, user, and group inventory
+- GPO inventory and inheritance review
+- Privileged and delegated group review
+- LAPS-related group review
+- AD CS service and RPC validation
+- Lifecycle-artifact inventory
+- Recovery-artifact inventory
+- Audit-evidence inventory
+- Handoff-document inventory
+- Capstone-summary creation
+- Temporary Hyper-V checkpoints
+
+### Not Included
+
+- Full production-readiness certification
+- Complete security-control assessment
+- Penetration testing
+- Business-owner access certification
+- Functional LAPS password-retrieval testing
+- Certificate-enrollment testing
+- Certificate-template security review
+- System State restore
+- Forest-recovery exercise
+- Lifecycle-script re-execution
+- SOP walkthrough with another administrator
+- SIEM validation
+- Disaster-recovery exercise
+- Formal compliance assessment
+
+---
+
+## Capstone Model
 
 ```text
-Validate Infrastructure → Validate Access Control → Validate Security Services → Validate Automation → Validate Recovery → Validate Audit → Validate Handoff
+Validate Directory Infrastructure
+              |
+              v
+Review Identity and Access Structure
+              |
+              v
+Review Security Services
+              |
+              v
+Inventory Automation Artifacts
+              |
+              v
+Inventory Recovery Evidence
+              |
+              v
+Inventory Audit Evidence
+              |
+              v
+Inventory Handoff Documentation
+              |
+              v
+Document Results and Gaps
 ```
 
-This lab did not introduce major new configurations. It validated that the environment built across Labs 01 through 23 remained functional, documented, and supportable.
-
 ---
 
-## Capstone Validation Design
+## Validation Levels
 
-| Validation Area | Purpose |
+| Level | Meaning |
 |---|---|
-| Domain Health | Confirm critical domain controller services were healthy |
-| Domain Controller Discovery | Confirm both domain controllers were discoverable |
-| Replication | Confirm Active Directory replication was successful |
-| FSMO Roles | Confirm critical role ownership |
-| Identity Structure | Confirm OUs, groups, and users remained intact |
-| Group Policy | Confirm security baseline GPOs were present and linked |
-| Privileged Access | Confirm administrative access remained reviewable |
-| Windows LAPS | Confirm password-reader and security groups existed |
-| AD CS | Confirm the Enterprise CA was running and reachable |
-| Identity Automation | Confirm Joiner, Mover, and Leaver artifacts existed |
-| Recovery | Confirm backup and recovery evidence existed |
-| IAM Audit | Confirm access review exports and reports existed |
-| Operational Handoff | Confirm SOPs, runbooks, and handoff documents existed |
-| Capstone Report | Summarize final validation results |
+| Live Technical Validation | A service, command, or directory state was actively queried |
+| Configuration Review | A GPO, group, object, or setting was confirmed present |
+| Artifact Review | A file or folder from an earlier lab was confirmed present |
+| Functional Test | An end-to-end action was performed and its result validated |
+| Not Tested | The control was outside this capstone's scope |
+
+Presence of an artifact does not prove that its associated recovery or operational process works.
 
 ---
 
-## Implementation Steps
+## Validation Areas
 
-### Step 1 - Created Pre-Lab Checkpoint
+| Area | Validation Type | Purpose |
+|---|---|---|
+| Domain Health | Live technical validation | Review selected domain-controller services |
+| Replication | Live technical validation | Confirm directory partitions replicate |
+| FSMO Roles | Live technical validation | Document role ownership |
+| Identity Structure | Configuration review | Confirm OUs, users, and groups exist |
+| Group Policy | Configuration review | Confirm GPOs and OU inheritance |
+| Privileged Access | Configuration review | Review selected group membership |
+| Windows LAPS | Configuration review | Confirm related groups exist |
+| AD CS | Live availability validation | Confirm CA service and RPC response |
+| Lifecycle Automation | Artifact review | Confirm scripts, inputs, and reports exist |
+| Recovery | Artifact review | Confirm backup references and runbooks exist |
+| IAM Audit | Artifact review | Confirm exported evidence and summary exist |
+| Operational Handoff | Artifact review | Confirm SOPs and handoff documents exist |
 
-A Hyper-V checkpoint was created before beginning the capstone validation.
+---
+
+## Implementation and Validation
+
+### 1. Created a Pre-Review Lab Checkpoint
 
 Checkpoint name:
 
@@ -183,63 +219,53 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab-24-Enterprise-IAM-Capstone-Validation
 ```
 
-![Pre-Lab 24 Checkpoint](screenshots/lab-24-01-pre-lab-24-checkpoint.png)
+![Pre-Lab 24 checkpoint](screenshots/lab-24-01-pre-lab-24-checkpoint.png)
+
+The checkpoint was a temporary lab tool and was not part of the validation evidence or backup strategy.
 
 ---
 
-### Step 2 - Created Lab 24 Folder Structure
-
-A dedicated Lab 24 workspace was created on `MRTG-DC01`.
-
-Folder structure:
+### 2. Created the Capstone Workspace
 
 ```text
 C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation
-├── evidence
-├── output
-├── references
-└── reports
+|-- evidence
+|-- output
+|-- references
+`-- reports
 ```
 
-![Lab 24 Folder Structure Created](screenshots/lab-24-02-folder-structure-created.png)
+![Lab 24 folder structure](screenshots/lab-24-02-folder-structure-created.png)
 
 ---
 
-## Core Active Directory Validation
+## Core Directory Validation
 
-### Step 3 - Validated Domain Health
-
-Domain health was validated with `dcdiag` and `repadmin`.
+### 3. Reviewed Domain Health
 
 Commands used:
 
-```powershell
+```cmd
 dcdiag /s:MRTG-DC01 /test:Advertising /test:Services /test:Replications /test:KnowsOfRoleHolders
 repadmin /replsummary
 ```
 
-Validation confirmed:
+![Domain health capstone validation](screenshots/lab-24-03-domain-health-capstone-validated.png)
+
+Validated results included:
 
 ```text
-DCDIAG passed:
-- Connectivity
-- Advertising
-- KnowsOfRoleHolders
-- Replications
-- Services
-
-REPADMIN passed:
-- MRTG-DC01 failures: 0 / 5
-- MRTG-DC02 failures: 0 / 5
+MRTG-DC01 replication failures: 0 / 5
+MRTG-DC02 replication failures: 0 / 5
 ```
 
-![Domain Health Capstone Validated](screenshots/lab-24-03-domain-health-capstone-validated.png)
+The selected `dcdiag` tests passed.
+
+This was a focused health review rather than a complete domain, DNS, security, performance, or application assessment.
 
 ---
 
-### Step 4 - Validated Domain Controller Discovery and Replication
-
-Domain controller discovery and detailed replication status were validated.
+### 4. Validated Domain Controller Discovery and Replication
 
 Commands used:
 
@@ -248,28 +274,26 @@ nltest /dsgetdc:mrtg.local
 $env:LOGONSERVER
 
 Get-ADDomainController -Filter * |
-Select-Object HostName,IPv4Address,Site,IsGlobalCatalog |
-Format-Table -AutoSize
+    Select-Object HostName, IPv4Address, Site, IsGlobalCatalog |
+    Format-Table -AutoSize
 
 repadmin /showrepl MRTG-DC01
 ```
 
-Validated domain controllers:
+![Domain controller discovery and replication](screenshots/lab-24-04-domain-controller-discovery-and-replication-validated.png)
 
-| Domain Controller | IP Address | Site | Global Catalog |
-|---|---|---|---|
+| Domain Controller | Address | Site | Global Catalog |
+|---|---:|---|---|
 | `MRTG-DC01.mrtg.local` | `192.168.10.10` | `MRTG-HQ-Site` | True |
 | `MRTG-DC02.mrtg.local` | `192.168.10.11` | `MRTG-HQ-Site` | True |
 
-Replication attempts for the directory partitions completed successfully.
+Inbound replication for `MRTG-DC01` completed successfully for the reviewed directory partitions.
 
-![Domain Controller Discovery and Replication Validated](screenshots/lab-24-04-domain-controller-discovery-and-replication-validated.png)
+Both domain controllers share one physical Hyper-V host, so the environment has service-level redundancy but not host-level resilience.
 
 ---
 
-### Step 5 - Validated FSMO Roles and Domain Structure
-
-FSMO role ownership, domain mode, and forest mode were validated.
+### 5. Validated FSMO Roles and Directory Modes
 
 Commands used:
 
@@ -277,15 +301,15 @@ Commands used:
 netdom query fsmo
 
 Get-ADDomain |
-Select-Object DNSRoot,DomainMode,InfrastructureMaster,PDCEmulator,RIDMaster |
-Format-List
+    Select-Object DNSRoot, DomainMode, InfrastructureMaster, PDCEmulator, RIDMaster |
+    Format-List
 
 Get-ADForest |
-Select-Object Name,ForestMode,SchemaMaster,DomainNamingMaster |
-Format-List
+    Select-Object Name, ForestMode, SchemaMaster, DomainNamingMaster |
+    Format-List
 ```
 
-Validated FSMO roles:
+![FSMO roles and directory structure](screenshots/lab-24-05-fsmo-and-domain-structure-validated.png)
 
 | FSMO Role | Role Holder |
 |---|---|
@@ -295,78 +319,73 @@ Validated FSMO roles:
 | RID Master | `MRTG-DC01.mrtg.local` |
 | Infrastructure Master | `MRTG-DC01.mrtg.local` |
 
-Validated directory configuration:
-
-| Item | Value |
+| Directory Setting | Value |
 |---|---|
 | DNS Root | `mrtg.local` |
 | Domain Mode | `Windows2016Domain` |
 | Forest Mode | `Windows2016Forest` |
 
-![FSMO and Domain Structure Validated](screenshots/lab-24-05-fsmo-and-domain-structure-validated.png)
-
 ---
 
 ## Identity Structure Validation
 
-### Step 6 - Validated OU, Group, and User Structure
-
-Organizational Units, department groups, and user accounts were reviewed.
+### 6. Reviewed OUs, Groups, and Users
 
 Commands used:
 
 ```powershell
 Get-ADOrganizationalUnit -Filter * |
-Select-Object Name,DistinguishedName |
-Sort-Object Name |
-Format-Table -AutoSize
+    Select-Object Name, DistinguishedName |
+    Sort-Object Name |
+    Format-Table -AutoSize
 
 Get-ADGroup -Filter 'Name -like "GG_*_Users"' |
-Select-Object Name,GroupScope,GroupCategory,DistinguishedName |
-Sort-Object Name |
-Format-Table -AutoSize
+    Select-Object Name, GroupScope, GroupCategory, DistinguishedName |
+    Sort-Object Name |
+    Format-Table -AutoSize
 
-Get-ADUser -Filter * -Properties Enabled,Department,Title |
-Select-Object Name,SamAccountName,Enabled,Department,Title |
-Sort-Object Name |
-Format-Table -AutoSize
+Get-ADUser -Filter * -Properties Enabled, Department, Title |
+    Select-Object Name, SamAccountName, Enabled, Department, Title |
+    Sort-Object Name |
+    Format-Table -AutoSize
 ```
 
-Validation confirmed:
+![OU, group, and user structure](screenshots/lab-24-06-ou-group-and-user-structure-validated.png)
+
+The review confirmed:
 
 - Department OUs existed
-- Computer OUs existed
-- The Groups OU existed
-- The Service Accounts OU existed
-- Department-based `GG_*_Users` groups existed
-- Standard, administrative, and service accounts were visible
-- `maya.reed` remained disabled after the Lab 20 leaver workflow
-- `ethan.walker` remained active in the Security department after the mover workflow
+- Workstation and server OUs existed
+- Groups and service-account OUs existed
+- Department `GG_*_Users` groups existed
+- Standard, administrative, and service identities were visible
+- `maya.reed` remained disabled
+- `ethan.walker` remained assigned to Security
 
-![OU Group and User Structure Validated](screenshots/lab-24-06-ou-group-and-user-structure-validated.png)
+Object visibility confirms directory state, not business approval or complete effective access.
 
 ---
 
 ## Policy and Access Control Validation
 
-### Step 7 - Validated GPOs and Security Baselines
-
-Group Policy Objects and baseline inheritance were validated.
+### 7. Reviewed GPOs and OU Inheritance
 
 Commands used:
 
 ```powershell
 Get-GPO -All |
-Select-Object DisplayName,GpoStatus,CreationTime,ModificationTime |
-Sort-Object DisplayName |
-Format-Table -AutoSize
+    Select-Object DisplayName, GpoStatus, CreationTime, ModificationTime |
+    Sort-Object DisplayName |
+    Format-Table -AutoSize
 
 Get-GPInheritance -Target "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local"
 
 Get-GPInheritance -Target "OU=Servers,OU=Computers,OU=_MRTG,DC=mrtg,DC=local"
 ```
 
-Validated GPOs included:
+![GPO and security baseline review](screenshots/lab-24-07-gpo-and-security-baselines-validated.png)
+
+Reviewed GPOs included:
 
 ```text
 Default Domain Controllers Policy
@@ -381,41 +400,39 @@ MRTG-User-Session-Lock
 MRTG-Workstation-Baseline
 ```
 
-Validated inheritance:
-
-| OU | Linked or Inherited GPOs |
+| OU | Reviewed GPO Scope |
 |---|---|
-| Workstations | `MRTG-GPO-Workstation-Security-Baseline`, `MRTG-GPO-Windows-LAPS-Workstation-Baseline`, `Default Domain Policy` |
-| Servers | `MRTG-GPO-Server-Security-Baseline`, `Default Domain Policy` |
+| Workstations | Workstation baseline, Windows LAPS baseline, and Default Domain Policy |
+| Servers | Server baseline and Default Domain Policy |
 
-![GPO and Security Baselines Validated](screenshots/lab-24-07-gpo-and-security-baselines-validated.png)
+This confirmed GPO presence and inheritance. It did not prove that every endpoint applied every setting or that each setting produced its intended result.
 
 ---
 
-### Step 8 - Validated Delegation and Privileged Groups
-
-Delegated administration and privileged group membership were reviewed.
+### 8. Reviewed Delegated and Privileged Groups
 
 Command used:
 
 ```powershell
-Get-ADGroup -Filter 'Name -like "*Admin*" -or Name -like "*Delegat*" -or Name -like "*Tier*"' | ForEach-Object {
-    $Group = $_.Name
+Get-ADGroup -Filter 'Name -like "*Admin*" -or Name -like "*Delegat*" -or Name -like "*Tier*"' |
+    ForEach-Object {
+        $GroupName = $_.Name
 
-    Get-ADGroupMember $Group -ErrorAction SilentlyContinue | ForEach-Object {
-        [PSCustomObject]@{
-            GroupName      = $Group
-            MemberName     = $_.Name
-            SamAccountName = $_.SamAccountName
-            ObjectClass    = $_.ObjectClass
-        }
-    }
-} | Format-Table -AutoSize
+        Get-ADGroupMember $GroupName -ErrorAction SilentlyContinue |
+            ForEach-Object {
+                [PSCustomObject]@{
+                    GroupName      = $GroupName
+                    MemberName     = $_.Name
+                    SamAccountName = $_.SamAccountName
+                    ObjectClass    = $_.ObjectClass
+                }
+            }
+    } | Format-Table -AutoSize
 ```
 
-Validated membership:
+![Delegated and privileged groups](screenshots/lab-24-08-delegation-and-privileged-groups-validated.png)
 
-| Group | Member |
+| Group | Observed Member |
 |---|---|
 | Administrators | Domain Admins |
 | Administrators | Enterprise Admins |
@@ -427,26 +444,26 @@ Validated membership:
 | `GG_PSO_Privileged_Admins` | `john.smith.admin` |
 | `MRTG-GRP-Helpdesk-Password-Reset-Delegated` | `adm.hd-reset01` |
 
-The review confirmed that delegated help desk access remained separated from Domain Admins membership.
+Delegated Help Desk accounts remained separate from Domain Admins.
 
-![Delegation and Privileged Groups Validated](screenshots/lab-24-08-delegation-and-privileged-groups-validated.png)
+Standing Enterprise Admins and Schema Admins membership should be removed or tightly controlled outside approved forest-level work in a production environment.
 
 ---
 
-### Step 9 - Listed LAPS and Endpoint Security Groups
-
-LAPS-related and endpoint security groups were identified.
+### 9. Listed LAPS and Security-Related Groups
 
 Command used:
 
 ```powershell
 Get-ADGroup -Filter 'Name -like "*LAPS*" -or Name -like "*Security*" -or Name -like "*Privileged*"' |
-Select-Object Name,GroupScope,GroupCategory,DistinguishedName |
-Sort-Object Name |
-Format-Table -AutoSize
+    Select-Object Name, GroupScope, GroupCategory, DistinguishedName |
+    Sort-Object Name |
+    Format-Table -AutoSize
 ```
 
-Validated groups:
+![LAPS and endpoint security groups](screenshots/lab-24-09-laps-and-endpoint-security-groups-listed.png)
+
+Reviewed groups included:
 
 ```text
 GG_PSO_Privileged_Admins
@@ -454,48 +471,48 @@ GG_Security_Users
 MRTG-GRP-LAPS-Password-Readers
 ```
 
-![LAPS and Endpoint Security Groups Listed](screenshots/lab-24-09-laps-and-endpoint-security-groups-listed.png)
+A name-based query is useful for inventory but does not prove effective permissions or discover every security-sensitive group.
 
 ---
 
-### Step 10 - Validated LAPS and Endpoint Security Group Membership
-
-Membership of the LAPS and security-related groups was reviewed.
+### 10. Reviewed LAPS and Security Group Membership
 
 Command used:
 
 ```powershell
-Get-ADGroup -Filter 'Name -like "*LAPS*" -or Name -like "*Security*" -or Name -like "*Privileged*"' | ForEach-Object {
-    $Group = $_.Name
+Get-ADGroup -Filter 'Name -like "*LAPS*" -or Name -like "*Security*" -or Name -like "*Privileged*"' |
+    ForEach-Object {
+        $GroupName = $_.Name
 
-    Get-ADGroupMember $Group -ErrorAction SilentlyContinue | ForEach-Object {
-        [PSCustomObject]@{
-            GroupName      = $Group
-            MemberName     = $_.Name
-            SamAccountName = $_.SamAccountName
-            ObjectClass    = $_.ObjectClass
-        }
-    }
-} | Format-Table -AutoSize
+        Get-ADGroupMember $GroupName -ErrorAction SilentlyContinue |
+            ForEach-Object {
+                [PSCustomObject]@{
+                    GroupName      = $GroupName
+                    MemberName     = $_.Name
+                    SamAccountName = $_.SamAccountName
+                    ObjectClass    = $_.ObjectClass
+                }
+            }
+    } | Format-Table -AutoSize
 ```
 
-Validated membership:
+![LAPS and security group membership](screenshots/lab-24-10-laps-and-endpoint-security-group-membership-validated.png)
 
-| Group | Members |
+| Group | Observed Members |
 |---|---|
-| `GG_Security_Users` | Alex Rivera, Ethan Walker |
+| `GG_Security_Users` | Alex Rivera and Ethan Walker |
 | `GG_PSO_Privileged_Admins` | `john.smith.admin` |
 | `MRTG-GRP-LAPS-Password-Readers` | Administrator |
 
-![LAPS and Endpoint Security Group Membership Validated](screenshots/lab-24-10-laps-and-endpoint-security-group-membership-validated.png)
+This confirmed group membership only.
+
+It did not functionally test LAPS retrieval with an approved least-privilege reader or validate the extended-rights ACL on the Workstations OU.
 
 ---
 
-## Enterprise Trust Services Validation
+## Enterprise Trust Services
 
-### Step 11 - Validated AD CS Enterprise CA
-
-Active Directory Certificate Services was validated.
+### 11. Validated AD CS Availability
 
 Commands used:
 
@@ -507,29 +524,27 @@ certutil -config "MRTG-DC01\MRTG-DC01-CA" -ping
 certutil -catemplates
 ```
 
-Validation confirmed:
+![AD CS Enterprise CA availability](screenshots/lab-24-11-adcs-enterprise-ca-validated.png)
+
+Validated results included:
 
 ```text
 CertSvc status: Running
 CA configuration: MRTG-DC01\MRTG-DC01-CA
 Certificate Services RPC interface: Alive
 certutil -ping: Completed successfully
-certutil -catemplates: Completed successfully
+certutil -catemplates: Completed
 ```
 
-Some templates displayed `Access is denied` for auto-enrollment. This did not indicate a CA service outage. It showed that the current security context did not have auto-enrollment permission for those templates.
+Some templates returned `Access is denied` for the current security context.
 
-The validation confirmed service availability and CA connectivity, but it did not validate successful certificate enrollment.
-
-![AD CS Enterprise CA Validated](screenshots/lab-24-11-adcs-enterprise-ca-validated.png)
+This confirmed CA service and RPC availability. It did not validate certificate enrollment, autoenrollment, revocation, template security, or issuance policy.
 
 ---
 
-## Identity Lifecycle Automation Validation
+## Lifecycle Automation Artifacts
 
-### Step 12 - Validated Identity Lifecycle Automation Artifacts
-
-Identity lifecycle automation artifacts from Lab 20 were validated.
+### 12. Reviewed Lab 20 Automation Files
 
 Commands used:
 
@@ -540,20 +555,14 @@ Get-ChildItem "$Lab20\scripts"
 Get-ChildItem "$Lab20\data"
 Get-ChildItem "$Lab20\output"
 
-Import-Csv "$Lab20\output\joiner-results.csv" |
-Select-Object SamAccountName,UserStatus,GroupStatus,Result |
-Format-Table -AutoSize
-
-Import-Csv "$Lab20\output\mover-results.csv" |
-Select-Object SamAccountName,NewDepartment,NewGroupName,Result |
-Format-Table -AutoSize
-
-Import-Csv "$Lab20\output\leaver-results.csv" |
-Select-Object SamAccountName,AccountStatus,GroupStatus,Result |
-Format-Table -AutoSize
+Import-Csv "$Lab20\output\joiner-results.csv"
+Import-Csv "$Lab20\output\mover-results.csv"
+Import-Csv "$Lab20\output\leaver-results.csv"
 ```
 
-Validated scripts:
+![Identity lifecycle automation artifacts](screenshots/lab-24-12-identity-lifecycle-automation-artifacts-validated.png)
+
+Reviewed scripts:
 
 ```text
 New-MRTGUsers.ps1
@@ -561,7 +570,7 @@ Move-MRTGUser.ps1
 Disable-MRTGUser.ps1
 ```
 
-Validated data files:
+Reviewed input files:
 
 ```text
 new-users.csv
@@ -569,7 +578,7 @@ mover-users.csv
 leaver-users.csv
 ```
 
-Validated output files:
+Reviewed output files:
 
 ```text
 joiner-results.csv
@@ -577,23 +586,15 @@ mover-results.csv
 leaver-results.csv
 ```
 
-Workflow results:
+The files reported successful results from Lab 20.
 
-| Workflow | Result |
-|---|---|
-| Joiner | Success |
-| Mover | Success |
-| Leaver | Success |
-
-![Identity Lifecycle Automation Artifacts Validated](screenshots/lab-24-12-identity-lifecycle-automation-artifacts-validated.png)
+This capstone did not rerun the scripts, validate code integrity, or prove that the workflows remained safe and repeatable.
 
 ---
 
-## Recovery, Audit, and Handoff Validation
+## Recovery and Audit Artifacts
 
-### Step 13 - Validated Backup, Recovery, and Audit Artifacts
-
-Recovery artifacts from Lab 21 and audit artifacts from Lab 22 were validated.
+### 13. Reviewed Labs 21 and 22 Artifacts
 
 Commands used:
 
@@ -602,15 +603,16 @@ $Lab21 = "C:\MRTG-Labs\Lab-21-Directory-Recovery-Backup-Operational-Resilience"
 $Lab22 = "C:\MRTG-Labs\Lab-22-IAM-Security-Review-and-Access-Control-Audit"
 
 Get-ChildItem "$Lab21\output"
-Get-ChildItem "$Lab21\gpo-backup" |
-Select-Object -First 5 Name,LastWriteTime
+Get-ChildItem "$Lab21\gpo-backup"
 Get-ChildItem "$Lab21\runbook"
 
 Get-ChildItem "$Lab22\output"
 Get-ChildItem "$Lab22\reports"
 ```
 
-Validated Lab 21 artifacts:
+![Recovery and audit artifacts](screenshots/lab-24-13-backup-recovery-and-audit-artifacts-validated.png)
+
+Reviewed Lab 21 artifacts included:
 
 ```text
 ad-group-inventory.csv
@@ -622,7 +624,7 @@ GPO backup folders
 MRTG-Directory-Recovery-Runbook.md
 ```
 
-Validated Lab 22 artifacts:
+Reviewed Lab 22 artifacts included:
 
 ```text
 adcs-groups-review.csv
@@ -636,13 +638,13 @@ user-account-review.csv
 MRTG-IAM-Security-Review-Summary.md
 ```
 
-![Backup Recovery and Audit Artifacts Validated](screenshots/lab-24-13-backup-recovery-and-audit-artifacts-validated.png)
+File presence did not prove restore success, evidence integrity, owner certification, or remediation completion.
 
 ---
 
-### Step 14 - Validated Operational Handoff Package
+## Operational Handoff Artifacts
 
-The operational handoff package from Lab 23 was validated.
+### 14. Reviewed the Lab 23 Handoff Package
 
 Commands used:
 
@@ -655,7 +657,9 @@ Get-ChildItem "$Lab23\handoff"
 Get-ChildItem "$Lab23\references"
 ```
 
-Validated SOPs:
+![Operational handoff package](screenshots/lab-24-14-operational-handoff-package-validated.png)
+
+Reviewed SOPs:
 
 ```text
 MRTG-Access-Request-SOP.md
@@ -664,13 +668,13 @@ MRTG-Password-Reset-SOP.md
 MRTG-Privileged-Access-Review-SOP.md
 ```
 
-Validated runbook:
+Reviewed recovery reference:
 
 ```text
 MRTG-Directory-Recovery-Reference.md
 ```
 
-Validated handoff documents:
+Reviewed handoff documents:
 
 ```text
 MRTG-Admin-Responsibility-Matrix.md
@@ -678,55 +682,43 @@ MRTG-IAM-Documentation-Index.md
 MRTG-Operational-Handoff-Summary.md
 ```
 
-Validated references:
-
-```text
-Lab-20-Identity-Lifecycle-Output
-Lab-21-Recovery-Runbook
-Lab-22-Audit-Exports
-Lab-22-Security-Review-Reports
-```
-
-![Operational Handoff Package Validated](screenshots/lab-24-14-operational-handoff-package-validated.png)
+The documents existed, but formal approval, version control, walkthrough testing, and procedure execution were not part of the capstone.
 
 ---
 
 ## Capstone Report
 
-### Step 15 - Created Capstone Validation Summary
+### 15. Created the Capstone Summary
 
-A final capstone validation summary was created.
-
-Report file:
+Report:
 
 ```text
 C:\MRTG-Labs\Lab-24-Enterprise-IAM-Capstone-Validation\reports\MRTG-Enterprise-IAM-Capstone-Validation-Summary.md
 ```
 
+![Capstone validation summary](screenshots/lab-24-15-capstone-validation-summary-created.png)
+
 The report documented:
 
-- Domain controller health
-- Domain controller discovery
-- Active Directory replication
-- FSMO role ownership
-- OU, group, and user structure
-- Group Policy and security baselines
-- Delegated administration and privileged groups
-- Windows LAPS and endpoint security groups
-- Active Directory Certificate Services
-- Identity lifecycle automation
-- Backup and recovery artifacts
-- IAM audit evidence
-- Operational handoff documentation
-- Final capstone outcome
-
-![Capstone Validation Summary Created](screenshots/lab-24-15-capstone-validation-summary-created.png)
+- Directory health
+- Domain-controller discovery
+- Replication
+- FSMO ownership
+- Identity structure
+- Group Policy
+- Privileged and delegated groups
+- Windows LAPS groups
+- AD CS availability
+- Lifecycle artifacts
+- Recovery artifacts
+- Audit evidence
+- Handoff documents
+- Validation limitations
+- Final foundation outcome
 
 ---
 
-### Step 16 - Created Post-Lab Checkpoint
-
-A post-lab checkpoint was created after completing the capstone validation.
+### 16. Created the Final Lab Checkpoint
 
 Checkpoint name:
 
@@ -734,52 +726,123 @@ Checkpoint name:
 MRTG-DC01_Post-Lab-24-Enterprise-IAM-Capstone-Validation
 ```
 
-![Post-Lab 24 Checkpoint](screenshots/lab-24-16-post-lab-24-checkpoint.png)
+![Post-Lab 24 checkpoint](screenshots/lab-24-16-post-lab-24-checkpoint.png)
+
+The checkpoint was a temporary lab tool and was not treated as backup or capstone evidence.
 
 ---
 
-## Key Validation Results
+## Key Results
 
-| Validation Area | Result |
+| Area | Result | Validation Level |
+|---|---|---|
+| Domain health | Selected tests passed | Live technical validation |
+| Replication | Zero failures reported in summary | Live technical validation |
+| Domain controllers | Both discovered as Global Catalog servers | Live technical validation |
+| FSMO roles | All five documented on `MRTG-DC01` | Live technical validation |
+| Identity structure | OUs, groups, users, and service accounts visible | Configuration review |
+| Group Policy | Ten GPOs and inheritance reviewed | Configuration review |
+| Delegated access | Group membership documented | Configuration review |
+| Windows LAPS | Related groups and membership reviewed | Configuration review |
+| AD CS | CA service and RPC interface available | Live availability validation |
+| Identity automation | Scripts, inputs, and outputs present | Artifact review |
+| Recovery | GPO backups, inventory, and runbook present | Artifact review |
+| IAM audit | Eight exports and summary present | Artifact review |
+| Handoff | SOPs and handoff documents present | Artifact review |
+
+---
+
+## Validation Results
+
+| Validation Item | Result |
 |---|---|
-| Domain health | Critical `dcdiag` tests passed |
-| Replication | Both domain controllers reported `0 / 5` failures |
-| Domain controller discovery | DC01 and DC02 were discovered as Global Catalog servers |
-| FSMO roles | All five roles were documented on DC01 |
-| Identity structure | OUs, users, groups, and service accounts were visible |
-| Group Policy | Ten GPOs and baseline inheritance were reviewed |
-| Privileged access | Administrative and delegated memberships were documented |
-| Windows LAPS | Password-reader and related security groups were reviewed |
-| AD CS | CA service was running and its RPC interface was reachable |
-| Identity automation | Joiner, Mover, and Leaver artifacts showed successful results |
-| Recovery readiness | Inventory, GPO backups, and the recovery runbook existed |
-| IAM audit | Eight CSV exports and the audit summary existed |
-| Operational handoff | SOPs, runbook, ownership matrix, index, and summary existed |
+| Temporary pre-review checkpoint created | Passed |
+| Capstone workspace created | Passed |
+| Selected domain-health tests passed | Passed |
+| Replication summary reported zero failures | Passed |
+| Both domain controllers discovered | Passed |
+| FSMO ownership documented | Passed |
+| Domain and forest modes documented | Passed |
+| Identity structure reviewed | Passed |
+| GPO inventory reviewed | Passed |
+| OU inheritance reviewed | Passed |
+| Privileged and delegated groups reviewed | Passed |
+| LAPS-related groups reviewed | Passed |
+| CA service and RPC availability confirmed | Passed |
+| Lifecycle artifacts present | Passed |
+| Recovery artifacts present | Passed |
+| IAM audit artifacts present | Passed |
+| Handoff artifacts present | Passed |
+| Capstone report created | Passed |
+| Functional LAPS retrieval | Not tested |
+| Certificate enrollment | Not tested |
+| System State restore | Not tested |
+| Lifecycle scripts rerun | Not tested |
+| Handoff procedure walkthrough | Not tested |
+| Formal production certification | Not performed |
+| Temporary final checkpoint created | Passed |
 
 ---
 
-## Validation Summary
+## Security and IAM Relevance
 
-| Test | Expected Result | Actual Result | Status |
-|---|---|---|---|
-| Pre-lab checkpoint created | Checkpoint exists before validation | Checkpoint created | Passed |
-| Lab folder structure created | Required folders exist | Four folders validated | Passed |
-| Domain health validated | Critical DCDIAG tests pass | Tests passed | Passed |
-| Replication validated | Failures show `0 / 5` | DC01 and DC02 showed zero failures | Passed |
-| DC discovery validated | Both domain controllers discoverable | DC01 and DC02 discovered | Passed |
-| FSMO roles validated | Role ownership documented | All roles held by DC01 | Passed |
-| Domain and forest validated | Modes and DNS root visible | Configuration validated | Passed |
-| Identity structure validated | OUs, groups, and users visible | Structure validated | Passed |
-| GPO baselines validated | GPOs and inheritance visible | Baselines reviewed | Passed |
-| Privileged groups validated | Membership visible | Membership documented | Passed |
-| LAPS groups validated | Groups and members visible | Membership documented | Passed |
-| AD CS availability validated | CA running and reachable | Service and RPC available | Passed |
-| Lifecycle artifacts validated | Scripts, data, and outputs exist | Artifacts validated | Passed |
-| Recovery artifacts validated | Recovery evidence exists | Artifacts validated | Passed |
-| IAM audit evidence validated | Exports and report exist | Evidence validated | Passed |
-| Operational handoff validated | Required documents exist | Package validated | Passed |
-| Capstone summary created | Final report exists | Report created | Passed |
-| Post-lab checkpoint created | Checkpoint exists after validation | Checkpoint created | Passed |
+This capstone demonstrates that IAM consists of connected technical and operational controls.
+
+The review covered:
+
+- Directory services
+- Replication
+- Identity organization
+- Policy scope
+- Privileged access
+- Delegated administration
+- Local credential governance
+- Internal certificate trust
+- Lifecycle automation
+- Recovery preparation
+- Access-review evidence
+- Operational documentation
+
+The capstone also demonstrates an important governance principle: a control should not be described as fully validated when only its configuration or artifact was reviewed.
+
+---
+
+## Risks and Gaps
+
+The capstone identified or retained the following gaps:
+
+- Both domain controllers share one physical host
+- Standing Enterprise Admins and Schema Admins membership remained
+- LAPS readers contained the broadly privileged Administrator account
+- Least-privilege LAPS retrieval was not tested
+- Certificate enrollment and revocation were not retested
+- GPO inheritance did not prove endpoint enforcement
+- Lifecycle scripts were not rerun
+- System State restore was not tested
+- Backup storage remained in the same host failure domain
+- Audit CSV files were mutable local evidence
+- Handoff documents were not formally approved or walkthrough-tested
+- SIEM monitoring was outside the original foundation capstone
+
+These limitations do not invalidate the lab. They define the boundary between completed learning validation and production readiness.
+
+---
+
+## Control Mapping
+
+| Control Area | Capstone Contribution |
+|---|---|
+| Directory Health | Reviews domain-controller services and replication |
+| Identity Governance | Reviews users, groups, OUs, and lifecycle states |
+| Policy Governance | Reviews GPO inventory and inheritance |
+| Privileged Access | Reviews administrative and delegated groups |
+| Credential Governance | Reviews Windows LAPS-related groups |
+| PKI Availability | Confirms CA service and RPC response |
+| Lifecycle Operations | Reviews automation files and results |
+| Recovery Preparation | Reviews backups, inventory, and runbook artifacts |
+| Audit Readiness | Reviews access-review exports and summary |
+| Operational Handoff | Reviews SOPs and ownership documents |
+| Gap Management | Distinguishes tested controls from untested controls |
 
 ---
 
@@ -787,218 +850,120 @@ MRTG-DC01_Post-Lab-24-Enterprise-IAM-Capstone-Validation
 
 | Evidence | Screenshot |
 |---|---|
-| Pre-lab checkpoint | `screenshots/lab-24-01-pre-lab-24-checkpoint.png` |
-| Lab folder structure | `screenshots/lab-24-02-folder-structure-created.png` |
-| Domain health validation | `screenshots/lab-24-03-domain-health-capstone-validated.png` |
-| Domain controller discovery and replication | `screenshots/lab-24-04-domain-controller-discovery-and-replication-validated.png` |
-| FSMO roles and domain structure | `screenshots/lab-24-05-fsmo-and-domain-structure-validated.png` |
-| OU, group, and user structure | `screenshots/lab-24-06-ou-group-and-user-structure-validated.png` |
-| GPO and security baselines | `screenshots/lab-24-07-gpo-and-security-baselines-validated.png` |
-| Delegation and privileged groups | `screenshots/lab-24-08-delegation-and-privileged-groups-validated.png` |
-| LAPS and endpoint security groups | `screenshots/lab-24-09-laps-and-endpoint-security-groups-listed.png` |
-| LAPS and security group membership | `screenshots/lab-24-10-laps-and-endpoint-security-group-membership-validated.png` |
-| AD CS Enterprise CA | `screenshots/lab-24-11-adcs-enterprise-ca-validated.png` |
-| Identity lifecycle automation | `screenshots/lab-24-12-identity-lifecycle-automation-artifacts-validated.png` |
-| Backup, recovery, and audit artifacts | `screenshots/lab-24-13-backup-recovery-and-audit-artifacts-validated.png` |
-| Operational handoff package | `screenshots/lab-24-14-operational-handoff-package-validated.png` |
-| Capstone validation summary | `screenshots/lab-24-15-capstone-validation-summary-created.png` |
-| Post-lab checkpoint | `screenshots/lab-24-16-post-lab-24-checkpoint.png` |
+| Pre-review checkpoint | `screenshots/lab-24-01-pre-lab-24-checkpoint.png` |
+| Capstone workspace | `screenshots/lab-24-02-folder-structure-created.png` |
+| Domain-health validation | `screenshots/lab-24-03-domain-health-capstone-validated.png` |
+| Domain-controller discovery and replication | `screenshots/lab-24-04-domain-controller-discovery-and-replication-validated.png` |
+| FSMO roles and directory modes | `screenshots/lab-24-05-fsmo-and-domain-structure-validated.png` |
+| OU, group, and user inventory | `screenshots/lab-24-06-ou-group-and-user-structure-validated.png` |
+| GPO inventory and inheritance | `screenshots/lab-24-07-gpo-and-security-baselines-validated.png` |
+| Delegated and privileged groups | `screenshots/lab-24-08-delegation-and-privileged-groups-validated.png` |
+| LAPS-related groups | `screenshots/lab-24-09-laps-and-endpoint-security-groups-listed.png` |
+| LAPS-related group membership | `screenshots/lab-24-10-laps-and-endpoint-security-group-membership-validated.png` |
+| AD CS availability | `screenshots/lab-24-11-adcs-enterprise-ca-validated.png` |
+| Lifecycle artifacts | `screenshots/lab-24-12-identity-lifecycle-automation-artifacts-validated.png` |
+| Recovery and audit artifacts | `screenshots/lab-24-13-backup-recovery-and-audit-artifacts-validated.png` |
+| Operational handoff artifacts | `screenshots/lab-24-14-operational-handoff-package-validated.png` |
+| Capstone report | `screenshots/lab-24-15-capstone-validation-summary-created.png` |
+| Final lab checkpoint | `screenshots/lab-24-16-post-lab-24-checkpoint.png` |
 
 ---
 
-## Troubleshooting Notes
+## What I Would Improve in Production
 
-No critical domain health or replication failures were observed during the final validation.
+In a production environment, I would:
 
-The AD CS template listing displayed `Access is denied` for auto-enrollment on several templates. The CA service remained running, the RPC interface responded successfully, and `certutil -catemplates` completed.
-
-This result validated CA availability but did not prove that the current user could enroll for every listed certificate template.
-
-A production validation would separately test:
-
-- Certificate enrollment
-- Template permissions
-- Auto-enrollment policy
-- Certificate issuance
-- Certificate revocation
-- CA audit logging
-- Renewal and expiration monitoring
-
----
-
-## Security Concepts Reinforced
-
-- Defense in depth
-- Identity governance
-- Least privilege
-- Delegated administration
-- Privileged access review
-- Group-based access control
-- Security baseline enforcement
-- Windows LAPS governance
-- Enterprise certificate trust
-- Identity lifecycle automation
-- Recovery readiness
-- Audit readiness
-- Evidence retention
-- Operational handoff
-- Continuous control validation
-
----
-
-## Real-World Relevance
-
-Enterprise IAM work is not complete because individual components are configured.
-
-Identity systems must operate together. Domain controllers must be healthy, replication must function, groups and OUs must remain structured, policies must apply, privileged access must be controlled, certificate services must support trust, automation must retain evidence, backups must be recoverable, audits must be documented, and operational procedures must be available.
-
-This lab connects directly to IAM, GovTech, and regulated IT responsibilities:
-
-- Environment-wide validation
-- Evidence-based administration
-- Operational readiness
-- Security control review
-- Recovery readiness
-- Audit readiness
-- Knowledge transfer
-- Repeatable PowerShell validation
-- Administrative accountability
-
-The key lesson is that mature IAM is a connected operating model, not one product or task.
-
----
-
-## Security Considerations
-
-This lab validated the current state of the MRTG environment but did not certify it as production-ready.
-
-Production improvements should include:
-
-- Formal security control mapping
-- Approved architecture baselines
-- Automated domain health checks
-- Scheduled privileged access reviews
-- SIEM monitoring for identity events
-- Centralized GPO backup retention
-- Certificate template permission reviews
-- Certificate enrollment testing
-- Isolated restore testing
-- Automated lifecycle reporting
-- Service account ownership reviews
-- Break-glass account validation
-- Disaster recovery exercises
-- Controlled documentation storage
-- Change ticket references
-- Evidence retention policies
-- Formal system owner approval
+- Place domain controllers on separate hosts and failure domains
+- Remove unnecessary standing forest-level privilege
+- Use named least-privilege LAPS readers
+- Validate LAPS extended rights and retrieval
+- Test GPO settings on representative endpoints
+- Review certificate-template security
+- Test certificate enrollment, renewal, and revocation
+- Sign and version-control lifecycle scripts
+- Rerun lifecycle workflows in a controlled test environment
+- Store backups off-host
+- Maintain immutable backup copies
+- Test System State and forest recovery
+- Protect audit evidence with integrity and retention controls
+- Integrate identity events with a SIEM
+- Conduct business-owner access certification
+- Formally approve and test SOPs
+- Track findings through remediation
+- Map controls to organizational requirements
+- Obtain formal system-owner approval
 
 ---
 
 ## Lessons Learned
 
-- Domain health is foundational to every IAM process
-- Replication must be healthy before directory data can be trusted
-- FSMO role ownership should remain documented
-- Identity structures must remain visible and reviewable
-- GPO links and inheritance require validation
-- Delegated groups support least privilege when regularly reviewed
-- LAPS password-reader groups must be treated as privileged access
-- AD CS is part of enterprise identity trust
-- CA availability does not automatically prove enrollment authorization
-- Automation is stronger when scripts, inputs, and outputs are retained
-- Recovery and audit artifacts are part of operational maturity
-- Handoff documentation makes the environment supportable
-- Capstone validation proves that individual labs operate as a connected system
+This lab reinforced the difference among configuration review, live service validation, functional testing, and artifact inventory.
 
----
+A running service does not prove that every workflow works. A GPO link does not prove endpoint behavior. A backup file does not prove recoverability. A report file does not prove business approval.
 
-## What I Would Do Differently in Production
+The primary takeaway is that honest validation boundaries make documentation stronger.
 
-In a production or government-regulated environment, I would expand this capstone into a formal IAM operational readiness review.
-
-A stronger production design would include:
-
-- Security control mapping
-- Defined evidence retention standards
-- Automated validation reports
-- Scheduled access certifications
-- Change management references
-- Formal system owner approval
-- Service account ownership and credential rotation
-- Certificate template permission reviews
-- GPO backup schedules
-- Recovery testing schedules
-- Privileged access monitoring
-- Identity event forwarding to a SIEM
-- Formal SOP approval workflows
-- Quarterly operational readiness reviews
-- Annual disaster recovery exercises
-- Documented remediation tracking
-
-For this lab, the goal was to validate the MRTG Enterprise IAM Lab Series as a connected, documented, and operationally supportable identity environment.
-
----
-
-## Skills Demonstrated
-
-- Enterprise IAM capstone validation
-- Active Directory health validation
-- Domain controller discovery
-- Replication validation
-- FSMO role validation
-- Domain and forest review
-- OU, group, and user review
-- Group Policy validation
-- Security baseline validation
-- Delegated administration review
-- Privileged access review
-- Windows LAPS group validation
-- AD CS Enterprise CA validation
-- Identity lifecycle automation validation
-- Backup and recovery evidence validation
-- IAM audit evidence validation
-- Operational handoff validation
-- PowerShell-based enterprise validation
-- Technical documentation
-- Evidence review
+The capstone also showed that IAM maturity depends on technology, governance, recovery, monitoring, evidence, and operational ownership working together.
 
 ---
 
 ## Outcome
 
-Lab 24 successfully validated the MRTG Enterprise IAM environment as one connected identity platform.
+Lab 24 successfully completed the original MRTG IAM foundation capstone.
 
-The capstone confirmed healthy domain controllers, working replication, documented FSMO roles, structured OUs, users and groups, Group Policy security baselines, delegated administration, Windows LAPS-related access control, AD CS availability, lifecycle automation evidence, recovery artifacts, IAM audit evidence, and operational handoff documentation.
+The lab confirmed that:
 
-The final result was a validated enterprise IAM lab environment demonstrating the identity administration lifecycle from infrastructure deployment through security, automation, recovery, auditing, and operational handoff.
+- Selected domain-controller health tests passed
+- Replication reported zero failures
+- FSMO role ownership was documented
+- The domain and forest configuration remained visible
+- Identity structures remained intact
+- Group Policy inventory and inheritance were reviewed
+- Privileged and delegated groups were documented
+- Windows LAPS-related groups were reviewed
+- The Enterprise CA service remained available
+- Lifecycle automation artifacts remained present
+- Recovery and audit artifacts remained present
+- Operational handoff documents remained present
+- A capstone summary documented results and limitations
+
+The original 24-lab foundation was complete and ready for the governance expansion.
 
 ---
 
-## Series Completion
+## Foundation Series Completion
 
-The MRTG Enterprise IAM Lab Series is complete.
-
-The series demonstrated:
+Labs 01 through 24 established:
 
 ```text
-Identity infrastructure
-Active Directory administration
-OU and group design
-Group Policy enforcement
-Password and account lockout policy
-DHCP integration
-Replication topology
-Centralized logging
-Security baselines
+Virtual identity infrastructure
+Active Directory Domain Services
+DNS and DHCP
+Organizational Unit and group design
+Identity lifecycle management
+Group Policy
+Password and lockout controls
+Fine-Grained Password Policies
+Domain controller replication
+Active Directory Sites and Services
+Centralized Windows event collection
 Delegated administration
 Windows LAPS
-Group-based access control
+Group-based resource access
 Active Directory Certificate Services
-Identity lifecycle automation
-Directory backup and recovery
+PowerShell lifecycle automation
+Recovery preparation
 IAM security review
 Operational handoff
-Enterprise IAM capstone validation
+Foundation capstone validation
 ```
 
-The completed series represents a practical enterprise-style IAM environment built from the ground up and validated through security, automation, recovery, audit, and operations.
+The foundation demonstrated a practical Active Directory and IAM environment built, secured, documented, and reviewed through hands-on lab work.
+
+---
+
+## Next Lab
+
+[Lab 25: Service Account Governance Foundation](../Lab-25-Service-Account-Governance-Foundation/)
+
+Lab 25 begins the governance expansion by inventorying service accounts, documenting ownership and purpose, reviewing privilege, and establishing recurring non-human identity governance.
