@@ -1,39 +1,40 @@
-# Lab 06 — NTFS and Share Permissions
+# Lab 06: NTFS and Share Permissions
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Service](https://img.shields.io/badge/Service-SMB%20File%20Sharing-lightgrey)
 ![Access](https://img.shields.io/badge/Access-NTFS%20%26%20Share%20Permissions-orange)
-![Model](https://img.shields.io/badge/Model-RBAC-purple)
+![Model](https://img.shields.io/badge/Model-Group%20Based-purple)
 ![Validation](https://img.shields.io/badge/Validation-Least%20Privilege-brightgreen)
 
 ---
 
 ## Objective
 
-The objective of this lab is to configure department-based resource access using NTFS permissions and SMB share permissions in the `mrtg.local` Active Directory domain.
+Configure department-based resource access using NTFS permissions and SMB share permissions in the `mrtg.local` Active Directory domain.
 
-This lab builds directly on the identity lifecycle work from Lab 05 by applying department security groups to shared resources.
+This lab builds on the lifecycle workflows from Lab 05 by connecting department security group membership to access on shared resources.
 
-The focus is on enforcing least privilege through group-based access control.
+The goal is to enforce least privilege through centralized, group-based authorization.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-Monroe Redstone Technology Group needs to control access to departmental file shares in a way that is secure, scalable, and easy to manage.
+Monroe Redstone Technology Group requires secure and manageable access to departmental file shares.
 
-Without group-based resource permissions, administrators may assign access directly to users. This can create inconsistent permissions, excessive access, permission drift, and poor auditability.
+Assigning permissions directly to individual users creates inconsistent access, makes transfers and offboarding harder, and increases the risk of permission drift.
 
 This lab addresses the need to:
 
 - Create department-specific shared folders
-- Assign access through Active Directory security groups
+- Assign permissions through Active Directory security groups
 - Configure SMB share permissions
 - Configure NTFS permissions
 - Validate authorized access
-- Validate unauthorized access denial
-- Reinforce least privilege through group-based resource access
+- Confirm that unauthorized access is denied
+- Apply a consistent permission model across departments
+- Connect identity lifecycle changes to resource authorization
 
 ---
 
@@ -41,11 +42,11 @@ This lab addresses the need to:
 
 In this lab, I created departmental shared folders for HR, IT, and Finance.
 
-I configured share permissions and NTFS permissions using department-based Active Directory security groups.
+SMB share permissions and NTFS permissions were assigned to department-based Active Directory security groups.
 
-Access was tested with users from different departments to confirm that users could access only the resources aligned to their group membership.
+Access was tested with users from different departments. Authorized users could access resources associated with their department, while users without the required group membership were denied.
 
-This lab demonstrated how identity group membership becomes real resource access control.
+This demonstrated how Active Directory group membership becomes enforceable resource access.
 
 ---
 
@@ -54,13 +55,27 @@ This lab demonstrated how identity group membership becomes real resource access
 | Component | Details |
 |---|---|
 | Domain | `mrtg.local` |
-| Domain Controller / File Server | `MRTG-DC01` |
-| Platform | Hyper-V |
+| Domain Controller and Lab File Server | `MRTG-DC01` |
 | Directory Service | Active Directory Domain Services |
 | File Sharing Protocol | SMB |
-| Share Location | `C:\Shares` |
-| Department Groups | `GG_HR_Users`, `GG_IT_Users`, `GG_Finance_Users` |
-| Lab Organization | Monroe Redstone Technology Group |
+| Local Share Path | `C:\Shares` |
+| HR Group | `GG_HR_Users` |
+| IT Group | `GG_IT_Users` |
+| Finance Group | `GG_Finance_Users` |
+| Virtualization Platform | Hyper-V |
+| Organization | Monroe Redstone Technology Group |
+
+---
+
+## Prerequisites
+
+- Operational `mrtg.local` Active Directory domain
+- Department-based global security groups
+- HR-aligned test user Kevin Carter
+- IT-aligned test user Sarah Jones
+- Administrative access to `MRTG-DC01`
+- Network connectivity to the file shares
+- Completed identity lifecycle changes from Lab 05
 
 ---
 
@@ -73,92 +88,96 @@ This lab demonstrated how identity group membership becomes real resource access
 - Share permission configuration
 - NTFS permission configuration
 - Group-based access assignment
-- HR access validation
-- IT access validation
-- Unauthorized access denial testing
-- Least privilege validation
+- HR authorized-access validation
+- IT authorized-access validation
+- Cross-department access-denial testing
+- Least-privilege validation
 
 ### Not Included
 
-- DFS namespaces
+- Dedicated production file server deployment
+- Distributed File System namespaces
 - File Server Resource Manager
 - File screening
 - Access-based enumeration
-- Advanced auditing
+- Advanced object-access auditing
 - Dynamic Access Control
 - Data Loss Prevention
-- Microsoft Entra ID file access controls
-- Cloud file access controls
+- Cloud file services
+- Microsoft Entra ID authorization
 
 ---
 
-## Architecture
+## Resource Architecture
 
-The MRTG file access model uses department security groups to control access to department shares.
+Department folders were created under a central share directory.
 
 ```text
 C:\Shares
-├── Finance
-├── HR
-└── IT
+|-- Finance
+|-- HR
+`-- IT
 ```
 
-Access is assigned through Active Directory groups.
+Each resource was mapped to a department security group.
 
 ```text
-GG_HR_Users       → HR share
-GG_IT_Users       → IT share
-GG_Finance_Users  → Finance share
-Administrators    → Full Control
-SYSTEM            → Full Control
+GG_HR_Users      -> HR share
+GG_IT_Users      -> IT share
+GG_Finance_Users -> Finance share
+Administrators   -> Administrative control
+SYSTEM           -> System control
 ```
 
-This structure supports:
+This design supports:
 
-- Group-based access control
-- Department-based resource separation
+- Group-based authorization
+- Department resource separation
 - Least privilege
-- Cleaner access reviews
-- Easier onboarding and transfer workflows
-- Stronger audit readiness
+- Repeatable permission assignment
+- Cleaner onboarding and transfer workflows
+- Easier access reviews
+- Improved auditability
 
 ---
 
 ## Permission Model
 
-This lab uses both SMB share permissions and NTFS permissions.
-
-Effective access is determined by the most restrictive combination of both permission layers.
+Access to an SMB resource is evaluated through both share and NTFS permissions.
 
 | Permission Layer | Purpose |
 |---|---|
-| Share Permissions | Controls access over the network |
-| NTFS Permissions | Controls access at the file system level |
-| Security Groups | Assign access based on department or role |
+| Share Permissions | Control access when the resource is reached over the network |
+| NTFS Permissions | Control file and folder access at the file-system level |
+| Security Groups | Represent approved department access |
 
-Access was assigned to groups instead of individual users.
+When a user accesses a folder through SMB, the effective result is the most restrictive combination of the applicable share and NTFS permissions.
 
-This supports a cleaner RBAC model because access follows group membership instead of one-off manual assignments.
+Permissions were assigned to groups rather than individual user accounts.
 
 ---
 
 ## Department Access Model
 
-| Department | Security Group | Resource |
+| Department | Security Group | Network Resource |
 |---|---|---|
 | HR | `GG_HR_Users` | `\\MRTG-DC01\HR` |
 | IT | `GG_IT_Users` | `\\MRTG-DC01\IT` |
 | Finance | `GG_Finance_Users` | `\\MRTG-DC01\Finance` |
 
+Users receive access by becoming members of the appropriate department group.
+
+Access denial is produced by the absence of an applicable Allow permission. Explicit Deny entries should be used only when there is a specific requirement because they can complicate permission evaluation and troubleshooting.
+
 ---
 
 ## Implementation and Validation
 
-### 1. Department Share Folders Created
+### 1. Created the Department Folders
 
-A central `C:\Shares` directory was created on `MRTG-DC01`.
+A central folder structure was created on `MRTG-DC01`.
 
-Department folders were created for:
+Department folders included:
 
 - Finance
 - HR
@@ -166,160 +185,189 @@ Department folders were created for:
 
 ![Department share folders created](screenshots/lab-06-01-department-share-folders-created.png)
 
-This created the resource structure for department-based access control.
+This established the resource structure for department-based access control.
 
 ---
 
-### 2. HR Share Permissions Configured
+### 2. Configured the HR Share Permissions
 
-Share permissions were configured for the HR folder.
+The HR folder was published as an SMB share.
 
-The HR share used group-based access through:
+The following group was assigned at the share layer:
 
 ```text
 GG_HR_Users
 ```
 
-The HR group was granted Change and Read permissions at the share layer.
+Assigned share permissions:
+
+```text
+Change
+Read
+```
 
 ![HR share permissions configured](screenshots/lab-06-02-hr-share-permissions-configured.png)
 
-This established the network access layer for the HR department share.
+This established the network-access layer for the HR resource.
 
 ---
 
-### 3. HR NTFS Permissions Configured
+### 3. Configured the HR NTFS Permissions
 
 NTFS permissions were configured on the HR folder.
 
-`GG_HR_Users` was granted Modify access to the HR folder while administrative control remained with privileged accounts.
+`GG_HR_Users` received:
+
+```text
+Modify
+```
+
+Administrative and system-level control remained assigned to the appropriate privileged principals.
 
 ![HR NTFS permissions configured](screenshots/lab-06-03-hr-ntfs-permissions-configured.png)
 
-This established the file system access layer for the HR department share.
+This established the file-system authorization layer for the HR resource.
 
 ---
 
-### 4. IT and Finance Permission Model Applied
+### 4. Applied the Department Permission Model
 
-The same access model was applied to the IT and Finance folders.
+The same group-to-resource pattern was applied to the IT and Finance folders.
 
-The following group-to-folder mappings were used:
-
-| Folder | Security Group |
+| Folder | Authorized Group |
 |---|---|
 | HR | `GG_HR_Users` |
 | IT | `GG_IT_Users` |
 | Finance | `GG_Finance_Users` |
 
-This kept the permission design consistent across department resources.
+Using the same design across departments improves consistency and makes permissions easier to review.
 
 ---
 
-### 5. Authorized HR Access Validated
+### 5. Validated Authorized HR Access
 
-Kevin Carter’s HR-aligned account was used to test access to the HR share.
+Kevin Carter's HR-aligned account was used to access:
 
-Kevin was able to open the HR share successfully.
+```text
+\\MRTG-DC01\HR
+```
 
 ![HR user access allowed](screenshots/lab-06-04-hr-user-access-allowed.png)
 
-This confirmed that HR group membership allowed access to the HR resource.
+The share opened successfully, confirming that `GG_HR_Users` membership provided the intended access.
 
 ---
 
-### 6. Unauthorized IT Access Denied for HR User
+### 6. Validated Denial of IT Access for the HR User
 
-Kevin Carter’s HR-aligned account was used to test access to the IT share.
+Kevin Carter's account was used to access:
 
-Access was denied.
+```text
+\\MRTG-DC01\IT
+```
 
 ![HR user IT access denied](screenshots/lab-06-05-hr-user-it-access-denied.png)
 
-This confirmed that HR users were not granted access to IT resources.
+Access was denied because the user did not have the required IT group membership.
 
 ---
 
-### 7. Authorized IT Access Validated
+### 7. Validated Authorized IT Access
 
-Sarah Jones’s IT-aligned account was used to test access to the IT share.
+Sarah Jones's IT-aligned account was used to access:
 
-Sarah was able to open the IT share successfully.
+```text
+\\MRTG-DC01\IT
+```
 
 ![IT user access allowed](screenshots/lab-06-06-it-user-access-allowed.png)
 
-This confirmed that IT group membership allowed access to the IT resource.
+The share opened successfully, confirming that `GG_IT_Users` membership provided the intended access.
 
 ---
 
-### 8. Unauthorized HR Access Denied for IT User
+### 8. Validated Denial of HR Access for the IT User
 
-Sarah Jones’s IT-aligned account was used to test access to the HR share.
+Sarah Jones's account was used to access:
 
-Access was denied.
+```text
+\\MRTG-DC01\HR
+```
 
 ![IT user HR access denied](screenshots/lab-06-07-it-user-hr-access-denied.png)
 
-This confirmed that Sarah’s move from HR to IT changed her effective resource access.
+Access was denied because the user's previous HR alignment had been removed during the Mover workflow in Lab 05.
+
+This confirmed that the lifecycle change affected the user's effective resource access.
 
 ---
 
-## Security Perspective
+## Effective Access Results
 
-This lab demonstrates how identity and access control connect to real resources.
+| User | Department Alignment | HR Share | IT Share |
+|---|---|---|---|
+| Kevin Carter | HR | Allowed | Denied |
+| Sarah Jones | IT | Denied | Allowed |
 
-OU placement helps organize identities.
+The results matched the users' current department group memberships.
 
-Group membership defines access.
+Finance permissions were configured using the same model, but user-level Finance access testing was not included in the captured evidence for this lab.
 
-NTFS and share permissions enforce access at the resource layer.
+---
 
-From a security and IAM perspective, this lab supports:
+## Security and IAM Relevance
+
+This lab connects identity administration to resource authorization.
+
+Organizational Units help organize identities and target policy. Security groups represent approved access. NTFS and share permissions enforce that access against data.
+
+This lab supports:
 
 - Least privilege
-- Role-based access control
+- Group-based authorization
 - Department resource separation
-- Group-based access assignment
 - Reduced direct user permissions
+- Consistent access assignment
+- Lifecycle-driven access changes
+- Access-denial validation
 - Cleaner access reviews
-- Stronger audit readiness
-- Controlled resource access after lifecycle changes
+- Evidence-based authorization testing
+
+The access results also demonstrate why Mover workflows must remove obsolete group memberships. Adding new access without removing old access can create privilege accumulation.
 
 ---
 
-## Risk Addressed
-
-Without structured NTFS and share permissions, users may gain access to resources outside their role or department.
+## Risks Addressed
 
 This lab reduces the risk of:
 
-- Direct user-level permissions
+- Direct user-level permission assignments
 - Excessive department access
-- Unauthorized file share access
-- Inconsistent permission assignment
-- Poor access review visibility
-- Permission drift over time
-- Weak separation between department resources
+- Unauthorized file-share access
+- Retained access after a department transfer
+- Inconsistent permission configuration
+- Permission drift
+- Weak resource separation
+- Poor access-review visibility
+- Unvalidated authorization controls
 
 ---
 
 ## Control Mapping
 
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Contribution |
 |---|---|
-| Resource access control | Uses NTFS and share permissions to protect department folders |
-| RBAC | Assigns permissions to department security groups |
-| Least privilege | Validates users can access only assigned department shares |
-| Separation of duties | Prevents HR users from accessing IT resources and IT users from accessing HR resources |
-| Lifecycle continuity | Uses group changes from Lab 05 to influence resource access |
-| Audit readiness | Documents permission configuration and access test results |
-| Operational consistency | Applies the same permission model across HR, IT, and Finance |
+| Resource Access Control | Uses NTFS and SMB share permissions to protect department folders |
+| Group-Based Authorization | Assigns permissions to department security groups |
+| Least Privilege | Limits users to resources associated with their current department |
+| Resource Separation | Prevents HR and IT users from accessing each other's department shares |
+| Lifecycle Continuity | Uses group changes from Lab 05 to determine effective access |
+| Operational Consistency | Applies the same permission pattern across departments |
+| Audit Readiness | Documents configuration and user-level access results |
 
 ---
 
-## Validation
-
-The following validation checks were completed:
+## Validation Results
 
 | Validation Item | Result |
 |---|---|
@@ -328,57 +376,61 @@ The following validation checks were completed:
 | HR NTFS permissions configured | Passed |
 | IT permission model applied | Passed |
 | Finance permission model applied | Passed |
-| Kevin Carter accessed HR share successfully | Passed |
-| Kevin Carter denied access to IT share | Passed |
-| Sarah Jones accessed IT share successfully | Passed |
-| Sarah Jones denied access to HR share | Passed |
-| Access outcomes matched department group membership | Passed |
+| Kevin Carter accessed the HR share | Passed |
+| Kevin Carter was denied access to the IT share | Passed |
+| Sarah Jones accessed the IT share | Passed |
+| Sarah Jones was denied access to the HR share | Passed |
+| Access results matched current group membership | Passed |
 
 ---
 
 ## Evidence Collected
 
-The following evidence was collected during the lab:
-
 | Evidence | File |
 |---|---|
-| Department share folders created | `screenshots/lab-06-01-department-share-folders-created.png` |
-| HR share permissions configured | `screenshots/lab-06-02-hr-share-permissions-configured.png` |
-| HR NTFS permissions configured | `screenshots/lab-06-03-hr-ntfs-permissions-configured.png` |
-| HR user access allowed | `screenshots/lab-06-04-hr-user-access-allowed.png` |
-| HR user denied access to IT share | `screenshots/lab-06-05-hr-user-it-access-denied.png` |
-| IT user access allowed | `screenshots/lab-06-06-it-user-access-allowed.png` |
-| IT user denied access to HR share | `screenshots/lab-06-07-it-user-hr-access-denied.png` |
+| Department share folders | `screenshots/lab-06-01-department-share-folders-created.png` |
+| HR share permissions | `screenshots/lab-06-02-hr-share-permissions-configured.png` |
+| HR NTFS permissions | `screenshots/lab-06-03-hr-ntfs-permissions-configured.png` |
+| Authorized HR access | `screenshots/lab-06-04-hr-user-access-allowed.png` |
+| HR user denied IT access | `screenshots/lab-06-05-hr-user-it-access-denied.png` |
+| Authorized IT access | `screenshots/lab-06-06-it-user-access-allowed.png` |
+| IT user denied HR access | `screenshots/lab-06-07-it-user-hr-access-denied.png` |
 
 ---
 
 ## What I Would Improve in Production
 
-In a production environment, I would improve this process by:
+In a production environment, I would:
 
-- Separating file server duties from the domain controller
-- Using a dedicated file server instead of hosting shares on `MRTG-DC01`
-- Creating a formal department share naming standard
-- Using AGDLP or AGUDLP group nesting for scalable permission management
-- Applying access-based enumeration where appropriate
-- Enabling auditing for sensitive department folders
-- Reviewing access groups on a regular schedule
-- Documenting data owners for each department share
-- Using change control for permission changes
-- Creating a standard access request process
-- Monitoring share access and permission changes through event logs or SIEM
+- Use a dedicated file server instead of hosting shares on a domain controller
+- Separate identity infrastructure from general application and file services
+- Apply the AGDLP model for scalable permission management
+- Place user accounts in global role groups
+- Place global role groups in domain local resource groups
+- Assign NTFS permissions to domain local resource groups
+- Use a formal share and folder naming standard
+- Document a business owner and data owner for each share
+- Require approved access requests
+- Enable access-based enumeration where appropriate
+- Audit access to sensitive department data
+- Review access groups regularly
+- Monitor permission and group-membership changes
+- Use change management for ACL modifications
+- Document permission inheritance and exception handling
+- Test effective access after every permission change
+- Avoid explicit Deny entries unless they are required and documented
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that group membership becomes meaningful when it controls access to real resources.
+This lab reinforced that group membership becomes meaningful when it controls access to actual resources.
 
-Creating users and groups is only the identity layer.
+Users and groups form the identity layer. NTFS and share permissions form the enforcement layer.
 
-NTFS and share permissions are where access is enforced against actual data.
+The main takeaway is that permissions should be assigned to groups rather than directly to users. This makes onboarding, transfers, offboarding, troubleshooting, and recurring access reviews more manageable.
 
-The biggest takeaway is that access should be assigned to groups, not directly to users. This makes onboarding, transfers, offboarding, and access reviews cleaner and more reliable.
+The cross-department tests also showed that successful access testing is not enough. A complete authorization test must confirm both expected access and expected denial.
 
 ---
 
@@ -386,23 +438,24 @@ The biggest takeaway is that access should be assigned to groups, not directly t
 
 Lab 06 successfully implemented group-based access control for departmental file shares in the MRTG Active Directory environment.
 
-The lab confirmed:
+The lab confirmed that:
 
 - Department folders were created under `C:\Shares`
-- Share permissions were configured for department access
-- NTFS permissions were configured for file system enforcement
+- SMB share permissions were configured
+- NTFS permissions were configured
+- Department security groups controlled access
 - Kevin Carter could access HR resources
 - Kevin Carter was denied access to IT resources
 - Sarah Jones could access IT resources
 - Sarah Jones was denied access to HR resources
-- Access outcomes matched department group membership
+- Access results matched current department membership
 
-The environment now supports least-privilege file share access using Active Directory security groups.
+The MRTG environment now enforces least-privilege access to departmental file resources using Active Directory security groups.
 
 ---
 
 ## Next Lab
 
-[Lab 07 — Service Accounts and Delegation](../Lab-07-Service-Accounts-and-Delegation/)
+[Lab 07: Service Accounts and Delegation](../Lab-07-Service-Accounts-and-Delegation/)
 
-Lab 07 will build on resource access control by creating service accounts and applying delegation practices to support controlled administrative access in the MRTG environment.
+Lab 07 introduces service accounts and delegated administrative permissions to support controlled non-human identity use and least-privilege administration.
