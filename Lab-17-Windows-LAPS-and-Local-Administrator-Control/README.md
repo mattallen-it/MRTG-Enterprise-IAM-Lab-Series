@@ -1,31 +1,39 @@
-# Lab 17 — Windows LAPS and Local Administrator Control
+# Lab 17: Windows LAPS and Local Administrator Control
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Feature](https://img.shields.io/badge/Feature-Windows%20LAPS-purple)
 ![Focus](https://img.shields.io/badge/Focus-Local%20Admin%20Control-orange)
-![Security](https://img.shields.io/badge/Security-Least%20Privilege-red)
-![Validation](https://img.shields.io/badge/Validation-Password%20Retrieval-brightgreen)
+![Security](https://img.shields.io/badge/Security-Credential%20Protection-red)
+![Validation](https://img.shields.io/badge/Validation-Password%20Backup-brightgreen)
 
 ---
 
-## Overview
+## Objective
 
-In this lab, I implemented Windows Local Administrator Password Solution, also known as Windows LAPS, in the Monroe Redstone Technology Group Active Directory environment.
+Implement Windows Local Administrator Password Solution in the `mrtg.local` Active Directory environment.
 
-This lab focused on controlling the local Administrator password for domain-joined workstations by backing up the password to Active Directory, delegating read access, applying policy through Group Policy, and validating that LAPS processed correctly on the client system.
+This lab configures Active Directory backup for a workstation's managed local administrator password, delegates password-read permission through a security group, applies policy through Group Policy, and validates client-side LAPS processing.
 
-This lab also included troubleshooting a schema extension issue caused by an Active Directory replication and DNS health problem before completing the LAPS deployment.
+The lab also documents troubleshooting performed after an initial schema-update error exposed an Active Directory replication and DNS health issue.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-MRTG needed a secure way to manage local Administrator passwords on domain-joined workstations.
+Monroe Redstone Technology Group requires a secure method for managing local administrator credentials on domain-joined workstations.
 
-In many organizations, unmanaged local Administrator passwords create serious risk. If the same local admin password is reused across multiple systems, one compromised workstation can become a path for lateral movement across the environment.
+Reusing the same local administrator password across multiple systems increases lateral-movement risk. If one workstation and its local credential are compromised, the same password may provide access to other systems.
 
-This lab solves that problem by implementing Windows LAPS to manage local Administrator passwords, store password data in Active Directory, and delegate password retrieval only to an approved security group.
+This lab addresses the need to:
+
+- Generate and manage workstation local administrator passwords
+- Avoid shared local administrator credentials
+- Back up managed password information to Active Directory
+- Limit password retrieval to authorized administrators
+- Apply LAPS through centralized policy
+- Validate client processing and Active Directory backup
+- Confirm directory health before schema-related changes
 
 ---
 
@@ -33,32 +41,47 @@ This lab solves that problem by implementing Windows LAPS to manage local Admini
 
 In this lab, I configured Windows LAPS for the MRTG workstation environment.
 
-The lab started by creating a pre-change checkpoint before any schema-related work. I then confirmed that `CLIENT01` was located in the correct Workstations OU and validated Windows LAPS availability on the domain controller.
+The Windows client computer object `CLIENT01` was confirmed in `_MRTG\Computers\Workstations`, and Windows LAPS commands were validated on the domain controller.
 
-During the schema extension process, I encountered a directory health issue tied to replication and DNS. Instead of skipping the problem, I validated and restored replication health before continuing. After the environment was healthy, I confirmed that the Windows LAPS schema attributes were present.
+An initial `Update-LapsADSchema` attempt returned an operation error. Replication and DNS health were reviewed, an unhealthy condition was corrected, and the required `ms-LAPS-*` schema attributes were then confirmed.
 
-I then configured LAPS computer self-permission, created a dedicated password readers group, delegated LAPS password read permission, linked a Windows LAPS GPO to the Workstations OU, applied policy to `CLIENT01`, invoked LAPS policy processing, and validated password metadata retrieval from Active Directory.
+Computer self-permission was applied to the Workstations OU. A dedicated LAPS password-readers group was created, and read permission was delegated to that group.
+
+The `MRTG-GPO-Windows-LAPS-Workstation-Baseline` GPO was linked to the Workstations OU. `CLIENT01` applied the policy, completed LAPS processing, and wrote password information to Active Directory.
+
+Password metadata retrieval was validated without publishing the managed password.
 
 ---
 
-## Objectives
+## Environment
 
-- Create a pre-change checkpoint before extending the AD schema
-- Confirm the target workstation object is located in the correct Workstations OU
-- Validate Windows LAPS availability on the domain controller
-- Confirm required Windows LAPS PowerShell commands are available
-- Verify Schema Admins, Enterprise Admins, and Domain Admins context before schema work
-- Identify and troubleshoot a failed LAPS schema extension attempt
-- Restore AD replication health before retrying schema validation
-- Verify Windows LAPS schema attributes exist in Active Directory
-- Grant computer self-permission for LAPS password updates
-- Create a delegated LAPS password readers group
-- Delegate LAPS password read permissions using a security group
-- Create and link a Windows LAPS workstation baseline GPO
-- Apply the Windows LAPS policy to the client workstation
-- Invoke LAPS policy processing on the client
-- Validate LAPS password metadata retrieval from Active Directory
-- Create final checkpoints after successful validation
+| Component | Details |
+|---|---|
+| Organization | Monroe Redstone Technology Group |
+| Domain | `mrtg.local` |
+| Original Domain Controller | `MRTG-DC01` |
+| Additional Domain Controller | `MRTG-DC02` |
+| Client Windows Computer Name | `CLIENT01` |
+| Client Hyper-V VM Name | `MRTG-CLIENT-01` |
+| Target OU | `_MRTG\Computers\Workstations` |
+| LAPS GPO | `MRTG-GPO-Windows-LAPS-Workstation-Baseline` |
+| Password Readers Group | `MRTG-GRP-LAPS-Password-Readers` |
+| Password Backup Directory | Active Directory |
+| Tools | ADUC, Group Policy Management, PowerShell, and Hyper-V |
+
+---
+
+## Prerequisites
+
+- Operational `mrtg.local` domain
+- Healthy replication between `MRTG-DC01` and `MRTG-DC02`
+- Active Directory-integrated DNS
+- Supported Windows Server and Windows client builds
+- Windows LAPS PowerShell module
+- Domain functional level compatible with the selected LAPS features
+- `CLIENT01` located in the Workstations OU
+- Administrative approval for schema-related work
+- Supported Active Directory backup and recovery procedures
 
 ---
 
@@ -66,115 +89,102 @@ I then configured LAPS computer self-permission, created a dedicated password re
 
 ### Included
 
-- Windows LAPS readiness validation
-- Active Directory schema validation
-- LAPS permission delegation
-- Group-based password read access
-- Workstation-focused LAPS policy configuration
-- Client-side Group Policy validation
-- LAPS policy processing validation
-- LAPS password metadata retrieval
-- Active Directory replication troubleshooting
-- Hyper-V checkpoint creation after validation
+- Windows LAPS readiness review
+- Schema command and attribute validation
+- Replication and DNS troubleshooting
+- Workstation OU self-permission
+- Password-readers group creation
+- Group-based read-permission delegation
+- Workstation LAPS GPO configuration
+- Group Policy application validation
+- Manual LAPS policy processing
+- Active Directory password-backup validation
+- Password metadata retrieval
+- Temporary Hyper-V checkpoints
 
 ### Not Included
 
-- Microsoft Entra ID LAPS backup
+- Microsoft Entra ID password backup
 - Intune policy deployment
 - Cloud-only device management
-- Privileged Access Management platform deployment
-- Automated password retrieval workflows
-- Production password disclosure procedures
-- SIEM forwarding for LAPS retrieval events
-- Just-in-time password access workflow
+- Group Managed Service Accounts
+- Just-in-time password access
+- Automated access approval
+- SIEM alerting for password retrieval
+- Production password-disclosure workflow
+- Least-privilege reader-account retrieval test
+- Active Directory schema rollback testing
 
 ---
 
-## Lab Environment
+## Architecture
 
-| Component | Details |
-|---|---|
-| Organization | Monroe Redstone Technology Group |
-| Domain | `mrtg.local` |
-| Primary Domain Controller | `MRTG-DC01` |
-| Additional Domain Controller | `MRTG-DC02` |
-| Client VM | `MRTG-CLIENT-01` |
-| Client Computer Object | `CLIENT01` |
-| Target OU | `_MRTG/Computers/Workstations` |
-| Management Tooling | Active Directory Users and Computers, Group Policy Management, PowerShell |
-| LAPS Model | Windows LAPS with Active Directory backup |
-| Hypervisor | Hyper-V |
+```text
+mrtg.local
+`-- _MRTG
+    |-- Groups
+    |   `-- MRTG-GRP-LAPS-Password-Readers
+    |
+    `-- Computers
+        `-- Workstations
+            `-- CLIENT01
+                `-- Managed local administrator password
+```
 
----
+Policy and permission flow:
 
-## Architecture and Design
-
-The MRTG environment uses a dedicated Workstations OU to apply endpoint-specific security controls. Windows LAPS was configured through a workstation baseline GPO linked to the Workstations OU.
-
-The design separates three key responsibilities:
-
-| Area | Design Decision |
-|---|---|
-| Password storage | Back up local Administrator password data to Active Directory |
-| Password management scope | Apply LAPS only to workstation computer objects in the Workstations OU |
-| Password read access | Delegate read permissions to a dedicated group instead of using one-off user permissions |
-| Policy enforcement | Use Group Policy to apply LAPS settings to domain-joined workstations |
-| Validation | Confirm policy application, LAPS processing, and password metadata retrieval |
-
-This supports a cleaner IAM model because local administrator password control is no longer manual, shared, or undocumented.
-
----
-
-## Technologies Used
-
-- Active Directory Domain Services
-- Active Directory Users and Computers
-- Group Policy Management Console
-- Group Policy Management Editor
-- Windows LAPS
-- Windows PowerShell
-- Hyper-V
-- Windows Server 2022
-- Windows client workstation
+```text
+MRTG-GPO-Windows-LAPS-Workstation-Baseline
+                    |
+                    v
+        _MRTG\Computers\Workstations
+                    |
+                    v
+                 CLIENT01
+                    |
+                    v
+     Password information backed up to AD
+                    |
+                    v
+ Authorized readers retrieve through delegation
+```
 
 ---
 
-## Security Model
-
-Windows LAPS reduces risk by ensuring that local Administrator passwords are unique, managed, and retrievable only by authorized users.
-
-This lab used the following control model:
+## Windows LAPS Control Model
 
 | Control | Purpose |
 |---|---|
-| Workstations OU | Defines the target scope for LAPS management |
-| Windows LAPS GPO | Applies LAPS configuration to workstation systems |
-| Computer self-permission | Allows workstation objects to update their own LAPS password attributes |
-| LAPS password readers group | Controls who can retrieve local administrator password data |
-| AD schema attributes | Stores LAPS password and expiration metadata |
-| Final validation | Confirms that the workstation processed policy and wrote password data |
+| Workstations OU | Defines the managed computer scope |
+| LAPS GPO | Configures password management and Active Directory backup |
+| Computer Self-Permission | Allows each computer to update its own LAPS attributes |
+| Password Readers Group | Represents approved password-retrieval access |
+| Read-Permission Delegation | Grants the group access to the required LAPS password attributes |
+| Active Directory Attributes | Store password and expiration information |
+| Client Processing | Generates, applies, and backs up the managed password |
+| Retrieval Validation | Confirms that password information exists in Active Directory |
+
+Windows LAPS manages a local administrator password. It does not create a custom local account or automatically enable a disabled account unless separate configuration handles those requirements.
 
 ---
 
-## Key Accounts, Groups, and Objects
+## Key Objects
 
 | Object | Purpose |
 |---|---|
-| `CLIENT01` | Target workstation computer object |
-| `MRTG-GPO-Windows-LAPS-Workstation-Baseline` | GPO used to configure Windows LAPS settings |
-| `MRTG-GRP-LAPS-Password-Readers` | Delegated group allowed to read LAPS password data |
-| `Administrator` | Account added to password readers group for lab validation |
-| `_MRTG/Computers/Workstations` | OU targeted for LAPS management |
+| `CLIENT01` | Managed workstation computer object |
+| `MRTG-GPO-Windows-LAPS-Workstation-Baseline` | Applies Windows LAPS settings |
+| `MRTG-GRP-LAPS-Password-Readers` | Receives delegated password-read permission |
+| `_MRTG\Computers\Workstations` | Defines the LAPS policy and permission scope |
+| `Administrator` | Privileged account used during lab retrieval validation |
+
+Using the built-in domain Administrator account confirms that password information can be retrieved, but it does not independently prove least-privilege reader access because that account already holds broad privileges.
 
 ---
 
-## Implementation Steps
+## Implementation and Validation
 
-### Step 1 — Created a Pre-LAPS Schema Extension Checkpoint
-
-A Hyper-V checkpoint was created before making schema-related changes.
-
-This provided a rollback point before performing higher-risk directory changes.
+### 1. Created a Pre-Change Lab Checkpoint
 
 Checkpoint name:
 
@@ -184,23 +194,29 @@ MRTG-DC01_Pre-Lab-17-Windows-LAPS-Schema-Extension
 
 ![Pre-LAPS schema extension checkpoint](screenshots/lab-17-01-pre-laps-schema-extension-checkpoint.png)
 
----
+The checkpoint provided a temporary VM recovery point only.
 
-### Step 2 — Confirmed Client Computer Object Placement
-
-Confirmed that `CLIENT01` was located under the Workstations OU.
-
-This established the correct target scope before applying Windows LAPS policy.
-
-![CLIENT01 computer object in Workstations OU](screenshots/lab-17-02-client01-computer-object-in-workstations-ou.png)
+An Active Directory schema extension is forest-wide and is not safely reversed by restoring one domain controller checkpoint. Schema changes should be treated as effectively irreversible and protected through supported forest-recovery planning.
 
 ---
 
-### Step 3 — Validated Windows LAPS Commands and KB Installation
+### 2. Confirmed the Workstation OU Placement
 
-Validated that the required update was installed and confirmed that Windows LAPS PowerShell commands were available.
+The `CLIENT01` computer object was confirmed under:
 
-Commands used included:
+```text
+_MRTG\Computers\Workstations
+```
+
+![CLIENT01 in Workstations OU](screenshots/lab-17-02-client01-computer-object-in-workstations-ou.png)
+
+Correct OU placement ensured that the workstation was within the intended policy and permission scope.
+
+---
+
+### 3. Validated Windows LAPS Availability
+
+Commands used:
 
 ```powershell
 Get-HotFix -Id KB5030216
@@ -208,25 +224,29 @@ Get-Command *Laps*
 Get-Module -ListAvailable LAPS
 ```
 
-![KB5030216 installed and LAPS commands available](screenshots/lab-17-03-kb5030216-installed-and-laps-commands-available.png)
+![Windows LAPS commands available](screenshots/lab-17-03-kb5030216-installed-and-laps-commands-available.png)
+
+This confirmed that Windows LAPS functionality and PowerShell commands were available in the lab environment.
+
+The specific KB documents the lab state at the time. Production readiness should be based on a currently supported and fully patched operating-system build rather than one historical update number.
 
 ---
 
-### Step 4 — Documented Initial Windows LAPS Module Path Check
+### 4. Documented the Module Path Check
 
-Checked the domain controller for Windows LAPS module availability and confirmed the operating system build information.
+The expected module path was reviewed along with the operating-system build.
 
-The initial path validation showed that the expected LAPS module path was not detected, while the LAPS commands were still available through the installed LAPS module.
+![Windows LAPS module path check](screenshots/lab-17-04-windows-laps-module-not-detected.png)
 
-![Windows LAPS module not detected](screenshots/lab-17-04-windows-laps-module-not-detected.png)
+The expected path was not detected, but the LAPS commands remained available through the installed module.
+
+This demonstrated why command availability and module discovery provide stronger evidence than checking one hard-coded path.
 
 ---
 
-### Step 5 — Validated Schema Admin Context
+### 5. Reviewed the Schema-Change Security Context
 
-Confirmed that the current administrative context had the required privileged group memberships for schema-related work.
-
-Validated memberships included:
+The administrative token was reviewed for:
 
 ```text
 Schema Admins
@@ -236,13 +256,13 @@ Domain Admins
 
 ![Schema Admin membership check](screenshots/lab-17-05-schema-admin-membership-check.png)
 
+These memberships provided the authority required for the lab's forest-wide schema work.
+
+In production, Schema Admins membership should be temporary, approved, monitored, and removed immediately after the authorized change.
+
 ---
 
-### Step 6 — Attempted LAPS Schema Extension and Documented Failure
-
-Attempted the Windows LAPS schema extension and encountered an operation error.
-
-This was treated as a real troubleshooting point instead of being skipped.
+### 6. Attempted the Schema Update
 
 Command used:
 
@@ -250,17 +270,15 @@ Command used:
 Update-LapsADSchema -Verbose
 ```
 
-![LAPS schema extension failed operation error](screenshots/lab-17-06-laps-schema-extension-failed-operation-error.png)
+![LAPS schema extension operation error](screenshots/lab-17-06-laps-schema-extension-failed-operation-error.png)
+
+The command returned an operation error. The error was documented, and directory health was investigated before further schema work.
 
 ---
 
-### Step 7 — Identified Replication and DNS Failure Before Schema Retry
+### 7. Identified Replication and DNS Health Problems
 
-Checked FSMO role ownership and replication health.
-
-The replication summary showed a DNS lookup failure between domain controllers.
-
-Commands used included:
+Commands used:
 
 ```cmd
 netdom query fsmo
@@ -268,31 +286,31 @@ repadmin /replsummary
 dcdiag /test:advertising /test:services /test:replications
 ```
 
-![Replication DNS failure before LAPS schema retry](screenshots/lab-17-07-replication-dns-failure-before-laps-schema-retry.png)
+![Replication and DNS failure before schema validation](screenshots/lab-17-07-replication-dns-failure-before-laps-schema-retry.png)
+
+The results showed a DNS-related replication problem between the domain controllers.
+
+A forest-wide change should not continue while replication health is uncertain.
 
 ---
 
-### Step 8 — Restored Replication Health
+### 8. Restored Replication Health
 
-Restored replication health and confirmed that domain controller replication returned to a healthy state before continuing.
-
-Validation command:
+Command used:
 
 ```cmd
 repadmin /replsummary
 ```
 
-![Replication health restored before LAPS schema retry](screenshots/lab-17-08-replication-health-restored-before-laps-schema-retry.png)
+![Replication health restored](screenshots/lab-17-08-replication-health-restored-before-laps-schema-retry.png)
+
+The final summary confirmed healthy replication before LAPS deployment continued.
 
 ---
 
-### Step 9 — Verified Windows LAPS Schema Attributes
+### 9. Verified the Windows LAPS Schema Attributes
 
-Verified that the Windows LAPS schema attributes were present in Active Directory.
-
-The `ms-LAPS-*` attributes were required for password storage and expiration metadata.
-
-Validated attributes included:
+Confirmed attributes included:
 
 ```text
 ms-LAPS-EncryptedDSRMPassword
@@ -303,87 +321,100 @@ ms-LAPS-Password
 ms-LAPS-PasswordExpirationTime
 ```
 
-![Windows LAPS schema extension verified](screenshots/lab-17-09-windows-laps-schema-extension-verified.png)
+![Windows LAPS schema attributes verified](screenshots/lab-17-09-windows-laps-schema-extension-verified.png)
+
+This confirmed that the required Windows LAPS schema objects were present.
+
+The evidence confirms attribute presence. It does not establish whether the initial command completed partially or whether a later operation completed the schema update.
 
 ---
 
-### Step 10 — Granted Computer Self-Permission on the Workstations OU
-
-Granted the required LAPS computer self-permission on the Workstations OU.
-
-This allows managed workstation computer objects to update their own LAPS password attributes in Active Directory.
+### 10. Granted Computer Self-Permission
 
 Command used:
 
 ```powershell
-Set-LapsADComputerSelfPermission -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local"
+Set-LapsADComputerSelfPermission `
+    -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local"
 ```
 
-![Workstations OU LAPS computer self-permission set](screenshots/lab-17-10-workstations-ou-laps-computer-self-permission-set.png)
+![Workstations OU LAPS computer self-permission](screenshots/lab-17-10-workstations-ou-laps-computer-self-permission-set.png)
+
+This allows computer objects in the Workstations OU to update their own LAPS password attributes.
 
 ---
 
-### Step 11 — Created the LAPS Password Readers Group
+### 11. Created the Password Readers Group
 
-Created the `MRTG-GRP-LAPS-Password-Readers` security group to control who can read LAPS password data.
+Group name:
+
+```text
+MRTG-GRP-LAPS-Password-Readers
+```
 
 ![LAPS password readers group created](screenshots/lab-17-11-laps-password-readers-group-created.png)
 
----
-
-### Step 12 — Added an Authorized Reader to the LAPS Password Readers Group
-
-Added the `Administrator` account to the LAPS password readers group for lab validation.
-
-![Admin added to LAPS password readers group](screenshots/lab-17-12-admin-added-to-laps-password-readers-group.png)
+The group provides a centralized assignment point for password-retrieval access.
 
 ---
 
-### Step 13 — Delegated LAPS Password Read Permission
+### 12. Added the Lab Reader
 
-Delegated LAPS password read permission on the Workstations OU to the `MRTG-GRP-LAPS-Password-Readers` group.
+The built-in domain Administrator account was added to the password readers group for lab validation.
 
-This avoided direct user-based permission assignment and kept access controlled through group membership.
+![Administrator added to LAPS password readers group](screenshots/lab-17-12-admin-added-to-laps-password-readers-group.png)
+
+This documented group membership but did not provide a least-privilege test because the account already had extensive directory privileges.
+
+---
+
+### 13. Delegated Password-Read Permission
 
 Command used:
 
 ```powershell
-Set-LapsADReadPasswordPermission -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local" -AllowedPrincipals "MRTG\MRTG-GRP-LAPS-Password-Readers"
+Set-LapsADReadPasswordPermission `
+    -Identity "OU=Workstations,OU=Computers,OU=_MRTG,DC=mrtg,DC=local" `
+    -AllowedPrincipals "MRTG\MRTG-GRP-LAPS-Password-Readers"
 ```
 
-![LAPS read password permission delegated](screenshots/lab-17-13-laps-read-password-permission-delegated.png)
+![LAPS read permission delegated](screenshots/lab-17-13-laps-read-password-permission-delegated.png)
+
+This assigned LAPS password-read permission to a group rather than directly to an individual account.
 
 ---
 
-### Step 14 — Linked the Windows LAPS GPO to the Workstations OU
+### 14. Linked the Windows LAPS GPO
 
-Linked the Windows LAPS workstation baseline GPO to the Workstations OU.
-
-This ensured that the policy would apply only to workstation computer objects in the intended OU scope.
-
-GPO linked:
+GPO:
 
 ```text
 MRTG-GPO-Windows-LAPS-Workstation-Baseline
 ```
 
-![Windows LAPS GPO linked to Workstations OU](screenshots/lab-17-14-windows-laps-gpo-linked-to-workstations-ou.png)
+Target:
+
+```text
+_MRTG\Computers\Workstations
+```
+
+![Windows LAPS GPO linked](screenshots/lab-17-14-windows-laps-gpo-linked-to-workstations-ou.png)
+
+This scoped the LAPS policy to workstation computer objects.
 
 ---
 
-### Step 15 — Configured Windows LAPS Policy Settings
+### 15. Configured the Windows LAPS Policy
 
-Configured Windows LAPS policy settings through Group Policy.
-
-The policy was configured to back up local Administrator password data to Active Directory and apply password management controls to the workstation.
+The GPO was configured to manage the workstation's local administrator password and back up password information to Active Directory.
 
 ![Windows LAPS policy settings configured](screenshots/lab-17-15-windows-laps-policy-settings-configured.png)
 
+Only settings visible in the captured policy evidence should be treated as verified. Password length, age, complexity, encryption, and account-name values should not be assumed unless explicitly documented.
+
 ---
 
-### Step 16 — Applied and Validated Group Policy on CLIENT01
-
-Forced a Group Policy update on `CLIENT01` and used `gpresult` to confirm that the Windows LAPS workstation baseline GPO applied successfully.
+### 16. Applied and Reviewed Group Policy on CLIENT01
 
 Commands used:
 
@@ -392,15 +423,13 @@ gpupdate /force
 gpresult /r /scope computer
 ```
 
-![CLIENT01 LAPS GPO applied with gpresult](screenshots/lab-17-16-client01-laps-gpo-applied-with-gpresult.png)
+![CLIENT01 Windows LAPS GPO applied](screenshots/lab-17-16-client01-laps-gpo-applied-with-gpresult.png)
+
+The result confirmed that `MRTG-GPO-Windows-LAPS-Workstation-Baseline` was processed by the workstation.
 
 ---
 
-### Step 17 — Invoked Windows LAPS Policy Processing
-
-Confirmed that Windows LAPS commands were available on the client and manually invoked LAPS policy processing.
-
-The processing completed successfully.
+### 17. Invoked Windows LAPS Processing
 
 Command used:
 
@@ -408,17 +437,13 @@ Command used:
 Invoke-LapsPolicyProcessing -Verbose
 ```
 
-![CLIENT01 LAPS policy processing invoked](screenshots/lab-17-17-client01-laps-policy-processing-invoked.png)
+![CLIENT01 Windows LAPS processing](screenshots/lab-17-17-client01-laps-policy-processing-invoked.png)
+
+The command completed successfully, confirming client-side LAPS processing.
 
 ---
 
-### Step 18 — Retrieved LAPS Password Metadata
-
-Retrieved Windows LAPS password metadata for `CLIENT01` from Active Directory.
-
-The validation confirmed that password data was being stored and that decryption status was successful.
-
-The actual password was not documented in this README.
+### 18. Retrieved LAPS Password Information
 
 Commands used:
 
@@ -429,11 +454,13 @@ Get-LapsADPassword -Identity CLIENT01 -AsPlainText
 
 ![LAPS password retrieval metadata](screenshots/lab-17-18-laps-password-retrieval-metadata.png)
 
+The results confirmed that LAPS password information and expiration metadata were available in Active Directory.
+
+The managed password is intentionally omitted from this README. Screenshots and public documentation should redact plaintext credentials.
+
 ---
 
-### Step 19 — Created Final Post-Lab Checkpoint for MRTG-DC01
-
-Created a post-lab checkpoint for `MRTG-DC01` after validating Windows LAPS configuration.
+### 19. Created the MRTG-DC01 Final Lab Checkpoint
 
 Checkpoint name:
 
@@ -441,13 +468,11 @@ Checkpoint name:
 MRTG-DC01_Post-Lab-17-Windows-LAPS-and-Local-Administrator-Control-Validated
 ```
 
-![DC01 post Lab 17 checkpoint](screenshots/lab-17-19-dc01-post-lab17-checkpoint.png)
+![MRTG-DC01 post-Lab 17 checkpoint](screenshots/lab-17-19-dc01-post-lab17-checkpoint.png)
 
 ---
 
-### Step 20 — Created Final Post-Lab Checkpoint for MRTG-CLIENT-01
-
-Created a post-lab checkpoint for `MRTG-CLIENT-01` after confirming the client processed the Windows LAPS policy.
+### 20. Created the Client Final Lab Checkpoint
 
 Checkpoint name:
 
@@ -455,33 +480,125 @@ Checkpoint name:
 Post-Lab-17-Windows-LAPS-and-Local-Administrator-Control-Validated
 ```
 
-![CLIENT01 post Lab 17 checkpoint](screenshots/lab-17-20-client01-post-lab17-checkpoint.png)
+![CLIENT01 post-Lab 17 checkpoint](screenshots/lab-17-20-client01-post-lab17-checkpoint.png)
+
+The checkpoints were temporary lab recovery points and were not substitutes for supported backups or forest-recovery procedures.
 
 ---
 
-## Validation and Verification
+## Troubleshooting Summary
+
+The initial schema-update attempt returned an operation error.
+
+The response was to:
+
+1. Stop the schema workflow
+2. Identify FSMO role ownership
+3. Review replication health
+4. Run domain controller diagnostics
+5. Correct the DNS and replication issue
+6. Confirm healthy replication
+7. Verify the required Windows LAPS schema attributes
+8. Continue with permissions, policy, and client validation
+
+This reinforced a critical Active Directory rule: forest-wide changes should not proceed while directory replication is unhealthy.
+
+---
+
+## Validation Limitation
+
+The lab confirmed that:
+
+- The password-readers group was created
+- LAPS read permission was assigned to the group
+- Password information could be retrieved by a privileged administrator
+
+The lab did not capture retrieval testing with a non-privileged named account whose only relevant permission came from `MRTG-GRP-LAPS-Password-Readers`.
+
+A complete least-privilege test would verify:
+
+- Authorized named reader can retrieve the password
+- Standard user cannot retrieve the password
+- Reader cannot modify unrelated computer attributes
+- Retrieval activity is logged and centrally monitored
+
+---
+
+## Security and IAM Relevance
+
+Windows LAPS reduces the risk created by shared or unmanaged local administrator passwords.
+
+This lab supports:
+
+- Unique local administrator credentials
+- Managed password rotation
+- Centralized Active Directory backup
+- Group-based password-read delegation
+- Workstation-scoped policy
+- Reduced credential reuse
+- Reduced lateral-movement opportunity
+- Privileged credential governance
+- Directory-health validation before schema changes
+
+LAPS protects one credential layer. It does not remove the need to restrict local administrator membership, secure privileged workstations, monitor retrieval, or protect Active Directory.
+
+---
+
+## Risks Addressed
+
+This lab reduces the risk of:
+
+- Shared local administrator passwords
+- Reused local credentials across workstations
+- Manual password tracking
+- Unmanaged password age
+- Direct per-user retrieval permissions
+- Missing workstation password backup
+- Unhealthy replication during directory-wide changes
+- Public exposure of managed credentials
+
+---
+
+## Control Mapping
+
+| Control Area | Lab Contribution |
+|---|---|
+| Local Administrator Governance | Configures Windows LAPS for the workstation scope |
+| Credential Protection | Replaces shared-password management with per-device password data |
+| Group-Based Delegation | Assigns password-read permission to a security group |
+| Policy Enforcement | Applies Windows LAPS through Group Policy |
+| Directory Integrity | Validates replication health before continuing |
+| Endpoint Validation | Confirms client policy processing |
+| Audit Readiness | Captures configuration and password-metadata evidence |
+| Least Privilege | Establishes a dedicated reader group, with further reader testing identified |
+
+---
+
+## Validation Results
 
 | Validation Item | Result |
 |---|---|
-| Pre-change checkpoint created before schema work | Passed |
+| Temporary pre-change checkpoint created | Passed |
 | `CLIENT01` located in Workstations OU | Passed |
-| Windows LAPS commands available after update validation | Passed |
-| Initial LAPS module path check documented | Passed |
-| Schema Admin, Enterprise Admin, and Domain Admin context reviewed | Passed |
-| Initial schema extension issue identified | Passed |
-| Replication health issue identified and corrected | Passed |
-| Windows LAPS schema attributes verified | Passed |
-| Computer self-permission applied to Workstations OU | Passed |
-| LAPS password readers group created | Passed |
-| Authorized reader added to delegated group | Passed |
-| LAPS read password permission delegated to group | Passed |
-| Windows LAPS GPO linked to Workstations OU | Passed |
-| Windows LAPS policy settings configured | Passed |
-| GPO applied to `CLIENT01` | Passed |
-| LAPS policy processing completed successfully | Passed |
-| LAPS password metadata retrieved from AD | Passed |
-| Final DC01 checkpoint created | Passed |
-| Final CLIENT01 checkpoint created | Passed |
+| Windows LAPS commands available | Passed |
+| Initial module-path issue documented | Passed |
+| Schema-change security context reviewed | Passed |
+| Initial schema operation error documented | Passed |
+| Replication and DNS issue identified | Passed |
+| Replication health restored | Passed |
+| Required LAPS schema attributes confirmed | Passed |
+| Computer self-permission applied | Passed |
+| Password readers group created | Passed |
+| Lab reader added to group | Passed |
+| Password-read permission delegated | Passed |
+| Windows LAPS GPO linked | Passed |
+| Windows LAPS policy configured | Passed |
+| GPO processed by `CLIENT01` | Passed |
+| LAPS policy processing completed | Passed |
+| Password information retrieved from Active Directory | Passed |
+| Non-privileged reader-only retrieval test | Not tested |
+| Unauthorized retrieval test | Not tested |
+| Temporary final checkpoints created | Passed |
 
 ---
 
@@ -489,111 +606,99 @@ Post-Lab-17-Windows-LAPS-and-Local-Administrator-Control-Validated
 
 | Evidence | Screenshot |
 |---|---|
-| Pre-LAPS schema checkpoint | `screenshots/lab-17-01-pre-laps-schema-extension-checkpoint.png` |
-| Client computer object in Workstations OU | `screenshots/lab-17-02-client01-computer-object-in-workstations-ou.png` |
-| KB and LAPS command validation | `screenshots/lab-17-03-kb5030216-installed-and-laps-commands-available.png` |
-| Initial LAPS module path check | `screenshots/lab-17-04-windows-laps-module-not-detected.png` |
-| Schema Admin membership check | `screenshots/lab-17-05-schema-admin-membership-check.png` |
-| Failed schema extension attempt | `screenshots/lab-17-06-laps-schema-extension-failed-operation-error.png` |
-| Replication DNS failure before retry | `screenshots/lab-17-07-replication-dns-failure-before-laps-schema-retry.png` |
-| Replication health restored | `screenshots/lab-17-08-replication-health-restored-before-laps-schema-retry.png` |
-| LAPS schema attributes verified | `screenshots/lab-17-09-windows-laps-schema-extension-verified.png` |
-| LAPS computer self-permission applied | `screenshots/lab-17-10-workstations-ou-laps-computer-self-permission-set.png` |
-| LAPS password readers group created | `screenshots/lab-17-11-laps-password-readers-group-created.png` |
-| Admin added to LAPS password readers group | `screenshots/lab-17-12-admin-added-to-laps-password-readers-group.png` |
-| LAPS read permission delegated | `screenshots/lab-17-13-laps-read-password-permission-delegated.png` |
-| Windows LAPS GPO linked | `screenshots/lab-17-14-windows-laps-gpo-linked-to-workstations-ou.png` |
-| Windows LAPS policy settings configured | `screenshots/lab-17-15-windows-laps-policy-settings-configured.png` |
-| Client GPO application verified | `screenshots/lab-17-16-client01-laps-gpo-applied-with-gpresult.png` |
-| LAPS policy processing invoked | `screenshots/lab-17-17-client01-laps-policy-processing-invoked.png` |
-| LAPS password metadata retrieved | `screenshots/lab-17-18-laps-password-retrieval-metadata.png` |
-| DC01 final checkpoint | `screenshots/lab-17-19-dc01-post-lab17-checkpoint.png` |
-| CLIENT01 final checkpoint | `screenshots/lab-17-20-client01-post-lab17-checkpoint.png` |
-
----
-
-## Troubleshooting Notes
-
-During the schema extension process, the initial Windows LAPS schema update attempt failed with an operation error.
-
-Rather than forcing the change forward, I validated domain controller health and discovered a replication or DNS-related issue involving domain controller communication.
-
-The issue was corrected before continuing. After replication health was restored, the required `ms-LAPS-*` schema attributes were verified successfully.
-
-This was an important part of the lab because schema changes should not be performed on top of unhealthy Active Directory replication.
-
----
-
-## Security Lessons Learned
-
-This lab reinforced several important IAM and endpoint security lessons:
-
-- Local Administrator passwords should not be shared, reused, or manually tracked
-- LAPS helps reduce lateral movement risk by rotating and storing local admin passwords securely
-- Password retrieval should be delegated through groups, not assigned directly to individual users
-- OU targeting matters because policy scope determines which systems are managed
-- Schema changes require healthy Active Directory replication
-- Troubleshooting AD health is part of real identity administration work
-- Password metadata can be documented, but actual passwords should not be exposed in public documentation
+| Pre-change checkpoint | `screenshots/lab-17-01-pre-laps-schema-extension-checkpoint.png` |
+| Workstation OU placement | `screenshots/lab-17-02-client01-computer-object-in-workstations-ou.png` |
+| Windows LAPS command availability | `screenshots/lab-17-03-kb5030216-installed-and-laps-commands-available.png` |
+| Module-path check | `screenshots/lab-17-04-windows-laps-module-not-detected.png` |
+| Schema Admin context | `screenshots/lab-17-05-schema-admin-membership-check.png` |
+| Schema operation error | `screenshots/lab-17-06-laps-schema-extension-failed-operation-error.png` |
+| Replication and DNS failure | `screenshots/lab-17-07-replication-dns-failure-before-laps-schema-retry.png` |
+| Restored replication health | `screenshots/lab-17-08-replication-health-restored-before-laps-schema-retry.png` |
+| Windows LAPS schema attributes | `screenshots/lab-17-09-windows-laps-schema-extension-verified.png` |
+| Computer self-permission | `screenshots/lab-17-10-workstations-ou-laps-computer-self-permission-set.png` |
+| Password readers group | `screenshots/lab-17-11-laps-password-readers-group-created.png` |
+| Lab reader membership | `screenshots/lab-17-12-admin-added-to-laps-password-readers-group.png` |
+| Password-read delegation | `screenshots/lab-17-13-laps-read-password-permission-delegated.png` |
+| Windows LAPS GPO link | `screenshots/lab-17-14-windows-laps-gpo-linked-to-workstations-ou.png` |
+| Windows LAPS policy | `screenshots/lab-17-15-windows-laps-policy-settings-configured.png` |
+| Client Group Policy result | `screenshots/lab-17-16-client01-laps-gpo-applied-with-gpresult.png` |
+| Client LAPS processing | `screenshots/lab-17-17-client01-laps-policy-processing-invoked.png` |
+| Password information retrieval | `screenshots/lab-17-18-laps-password-retrieval-metadata.png` |
+| MRTG-DC01 checkpoint | `screenshots/lab-17-19-dc01-post-lab17-checkpoint.png` |
+| Client checkpoint | `screenshots/lab-17-20-client01-post-lab17-checkpoint.png` |
 
 ---
 
 ## What I Would Improve in Production
 
-In a production environment, I would improve this implementation by:
+In a production environment, I would:
 
-- Using a dedicated privileged access group instead of the built-in Administrator account for password retrieval
-- Requiring separate named admin accounts for LAPS password access
-- Enforcing stronger auditing for LAPS password retrieval events
-- Documenting a formal break-glass process for local administrator access
-- Limiting LAPS password reader membership through approval-based access
-- Reviewing delegated permissions with `Find-LapsADExtendedRights`
-- Using tiered administrative workstations for privileged access
-- Validating replication health before all schema or domain-wide changes
-- Creating formal change records before extending the AD schema
-- Monitoring LAPS-related activity through centralized logging or SIEM
+- Use named administrative accounts for password retrieval
+- Test retrieval with an account that has only the delegated reader role
+- Confirm unauthorized users cannot retrieve password information
+- Use approval-based or time-bound reader access
+- Enable password encryption where supported and required
+- Define password length, age, and complexity standards
+- Audit Windows LAPS events and password retrieval activity
+- Forward LAPS-related events to centralized monitoring
+- Review extended rights with `Find-LapsADExtendedRights`
+- Remove unnecessary extended rights from the managed OU
+- Use hardened privileged workstations
+- Maintain a formal emergency-access process
+- Keep Schema Admins membership empty except during approved changes
+- Use formal change management for schema extensions
+- Maintain supported System State and forest-recovery backups
+- Never publish plaintext passwords in screenshots or documentation
+- Use Hyper-V checkpoints only as temporary lab tools
 
 ---
 
-## Skills Demonstrated
+## Lessons Learned
 
-- Windows LAPS deployment
-- Active Directory schema validation
-- Active Directory replication troubleshooting
-- DNS-related replication issue identification
-- Group Policy configuration
-- OU-scoped workstation policy targeting
-- LAPS computer self-permission configuration
-- Group-based LAPS password retrieval delegation
-- GPO application validation with `gpresult`
-- Manual LAPS policy processing
-- LAPS password metadata retrieval
-- Hyper-V checkpoint management
-- IAM documentation and evidence capture
+This lab reinforced that Windows LAPS deployment includes more than creating a GPO.
+
+Successful deployment requires:
+
+- Supported operating-system functionality
+- Healthy Active Directory replication
+- Required schema attributes
+- Computer self-permission
+- Controlled reader permissions
+- Correct OU targeting
+- Client-side policy processing
+- Active Directory password backup
+- Secure retrieval practices
+
+The most important lesson was that schema work should stop when directory health is uncertain.
+
+The lab also exposed an important validation gap: password retrieval by a broadly privileged account does not prove that least-privilege delegation works. A dedicated reader-only account should be tested in production-quality validation.
 
 ---
 
 ## Outcome
 
-Lab 17 successfully implemented Windows LAPS and local Administrator password control in the MRTG Active Directory environment.
+Lab 17 successfully implemented Windows LAPS for `CLIENT01`.
 
 The lab confirmed that:
 
-- `CLIENT01` was properly scoped inside the Workstations OU
-- Windows LAPS functionality was available after update validation
-- LAPS schema attributes were present in Active Directory
-- Computer self-permission was applied to allow password updates
-- Password read access was delegated through a dedicated group
-- The Windows LAPS GPO applied successfully to the client workstation
-- LAPS policy processing completed successfully
-- LAPS password metadata could be retrieved from Active Directory
+- The workstation was in the correct OU
+- Windows LAPS commands were available
+- A replication and DNS issue was identified and corrected
+- Required Windows LAPS schema attributes were present
+- Computer self-permission was configured
+- A password-readers group was created
+- Password-read permission was delegated
+- The Windows LAPS GPO applied to the workstation
+- Client-side LAPS processing completed
+- Password information was backed up to Active Directory
+- Password metadata could be retrieved without publishing the credential
 
-This lab strengthened the IAM series by adding endpoint-level local Administrator control, which is a major security improvement over shared or unmanaged local admin passwords.
+The environment now has a functional foundation for managed local administrator passwords and reduced credential-reuse risk.
 
 ---
 
 ## Next Lab
 
-[Lab 18 — Group-Based Access Control for File and Department Resources](../Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources/)
+[Lab 18: Group-Based Access Control for File and Department Resources](../Lab-18-Group-Based-Access-Control-for-File-and-Department-Resources/)
 
-Lab 18 will build on prior IAM concepts by using Active Directory security groups to control access to shared resources through a scalable authorization model.
+Lab 18 applies a scalable group-nesting model to departmental file access and validates authorization after identity-role changes.
