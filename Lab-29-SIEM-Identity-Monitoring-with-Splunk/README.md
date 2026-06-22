@@ -1,89 +1,100 @@
-# Lab 29 - SIEM Identity Monitoring with Splunk
+# Lab 29: SIEM Identity Monitoring with Splunk
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Splunk%20Enterprise-blue)
-![Focus](https://img.shields.io/badge/Focus-SIEM%20Identity%20Monitoring-green)
+![Focus](https://img.shields.io/badge/Focus-Identity%20Event%20Monitoring-green)
 ![Security](https://img.shields.io/badge/Security-Windows%20Security%20Events-red)
-![Validation](https://img.shields.io/badge/Validation-Completed-brightgreen)
-![Documentation](https://img.shields.io/badge/Documentation-Audit%20Ready-purple)
+![Validation](https://img.shields.io/badge/Validation-Ingestion%20Verified-brightgreen)
+![Documentation](https://img.shields.io/badge/Documentation-Evidence%20Captured-purple)
 
 ---
 
 ## Overview
 
-In this lab, I installed Splunk Enterprise on `MRTG-LOG01`, ingested its local Windows Security event log, and created identity-focused searches.
+This lab installed Splunk Enterprise on `MRTG-LOG01`, ingested the server's local Windows Security event log, and tested identity-focused searches.
 
-The searches reviewed successful logons, failed logons, account lifecycle activity, and security group membership changes.
+The searches examined:
 
-The lab also demonstrated an important SIEM principle: a search returning zero results is still useful when the search logic, time range, data source, and collection scope are understood.
+- Successful logons
+- Failed logons
+- Account lifecycle events
+- Global security group changes
+- Local security group changes
+- Administrator-related group additions
 
-This lab established a foundation for centralized identity monitoring. It did not yet forward security events from `MRTG-DC01` or other remote systems.
+The lab also demonstrated that a zero-result search can provide useful information when the query, time range, event source, and collection scope are understood.
+
+This implementation established a foundation for centralized identity-event monitoring. It did not collect Security logs from the domain controllers or other remote systems and did not deploy Splunk Enterprise Security.
 
 ---
 
 ## Business Problem
 
-MRTG needed better visibility into identity-related activity.
+MRTG needed improved visibility into identity-related activity.
 
-Authentication, account management, and group membership events can reveal:
+Authentication, account-management, and group-membership events can provide evidence of:
 
-- Normal user activity
+- Normal account activity
 - Failed authentication attempts
-- Password problems
+- Password or service credential problems
 - Account lifecycle changes
 - Privilege assignments
 - Unauthorized group modifications
 - Possible credential attacks
 - Endpoint administrator changes
 
-Without centralized collection and search capabilities, these events remain distributed across individual Windows systems and are difficult to investigate.
+Without centralized collection and search capabilities, these events remain distributed across individual Windows systems and are more difficult to investigate.
 
-This lab addressed that problem by deploying Splunk Enterprise and validating a repeatable identity-event search workflow.
+This lab addressed the initial collection and search requirement by deploying Splunk Enterprise and validating a repeatable identity-event search workflow against one local event source.
 
 ---
 
 ## Lab Summary
 
-I created pre-lab checkpoints for `MRTG-DC01` and `MRTG-LOG01`.
+Pre-lab checkpoints were created for `MRTG-DC01` and `MRTG-LOG01`.
 
-Because the logging server did not have direct internet access, I created `C:\Installers` and staged the Splunk Enterprise installer locally.
+Because the logging server did not have direct internet access, a local `C:\Installers` staging folder was created and the Splunk Enterprise installer was transferred to it.
 
-I confirmed that Splunk was not already installed, completed the installation using a local virtual service account, created the Splunk administrator credential, and accessed Splunk Web through port `8000`.
+A service query found no existing Splunk services. Splunk Enterprise was then installed using the installer's local virtual account option. A local Splunk administrator account was configured, and Splunk Web was accessed through TCP port `8000`.
 
-I added the local Windows Security event log as a Splunk input using the `main` index and `WinEventLog:Security` sourcetype.
+The local Windows Security event log was added as an input using:
 
-I then tested searches for:
+- Index: `main`
+- Sourcetype: `WinEventLog:Security`
+- Host: `MRTG-LOG01`
 
-- All indexed Windows Security events
-- Successful logons using Event ID `4624`
-- Failed logons using Event ID `4625`
+Searches were tested for:
+
+- All indexed Security events
+- Event ID `4624`
+- Event ID `4625`
 - Account lifecycle events
-- Global and local security group changes
-- Local security group additions
-- Administrator-specific group changes
+- Global and local group changes
+- Local group additions
+- Administrator-specific group additions
 
-Finally, I created post-lab checkpoints for both systems.
+Post-lab checkpoints were created after validation.
 
 ---
 
 ## Objectives
 
-- Create pre-lab checkpoints
+- Create pre-lab Hyper-V checkpoints
 - Prepare an offline installer staging location
-- Validate that Splunk was not already installed
+- Check for existing Splunk services
 - Install Splunk Enterprise on `MRTG-LOG01`
-- Use a local virtual service account
-- Protect the Splunk administrator credential
-- Validate Splunk Web access
-- Add the Windows Security event log as an input
-- Confirm events were indexed
-- Search successful logon events
-- Search failed logon events
+- Select the local virtual account option
+- Exclude the Splunk administrator password from evidence
+- Validate local Splunk Web access
+- Add the local Windows Security event log as an input
+- Confirm that events were indexed
+- Search successful and failed logons
 - Test account lifecycle searches
 - Search security group membership changes
-- Test local administrator-specific detection
+- Test an Administrator-specific query
 - Document positive and zero-result searches
-- Create post-lab checkpoints
+- Identify collection and detection limitations
+- Create post-lab Hyper-V checkpoints
 
 ---
 
@@ -93,24 +104,24 @@ Finally, I created post-lab checkpoints for both systems.
 
 - Splunk Enterprise installation
 - Offline installer staging
-- Local virtual service account selection
+- Local virtual account selection
 - Splunk administrator account creation
-- Splunk Web validation
+- Local Splunk Web validation
 - Local Windows Security log ingestion
 - SPL identity-event searches
-- Authentication event review
-- Account management search testing
-- Security group change review
+- Authentication-event review
+- Account-management query testing
+- Security-group change review
 - Zero-result analysis
 - Hyper-V checkpoints
-- Audit evidence collection
+- Evidence collection
 
 ### Not Included
 
-- Universal Forwarder deployment
+- Splunk Universal Forwarder deployment
 - Remote collection from `MRTG-DC01`
+- Remote collection from `MRTG-DC02`
 - Collection from `MRTG-CLIENT-01`
-- Collection from `MRTG-DC02`
 - Distributed Splunk architecture
 - Dedicated Windows Security index
 - Splunk role-based access control
@@ -118,9 +129,10 @@ Finally, I created post-lab checkpoints for both systems.
 - Correlation searches
 - Alert creation
 - Long-term retention planning
-- TLS configuration
+- TLS for Splunk Web
 - Production hardening
 - Splunk Enterprise Security deployment
+- End-to-end detection and response testing
 
 ---
 
@@ -132,12 +144,12 @@ Finally, I created post-lab checkpoints for both systems.
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
 | Logging Server | `MRTG-LOG01` |
-| SIEM Platform | Splunk Enterprise |
+| Platform | Splunk Enterprise |
 | Splunk Version | `10.4.0` |
 | Installation Path | `C:\Program Files\Splunk\` |
 | Installer Staging Path | `C:\Installers` |
 | Splunk Web | `http://localhost:8000` |
-| Service Identity | Local virtual account |
+| Service Identity Option | Local virtual account |
 | Event Source | Local Windows Security event log |
 | Indexed Host | `MRTG-LOG01` |
 | Index | `main` |
@@ -151,15 +163,33 @@ Finally, I created post-lab checkpoints for both systems.
 
 MRTG needs a searchable platform for reviewing identity-related Windows events.
 
-For this foundational lab, Splunk Enterprise is installed directly on `MRTG-LOG01`, and the server’s local Security event log is indexed.
+For this foundational lab, Splunk Enterprise is installed directly on `MRTG-LOG01`, and only the server's local Security event log is indexed.
 
-The monitoring model used was:
+The lab followed this model:
 
 ```text
-Install Platform → Add Security Log → Confirm Ingestion → Search Authentication → Search Account Changes → Search Group Changes → Document Findings
+Install platform
+       |
+       v
+Add Security log
+       |
+       v
+Confirm ingestion
+       |
+       v
+Search authentication events
+       |
+       v
+Search account changes
+       |
+       v
+Search group changes
+       |
+       v
+Document findings and gaps
 ```
 
-This proves the ingestion and search workflow before expanding collection to domain controllers and endpoints.
+This validates local ingestion and basic search construction before remote event collection is introduced.
 
 ---
 
@@ -169,14 +199,14 @@ This proves the ingestion and search workflow before expanding collection to dom
 MRTG-LOG01
 ├── Splunk Enterprise
 ├── Splunk Web on TCP 8000
-├── Local Windows Security Log
+├── Local Windows Security log
 └── Index: main
     └── Sourcetype: WinEventLog:Security
 ```
 
-The current architecture indexes events generated on `MRTG-LOG01`.
+The architecture indexed events generated on `MRTG-LOG01`.
 
-It should not be described as full domain-wide monitoring because remote Windows systems were not configured as data sources during this lab.
+It did not provide domain-wide identity monitoring because the domain controllers and endpoints were not configured as data sources.
 
 ---
 
@@ -184,22 +214,24 @@ It should not be described as full domain-wide monitoring because remote Windows
 
 | Event ID | Description | Monitoring Value |
 |---:|---|---|
-| `4624` | Successful account logon | Establish normal authentication activity |
-| `4625` | Failed account logon | Identify failures and possible password attacks |
+| `4624` | Successful account logon | Establish authentication activity and logon patterns |
+| `4625` | Failed account logon | Identify failures and possible credential attacks |
 | `4720` | User account created | Monitor account provisioning |
 | `4722` | User account enabled | Monitor account activation |
 | `4725` | User account disabled | Monitor offboarding or containment |
 | `4726` | User account deleted | Monitor account removal |
-| `4728` | Member added to global security group | Monitor domain group access changes |
-| `4729` | Member removed from global security group | Monitor domain group access removal |
-| `4732` | Member added to local security group | Monitor local privilege assignments |
-| `4733` | Member removed from local security group | Monitor local privilege removal |
+| `4728` | Member added to a global security group | Monitor domain group access changes |
+| `4729` | Member removed from a global security group | Monitor domain group access removal |
+| `4732` | Member added to a local security group | Monitor local group access changes |
+| `4733` | Member removed from a local security group | Monitor local group access removal |
+
+> Event availability depends on audit policy, event source, retention, collection configuration, and search time range.
 
 ---
 
 ## Implementation Steps
 
-### Step 1 - Created DC01 Pre-Lab Checkpoint
+### Step 1: Create the DC01 Pre-Lab Checkpoint
 
 A checkpoint was created for `MRTG-DC01`.
 
@@ -209,11 +241,15 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab29-SIEM-Identity-Monitoring
 ```
 
+The domain controller was not configured as an event source in this lab. Its checkpoint preserved the broader lab environment state.
+
+> Hyper-V checkpoints are temporary lab recovery tools. They are not substitutes for tested backups.
+
 ![DC01 Pre-Lab Checkpoint](screenshots/lab-29-01-dc01-pre-lab-checkpoint.png)
 
 ---
 
-### Step 2 - Created LOG01 Pre-Lab Checkpoint
+### Step 2: Create the LOG01 Pre-Lab Checkpoint
 
 A checkpoint was created for `MRTG-LOG01` before installing Splunk.
 
@@ -229,7 +265,7 @@ MRTG-LOG01_Pre-Lab29-SIEM-Identity-Monitoring
 
 ## Splunk Installation
 
-### Step 3 - Created the Installers Folder
+### Step 3: Create the Installers Folder
 
 `MRTG-LOG01` did not have direct internet access, so an offline installation workflow was used.
 
@@ -239,13 +275,13 @@ Installer staging folder:
 C:\Installers
 ```
 
-This reflects a common practice in restricted environments where servers cannot download software directly.
+A controlled staging location supports software installation on systems without direct internet access.
 
 ![Installers Folder Created](screenshots/lab-29-03-installers-folder-created.png)
 
 ---
 
-### Step 4 - Staged the Splunk Installer
+### Step 4: Stage the Splunk Installer
 
 The Splunk Enterprise Windows installer was copied to the staging folder.
 
@@ -259,7 +295,7 @@ splunk-10.4.0-f798d4d49089-windows-x64.msi
 
 ---
 
-### Step 5 - Validated That Splunk Was Not Installed
+### Step 5: Check for Existing Splunk Services
 
 An elevated PowerShell session was used to search for existing Splunk services.
 
@@ -269,25 +305,23 @@ Command used:
 Get-Service *splunk*
 ```
 
-No services were returned.
+No matching services were returned.
 
-This established a clean pre-installation baseline.
+This established that no Splunk service was registered at the time of the query. It did not independently prove that no Splunk files or incomplete installation artifacts existed.
 
 ![Splunk Not Installed Validation](screenshots/lab-29-05-splunk-not-installed-validation.png)
 
 ---
 
-### Step 6 - Launched the Splunk Installer
+### Step 6: Launch the Splunk Installer
 
-The Splunk Enterprise installer was launched.
-
-The license agreement was accepted, and the installation options were reviewed.
+The Splunk Enterprise installer was launched, the license agreement was accepted, and the installation options were reviewed.
 
 ![Splunk Installer Wizard](screenshots/lab-29-06-splunk-installer-wizard.png)
 
 ---
 
-### Step 7 - Confirmed the Installation Path
+### Step 7: Confirm the Installation Path
 
 Splunk Enterprise was installed to the default Windows path:
 
@@ -299,9 +333,9 @@ C:\Program Files\Splunk\
 
 ---
 
-### Step 8 - Selected the Splunk Service Account
+### Step 8: Select the Splunk Service Identity
 
-Splunk Enterprise was configured to run using a local virtual account.
+The installer was configured to use its local virtual account option.
 
 Selected option:
 
@@ -309,15 +343,15 @@ Selected option:
 Virtual Account
 ```
 
-The virtual account provided access to local and forwarded data without introducing a new domain service account.
+This avoided creating a separate domain service account for the local installation.
 
-This supported least privilege for the current local installation.
+The selection alone does not establish complete least privilege. Effective service permissions and access requirements would require a separate review.
 
 ![Splunk Service Account Selection](screenshots/lab-29-08-splunk-service-account-selection.png)
 
 ---
 
-### Step 9 - Configured the Splunk Administrator Account
+### Step 9: Configure the Splunk Administrator Account
 
 A local Splunk administrator account was created during installation.
 
@@ -327,13 +361,15 @@ Username:
 admin
 ```
 
-The password was intentionally hidden and excluded from the repository.
+The password was excluded from screenshots and repository content.
+
+> Excluding the password from evidence protects against public disclosure, but it does not validate password strength, storage, rotation, or administrative access governance.
 
 ![Splunk Administrator Credentials Configured](screenshots/lab-29-09-splunk-admin-credentials-configured.png)
 
 ---
 
-### Step 10 - Completed the Installation
+### Step 10: Complete the Installation
 
 The installer copied the required files and completed the Splunk Enterprise installation.
 
@@ -343,7 +379,7 @@ The installer copied the required files and completed the Splunk Enterprise inst
 
 ## Splunk Web Validation
 
-### Step 11 - Opened the Splunk Web Login Page
+### Step 11: Open the Splunk Web Login Page
 
 Splunk Web was accessed locally at:
 
@@ -351,22 +387,22 @@ Splunk Web was accessed locally at:
 http://localhost:8000
 ```
 
-The login page confirmed that the web interface was listening on TCP port `8000`.
+The login page confirmed local availability of the Splunk Web interface on TCP port `8000`.
 
 ![Splunk Web Login](screenshots/lab-29-11-splunk-web-login.png)
 
 ---
 
-### Step 12 - Validated the Splunk Enterprise Home Page
+### Step 12: Validate the Splunk Enterprise Home Page
 
 After authentication, the Splunk Enterprise home page loaded successfully.
 
-This confirmed that:
+This demonstrated that:
 
 - Splunk Enterprise was installed
-- Splunk Web was running
-- The administrator credential worked
-- Search and Reporting was available
+- Splunk Web was available locally
+- The configured administrator credential authenticated
+- The Search and Reporting interface was available
 
 ![Splunk Enterprise Home](screenshots/lab-29-12-splunk-enterprise-home.png)
 
@@ -374,11 +410,9 @@ This confirmed that:
 
 ## Windows Security Log Ingestion
 
-### Step 13 - Configured the Windows Security Log Input
+### Step 13: Configure the Windows Security Log Input
 
 The local Windows Security event log was added as a Splunk input.
-
-Input configuration:
 
 | Setting | Value |
 |---|---|
@@ -387,12 +421,13 @@ Input configuration:
 | App Context | Search |
 | Host | `MRTG-LOG01` |
 | Index | `main` |
+| Sourcetype | `WinEventLog:Security` |
 
 ![Windows Security Log Input Review](screenshots/lab-29-13-windows-security-log-input-review.png)
 
 ---
 
-### Step 14 - Validated Windows Security Event Ingestion
+### Step 14: Validate Windows Security Event Ingestion
 
 The indexed Security events were searched with SPL.
 
@@ -402,9 +437,9 @@ Search used:
 index=main sourcetype="WinEventLog:Security"
 ```
 
-The search returned more than 13,000 Windows Security events from `MRTG-LOG01`.
+The search displayed more than 13,000 Windows Security events associated with `MRTG-LOG01`.
 
-This confirmed that the local Security log was being indexed and was searchable.
+This demonstrated that local Security events were present in the selected index, matched the specified sourcetype, and were searchable.
 
 ![Windows Security Events Search](screenshots/lab-29-14-windows-security-events-search.png)
 
@@ -412,7 +447,7 @@ This confirmed that the local Security log was being indexed and was searchable.
 
 ## Authentication Monitoring
 
-### Step 15 - Searched Successful Logon Events
+### Step 15: Search Successful Logon Events
 
 Successful logons were searched using Event ID `4624`.
 
@@ -422,22 +457,24 @@ Search used:
 index=main sourcetype="WinEventLog:Security" EventCode=4624
 ```
 
-The search returned successful authentication events.
+The search displayed successful logon events.
 
 Event ID `4624` can support:
 
-- User activity review
+- Account-activity review
 - Logon baseline development
-- Account usage validation
-- Source workstation analysis
-- Logon type analysis
+- Account-usage validation
+- Source-system analysis
+- Logon-type analysis
 - Incident investigation
+
+A complete analysis should inspect fields such as account name, logon type, source address, source workstation, authentication package, and process information.
 
 ![Successful Logon Events 4624](screenshots/lab-29-15-successful-logon-events-4624.png)
 
 ---
 
-### Step 16 - Searched Failed Logon Events
+### Step 16: Search Failed Logon Events
 
 Failed logons were searched using Event ID `4625`.
 
@@ -447,9 +484,9 @@ Search used:
 index=main sourcetype="WinEventLog:Security" EventCode=4625
 ```
 
-The search returned four events in the selected dataset.
+The search displayed four matching events in the selected dataset and time range.
 
-Event ID `4625` can indicate:
+Event ID `4625` can be associated with:
 
 - Mistyped passwords
 - Expired credentials
@@ -459,7 +496,7 @@ Event ID `4625` can indicate:
 - Brute-force attempts
 - Unauthorized access attempts
 
-A failed logon is not automatically malicious. Context, frequency, source, target account, failure reason, and time must be reviewed.
+A failed logon is not automatically malicious. Frequency, source, target account, logon type, failure reason, and timing must be evaluated before assigning a security conclusion.
 
 ![Failed Logon Events 4625](screenshots/lab-29-16-failed-logon-events-4625.png)
 
@@ -467,9 +504,9 @@ A failed logon is not automatically malicious. Context, frequency, source, targe
 
 ## Account Lifecycle Monitoring
 
-### Step 17 - Tested the Account Management Search
+### Step 17: Test the Account Management Search
 
-Account lifecycle event IDs were searched.
+Account lifecycle Event IDs were searched.
 
 Search used:
 
@@ -488,9 +525,9 @@ Event mappings:
 
 The search returned zero results for the selected data and time range.
 
-This did not prove that no account changes existed anywhere in the MRTG domain. The current input contained only the local `MRTG-LOG01` Security log.
+This result did not prove that no account changes occurred in the MRTG domain. The input contained only the local `MRTG-LOG01` Security log.
 
-Domain account lifecycle events would normally be collected from domain controllers.
+Domain account lifecycle events must be collected from the domain controllers on which they are recorded.
 
 ![Account Management Event Search](screenshots/lab-29-17-account-management-event-search.png)
 
@@ -498,9 +535,9 @@ Domain account lifecycle events would normally be collected from domain controll
 
 ## Group Membership Monitoring
 
-### Step 18 - Searched Security Group Membership Changes
+### Step 18: Search Security Group Membership Changes
 
-Global and local security group membership event IDs were searched.
+Global and local security group membership Event IDs were searched.
 
 Search used:
 
@@ -517,13 +554,13 @@ Event mappings:
 | `4732` | Member added to a local security group |
 | `4733` | Member removed from a local security group |
 
-The search returned two local security group membership events.
+The search displayed two local security group membership events in the selected dataset and time range.
 
 ![Group Membership Change Events](screenshots/lab-29-18-group-membership-change-events.png)
 
 ---
 
-### Step 19 - Isolated Local Security Group Additions
+### Step 19: Isolate Local Security Group Additions
 
 Event ID `4732` was searched separately.
 
@@ -533,15 +570,15 @@ Search used:
 index=main sourcetype="WinEventLog:Security" EventCode=4732
 ```
 
-The search returned two events.
+The search displayed two matching events.
 
-This confirmed that local security group additions were present in the indexed data.
+This confirmed that local security group addition events were available in the indexed data.
 
 ![Local Security Group Change Events](screenshots/lab-29-19-local-security-group-change-events.png)
 
 ---
 
-### Step 20 - Searched Local Group Additions and Removals
+### Step 20: Search Local Group Additions and Removals
 
 A combined search was used for additions to and removals from local security groups.
 
@@ -551,7 +588,7 @@ Search used:
 index=main sourcetype="WinEventLog:Security" (EventCode=4732 OR EventCode=4733)
 ```
 
-The search returned two events in the selected time range.
+The search displayed two matching events in the selected time range.
 
 This search can support monitoring for changes to groups such as:
 
@@ -561,11 +598,13 @@ This search can support monitoring for changes to groups such as:
 - Event Log Readers
 - Remote Management Users
 
+The target group and changed member must be extracted and validated before an alert can reliably distinguish sensitive groups.
+
 ![Local Group Change Events](screenshots/lab-29-20-local-group-change-events.png)
 
 ---
 
-### Step 21 - Tested an Administrator-Specific Search
+### Step 21: Test an Administrator-Specific Search
 
 A keyword-based search was tested for additions associated with Administrators.
 
@@ -577,18 +616,16 @@ index=main sourcetype="WinEventLog:Security" EventCode=4732 Administrators
 
 The search returned zero results.
 
-This result showed that a broad keyword may not match the event as expected.
+This demonstrated that a broad raw-text keyword did not match the target events as expected.
 
-A stronger search should identify the parsed field containing the target group name.
-
-Example tuning approach:
+A stronger tuning process would first inspect available fields:
 
 ```spl
 index=main sourcetype="WinEventLog:Security" EventCode=4732
 | table _time, SubjectUserName, MemberName, GroupName, ComputerName
 ```
 
-The actual field names should be confirmed from the indexed events before building an alert.
+The actual extracted field names and values must be confirmed from the indexed events before creating a reliable detection.
 
 ![Local Admin Specific Search No Results](screenshots/lab-29-21-local-admin-specific-search-no-results.png)
 
@@ -611,44 +648,47 @@ The actual field names should be confirmed from the indexed events before buildi
 
 ## Monitoring Findings
 
-| Search Area | Result | Interpretation |
+| Search Area | Observed Result | Interpretation |
 |---|---|---|
-| Windows Security events | Events found | Local ingestion was working |
-| Successful logons | 278 events shown | Successful authentication events were searchable |
-| Failed logons | 4 events shown | Failed authentication events were searchable |
-| Account lifecycle events | 0 events | No matching events existed in the current LOG01 dataset and range |
-| Group membership changes | 2 events | Local security group changes were present |
+| Windows Security events | More than 13,000 events displayed | Local Security events were indexed and searchable |
+| Successful logons | 278 events displayed | Successful logon events were present |
+| Failed logons | 4 events displayed | Failed logon events were present |
+| Account lifecycle events | 0 events | No matches in the selected local dataset and time range |
+| Group membership changes | 2 events | Local group-change events were present |
 | Local group additions | 2 events | Event ID `4732` was searchable |
-| Local group additions and removals | 2 events | Local group monitoring search worked |
-| Administrator keyword search | 0 events | Search required field-aware tuning |
+| Local additions and removals | 2 events | Combined local group query executed successfully |
+| Administrator keyword search | 0 events | Query required field-aware tuning |
+
+Event counts reflect the selected search time ranges and available indexed data. They should not be treated as permanent totals.
 
 ---
 
 ## Data Scope Limitation
 
-The current Splunk input collected:
+The configured Splunk input collected:
 
 ```text
 MRTG-LOG01 local Windows Security events
 ```
 
-It did not collect domain controller Security logs.
+It did not collect Security events from domain controllers or endpoints.
 
 Therefore:
 
-- The lab validated local event ingestion
-- The lab validated SPL search construction
-- The lab did not provide complete domain authentication monitoring
-- Zero account lifecycle results were expected within the limited source scope
-- Domain account and domain group monitoring would require DC event collection
+- Local event ingestion was validated
+- Basic SPL search construction was validated
+- Domain-wide authentication monitoring was not established
+- Domain account lifecycle monitoring was not established
+- Domain group-change monitoring was not established
+- Zero results could reflect source scope, time range, audit policy, retention, field extraction, or query logic
 
-The next production step would be to deploy Splunk Universal Forwarders to `MRTG-DC01`, `MRTG-DC02`, and selected endpoints.
+A production expansion would require approved collection from `MRTG-DC01`, `MRTG-DC02`, and selected endpoints.
 
 ---
 
 ## Post-Lab Checkpoints
 
-### Step 22 - Created DC01 Post-Lab Checkpoint
+### Step 22: Create the DC01 Post-Lab Checkpoint
 
 A post-lab checkpoint was created for `MRTG-DC01`.
 
@@ -662,7 +702,7 @@ MRTG-DC01_Post-Lab29-SIEM-Identity-Monitoring-Validated
 
 ---
 
-### Step 23 - Created LOG01 Post-Lab Checkpoint
+### Step 23: Create the LOG01 Post-Lab Checkpoint
 
 A post-lab checkpoint was created for `MRTG-LOG01`.
 
@@ -683,26 +723,39 @@ MRTG-LOG01_Post-Lab29-SIEM-Identity-Monitoring-Validated
 | Authentication | Successful and failed logons establish account activity |
 | Identity lifecycle | Account creation, enablement, disablement, and deletion can be monitored |
 | Authorization | Group changes reveal access assignments and removals |
-| Privileged access | Local administrator changes may indicate privilege escalation |
-| Least privilege | Monitoring identifies when access expands |
+| Privileged access | Sensitive group changes may indicate privilege escalation |
+| Least privilege | Monitoring can identify when access expands |
 | Incident response | Searchable events support investigation timelines |
-| Audit readiness | Indexed events provide reviewable security evidence |
-| Governance | Searches can support recurring identity control reviews |
+| Evidence | Indexed events provide reviewable security records |
+| Governance | Searches can support recurring identity-control reviews |
+
+The current dataset validated only local `MRTG-LOG01` event visibility. Broader IAM monitoring requires collection from authoritative identity systems.
 
 ---
 
 ## Risk Addressed
 
-This lab addressed risks including:
+This lab addressed risks associated with:
 
-- Limited visibility into Windows Security events
-- Missed failed authentication activity
+- Limited visibility into local Windows Security events
+- Missed failed authentication activity on the logging server
 - Unreviewed local security group changes
 - Lack of searchable identity-event evidence
-- No SIEM workflow for IAM investigations
-- Weak understanding of event source scope
+- Weak understanding of event-source scope
 - Misinterpretation of zero-result searches
 - Overreliance on raw keyword searches
+
+Residual risks included:
+
+- No domain controller event collection
+- No endpoint event collection
+- No alerts or correlation searches
+- No formal detection thresholds
+- No field-extraction validation
+- No retention design
+- No Splunk role separation
+- No TLS validation
+- No end-to-end incident response workflow
 
 ---
 
@@ -710,43 +763,48 @@ This lab addressed risks including:
 
 | Control Area | Lab Implementation |
 |---|---|
-| SIEM deployment | Installed Splunk Enterprise |
-| Least privilege | Used a local virtual service account |
+| Log platform deployment | Installed Splunk Enterprise |
+| Service identity selection | Used the local virtual account option |
 | Event collection | Added the local Windows Security log |
-| Authentication monitoring | Searched Event IDs `4624` and `4625` |
-| Lifecycle monitoring | Tested Event IDs `4720`, `4722`, `4725`, and `4726` |
-| Privilege monitoring | Searched group change Event IDs |
-| Detection engineering | Built and tested reusable SPL |
-| Search validation | Documented both positive and zero-result searches |
-| Audit readiness | Preserved installation and search evidence |
-| Change protection | Created pre-lab and post-lab checkpoints |
+| Authentication visibility | Searched Event IDs `4624` and `4625` |
+| Lifecycle query testing | Tested Event IDs `4720`, `4722`, `4725`, and `4726` |
+| Group-change visibility | Searched relevant membership-change Event IDs |
+| Search development | Built and tested reusable SPL |
+| Search validation | Documented positive and zero-result searches |
+| Evidence collection | Preserved installation and search screenshots |
+| Lab-state preservation | Created pre-lab and post-lab checkpoints |
+
+> Splunk Enterprise provided log ingestion and search capabilities in this lab. Splunk Enterprise Security, correlation searches, alerting, and production detection operations were not deployed.
 
 ---
 
 ## Validation Summary
 
-| Validation Item | Expected Result | Actual Result | Status |
+| Validation Item | Expected Result | Observed Result | Status |
 |---|---|---|---|
-| DC01 pre-lab checkpoint | Checkpoint exists | Created | Passed |
-| LOG01 pre-lab checkpoint | Checkpoint exists | Created | Passed |
+| DC01 pre-lab checkpoint | Temporary lab state preserved | Created | Passed |
+| LOG01 pre-lab checkpoint | LOG01 state preserved | Created | Passed |
 | Installer folder | `C:\Installers` exists | Created | Passed |
-| Installer staged | Splunk MSI available | Staged | Passed |
-| Pre-installation check | No Splunk service exists | No service returned | Passed |
-| Splunk installation | Application installs successfully | Installed | Passed |
-| Virtual account | Local virtual account selected | Selected | Passed |
-| Administrator credential | Admin account configured securely | Configured | Passed |
-| Splunk Web | Port `8000` responds | Login page loaded | Passed |
-| Splunk authentication | Home page accessible | Login successful | Passed |
+| Installer staging | Splunk MSI available | Staged | Passed |
+| Service baseline | No matching Splunk service | No service returned | Passed |
+| Splunk installation | Application installs | Installed | Passed |
+| Virtual account option | Selected service identity recorded | Selected | Passed |
+| Administrator account | Account configured | Configured | Passed |
+| Password exclusion | Credential absent from public evidence | Not exposed | Passed |
+| Splunk Web | Local login page available | Loaded | Passed |
+| Splunk authentication | Home page accessible | Login succeeded | Passed |
 | Security input | Local Security log configured | Input added | Passed |
-| Event ingestion | Security events searchable | More than 13,000 events shown | Passed |
-| Successful logons | Event ID `4624` searchable | Events found | Passed |
-| Failed logons | Event ID `4625` searchable | Events found | Passed |
-| Account lifecycle search | Search executes | Zero results documented | Passed |
-| Group change search | Relevant events searchable | Two events found | Passed |
-| Local group search | Event IDs `4732` and `4733` searchable | Two events found | Passed |
-| Administrator search | Search behavior documented | Zero results documented | Passed |
-| DC01 post-lab checkpoint | Final checkpoint exists | Created | Passed |
-| LOG01 post-lab checkpoint | Final checkpoint exists | Created | Passed |
+| Event ingestion | Security events searchable | More than 13,000 displayed | Passed |
+| Successful-logon query | Event ID `4624` searchable | Events found | Passed |
+| Failed-logon query | Event ID `4625` searchable | Events found | Passed |
+| Account lifecycle query | Search executes | Zero results documented | Passed |
+| Group-change query | Matching events searchable | Two events found | Passed |
+| Local group query | Event IDs `4732` and `4733` searchable | Two events found | Passed |
+| Administrator detection | Target group reliably identified | Keyword query returned zero | Needs Tuning |
+| Domain-wide collection | DC and endpoint events indexed | Not configured | Not Validated |
+| Alerting | Detection generates notification | Not configured | Not Validated |
+| DC01 post-lab checkpoint | Lab environment state preserved | Created | Passed |
+| LOG01 post-lab checkpoint | LOG01 state preserved | Created | Passed |
 
 ---
 
@@ -758,11 +816,11 @@ This lab addressed risks including:
 | LOG01 pre-lab checkpoint | `screenshots/lab-29-02-log01-pre-lab-checkpoint.png` |
 | Installers folder | `screenshots/lab-29-03-installers-folder-created.png` |
 | Splunk installer | `screenshots/lab-29-04-splunk-installer-staged.png` |
-| Pre-installation validation | `screenshots/lab-29-05-splunk-not-installed-validation.png` |
+| Pre-installation service query | `screenshots/lab-29-05-splunk-not-installed-validation.png` |
 | Installer wizard | `screenshots/lab-29-06-splunk-installer-wizard.png` |
 | Installation path | `screenshots/lab-29-07-splunk-install-path.png` |
 | Virtual service account | `screenshots/lab-29-08-splunk-service-account-selection.png` |
-| Administrator credential | `screenshots/lab-29-09-splunk-admin-credentials-configured.png` |
+| Administrator credential configuration | `screenshots/lab-29-09-splunk-admin-credentials-configured.png` |
 | Installation progress | `screenshots/lab-29-10-splunk-install-progress.png` |
 | Splunk Web login | `screenshots/lab-29-11-splunk-web-login.png` |
 | Splunk Enterprise home | `screenshots/lab-29-12-splunk-enterprise-home.png` |
@@ -786,69 +844,76 @@ This lab addressed risks including:
 
 `MRTG-LOG01` did not have direct internet access.
 
-The installer was transferred through a controlled staging folder:
+The installer was transferred through:
 
 ```text
 C:\Installers
 ```
 
-This allowed the installation to proceed without enabling internet access on the server.
+This allowed installation without enabling direct internet access on the server.
+
+In production, staged software should also be validated through an approved source, digital signature verification, and cryptographic hash comparison.
 
 ### Account Management Search Returned Zero Results
 
-The account lifecycle search returned no results because the current input contained LOG01’s local Security log.
+The account lifecycle search returned no results because the current input contained only the local `MRTG-LOG01` Security log for the selected time range.
 
-Domain account lifecycle events are generated and audited primarily on domain controllers.
+Domain account lifecycle events are recorded on domain controllers when the required audit policy is enabled.
 
-This result identified a collection gap rather than proving that no account activity existed.
+The result identified a collection limitation rather than proving that no domain account activity occurred.
 
 ### Administrator Keyword Search Returned Zero Results
 
-The search below returned no results:
+The following search returned no results:
 
 ```spl
 index=main sourcetype="WinEventLog:Security" EventCode=4732 Administrators
 ```
 
-The event existed, but the target group value may not have been indexed as a searchable raw keyword in the expected format.
+The raw keyword did not match the target events as expected.
 
-The next step would be to inspect the parsed fields and search the actual group-name field.
+The next step would be to inspect field extractions and filter on the actual field containing the target group name.
 
 ---
 
 ## Security Considerations
 
-The Splunk administrator password was not exposed in the evidence.
+The Splunk administrator password was excluded from the evidence.
 
 Production security should also include:
 
 - Restricted Splunk administrator membership
 - Role-based access control
+- Separate administrative and search identities
 - TLS for Splunk Web
-- Secure management ports
-- Firewall restrictions
+- Protected Splunk management interfaces
+- Host firewall restrictions
 - Protected service credentials
 - Configuration backups
-- Audit Trail monitoring
-- Separation of search and administrative roles
+- Splunk audit-index monitoring
 - Controlled app installation
 - Index access restrictions
 - Data retention requirements
-- Time synchronization
-- Capacity monitoring
+- Reliable time synchronization
+- Capacity and ingestion monitoring
+- Software integrity validation
+- Credential rotation
+- Secure remote administration
+
+Local HTTP access at `http://localhost:8000` demonstrated functionality but did not validate encrypted remote management.
 
 ---
 
 ## Real-World Relevance
 
-SIEM platforms are central to IAM operations because identity attacks leave evidence in authentication and authorization logs.
+Identity attacks often leave evidence in authentication, account-management, and authorization logs.
 
 Common monitoring use cases include:
 
 - Password spraying
 - Brute-force attempts
-- Disabled account use
-- Service account failures
+- Disabled-account use
+- Service-account failures
 - New account creation
 - Privileged account enablement
 - Domain Admin membership changes
@@ -856,21 +921,23 @@ Common monitoring use cases include:
 - Suspicious logon types
 - After-hours authentication
 - Lateral movement
-- Repeated lockouts
+- Repeated account lockouts
 
-This lab established the collection and search fundamentals required to build those detections.
+This lab established the local collection and search fundamentals required before reliable detections, alerts, dashboards, and response procedures can be developed.
 
 ---
 
-## What I Would Do Differently in Production
+## Production Improvements
 
-In a production or government-regulated environment, I would implement:
+A production or government-regulated implementation should include:
 
+- Approved Splunk architecture and licensing
 - Splunk Universal Forwarders on domain controllers and endpoints
 - A dedicated Windows Security index
 - TLS-protected event forwarding
-- Standardized host and source naming
-- Index retention policies
+- TLS for Splunk Web and management interfaces
+- Standardized host, source, and sourcetype naming
+- Index retention and capacity policies
 - Splunk role-based access control
 - Separate Splunk administrator accounts
 - Domain controller account-management monitoring
@@ -878,31 +945,33 @@ In a production or government-regulated environment, I would implement:
 - Alerts for privileged group changes
 - Monitoring for Domain Admin membership
 - Monitoring for local Administrators changes
+- Field-aware searches using validated extractions
 - Dashboards for identity activity
-- Correlation of authentication events across systems
-- Time synchronization validation
+- Correlation across authentication sources
+- Time-synchronization validation
 - Configuration backups
-- Health monitoring for missing forwarders
+- Missing-forwarder health monitoring
 - Documented alert ownership and response procedures
 - Ticket integration
-- Formal detection testing
+- Formal detection testing and tuning
 
 ---
 
 ## Lessons Learned
 
-- Installing a SIEM does not create visibility by itself
-- The correct logs must be collected
-- Data source scope determines what a search can prove
-- Event ID `4624` identifies successful logons
-- Event ID `4625` identifies failed logons
-- Account lifecycle events should be collected from domain controllers
+- Installing a log platform does not create visibility by itself
+- Required event sources must be configured and monitored
+- Data-source scope determines what a search can support
+- Event ID `4624` records successful logons
+- Event ID `4625` records failed logons
+- Domain account lifecycle monitoring requires domain controller events
 - Event IDs `4732` and `4733` support local group monitoring
-- Zero-result searches can reveal data gaps or weak search logic
-- Keyword searches should be replaced with parsed-field searches when possible
-- Failed logons require context before being labeled suspicious
-- Local virtual accounts can reduce unnecessary domain access
-- Useful SIEM monitoring depends on collection, searching, tuning, and response
+- Zero-result searches may reveal source, time-range, extraction, or query gaps
+- Keyword searches should use validated parsed fields when possible
+- Failed logons require context before being classified as suspicious
+- A local virtual account avoids introducing an unnecessary domain identity
+- Search success does not establish an operational detection
+- Effective monitoring requires collection, normalization, tuning, alerting, ownership, and response
 
 ---
 
@@ -914,15 +983,15 @@ In a production or government-regulated environment, I would implement:
 - Splunk Web administration
 - Windows Security log ingestion
 - SPL search construction
-- Successful logon analysis
-- Failed logon analysis
-- Account lifecycle monitoring
-- Security group change monitoring
-- Local administrator monitoring
+- Successful-logon analysis
+- Failed-logon analysis
+- Account lifecycle query testing
+- Security-group change monitoring
+- Local administrator query development
 - Zero-result analysis
-- SIEM scope assessment
-- Least-privilege service configuration
-- Audit evidence collection
+- Data-scope assessment
+- Service identity selection
+- Evidence collection
 - Hyper-V checkpoint management
 - Production monitoring planning
 
@@ -930,32 +999,32 @@ In a production or government-regulated environment, I would implement:
 
 ## Outcome
 
-Lab 29 successfully installed Splunk Enterprise on `MRTG-LOG01` and established a foundation for SIEM identity monitoring.
+Lab 29 installed Splunk Enterprise on `MRTG-LOG01` and established a foundation for identity-event monitoring.
 
 The lab demonstrated:
 
 - Offline Splunk installation
-- Local virtual service account usage
+- Local virtual account selection
 - Splunk Web access
-- Windows Security event ingestion
-- Successful logon monitoring
-- Failed logon monitoring
-- Account lifecycle search testing
-- Security group change monitoring
-- Local group change monitoring
-- SPL search tuning
-- Data source limitation analysis
-- Audit-ready evidence collection
-- Pre-lab and post-lab rollback points
+- Local Windows Security event ingestion
+- Successful-logon searches
+- Failed-logon searches
+- Account lifecycle query testing
+- Security-group change searches
+- Local group-change searches
+- Initial SPL tuning
+- Data-source limitation analysis
+- Configuration and search evidence
+- Pre-lab and post-lab checkpoints
 
 The final environment could search identity-related Security events generated on `MRTG-LOG01`.
 
-Full domain-wide identity monitoring would require forwarding Security logs from `MRTG-DC01`, `MRTG-DC02`, and selected endpoints.
+Domain-wide identity monitoring, reliable Administrator-group detection, alerting, correlation, and response workflows were not established. Those capabilities require additional event sources, field validation, detection engineering, access controls, and operational processes.
 
 ---
 
 ## Next Lab
 
-[Lab 30 - IAM Operations, Monitoring, and Governance Capstone](../Lab-30-IAM-Operations-Monitoring-and-Governance-Capstone/)
+[Lab 30: IAM Operations, Monitoring, and Governance Capstone](../Lab-30-IAM-Operations-Monitoring-and-Governance-Capstone/)
 
-Lab 30 will consolidate service account governance, least-privilege automation, endpoint encryption, local administrator remediation, SIEM monitoring, and operational evidence into the final IAM expansion capstone.
+Lab 30 consolidates service account governance, least-privilege automation, endpoint encryption, local administrator remediation, identity-event monitoring, and operational evidence into the final IAM expansion capstone.
