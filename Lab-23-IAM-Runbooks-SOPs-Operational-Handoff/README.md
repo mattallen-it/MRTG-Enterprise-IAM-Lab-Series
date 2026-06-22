@@ -1,4 +1,4 @@
-# Lab 23 - IAM Runbooks, SOPs, and Operational Handoff
+# Lab 23: IAM Runbooks, SOPs, and Operational Handoff
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -9,89 +9,57 @@
 
 ---
 
-## Overview
+## Objective
 
-In this lab, I created an operational handoff documentation package for the Monroe Redstone Technology Group Active Directory and IAM environment.
+Create an operational documentation and handoff package for the `mrtg.local` Active Directory and IAM environment.
 
-The lab focused on creating standard operating procedures, recovery references, responsibility documentation, an operational handoff summary, and a central documentation index.
+This lab converts earlier lifecycle, recovery, and audit work into Standard Operating Procedures, operational references, ownership documentation, a handoff summary, and a central documentation index.
 
-The goal was to prove that the IAM environment was not only built, automated, backed up, and audited, but also documented well enough for another administrator to understand, operate, review, and support.
+The goal is to reduce dependence on undocumented administrator knowledge and provide a structured foundation for repeatable IAM operations.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-MRTG needed to reduce its dependence on undocumented technical knowledge held by a single administrator.
+Monroe Redstone Technology Group requires documentation that allows identity operations to continue during staff transitions, incidents, audits, and routine support.
 
-Without standardized documentation, routine IAM tasks can be completed inconsistently, security requirements can be overlooked, recovery procedures can be delayed, and operational knowledge can be lost during staffing changes.
+Without documented procedures:
 
-The organization needed documented procedures covering identity lifecycle operations, access requests, password resets, privileged access reviews, directory recovery, administrative ownership, and evidence retention.
+- Lifecycle tasks may be completed inconsistently
+- Access approvals may be missed
+- Password resets may bypass identity-verification requirements
+- Privileged access reviews may lack evidence
+- Recovery references may be difficult to locate
+- Process ownership may remain unclear
+- Knowledge may be lost when administrators change roles
 
-This lab addressed that problem by transforming the technical work completed in earlier labs into a structured and validated operational handoff package.
+This lab creates a structured handoff package based on previously completed and validated lab work.
 
 ---
 
 ## Lab Summary
 
-I began by creating a pre-lab Hyper-V checkpoint and a dedicated folder structure for SOPs, runbooks, handoff documents, prior-lab references, output, and evidence.
+In this lab, I created a documentation workspace with folders for SOPs, runbooks, handoff documents, references, output, and evidence.
 
-I then referenced identity lifecycle output from Lab 20, recovery documentation from Lab 21, and audit evidence from Lab 22.
+Artifacts from Labs 20, 21, and 22 were copied into the reference structure.
 
-Using those artifacts, I created four SOPs covering Joiner, Mover, and Leaver operations, access requests, password resets, and privileged access reviews.
+Four SOPs were created:
 
-I also created a directory recovery reference, an administrative responsibility matrix, an operational handoff summary, and a central documentation index.
+- Joiner, Mover, and Leaver
+- Access Request
+- Password Reset
+- Privileged Access Review
 
-Finally, I validated the complete package with PowerShell and created a post-lab checkpoint.
+The package also included:
 
----
+- Directory Recovery Reference
+- Administrative Responsibility Matrix
+- Operational Handoff Summary
+- IAM Documentation Index
 
-## Objectives
+PowerShell was used to inventory the completed files and confirm that the expected package components existed.
 
-- Create pre-lab and post-lab Hyper-V checkpoints
-- Create a dedicated Lab 23 documentation workspace
-- Reference operational evidence from Labs 20, 21, and 22
-- Document Joiner, Mover, and Leaver procedures
-- Document access request procedures
-- Document password reset procedures
-- Document privileged access review procedures
-- Create a directory recovery reference
-- Define primary and backup administrative ownership
-- Create an operational handoff summary
-- Create a central documentation index
-- Validate the complete handoff package
-
----
-
-## Scope
-
-### Included
-
-- Hyper-V checkpoint creation
-- Documentation folder structure creation
-- Prior-lab evidence collection
-- Identity lifecycle SOP creation
-- Access request SOP creation
-- Password reset SOP creation
-- Privileged access review SOP creation
-- Directory recovery reference creation
-- Administrative responsibility mapping
-- Operational handoff documentation
-- Documentation index creation
-- PowerShell-based package validation
-
-### Not Included
-
-- Active Directory configuration changes
-- Production document approval
-- Ticketing platform integration
-- Formal compliance control mapping
-- Full disaster recovery planning
-- Business continuity planning
-- Emergency access procedure testing
-- Recovery tabletop exercises
-- Centralized documentation platform deployment
-- Automated document version control
-- Formal RACI approval
+This validation confirmed package completeness and file presence. It did not prove that another administrator could successfully execute every procedure without a walkthrough or tabletop exercise.
 
 ---
 
@@ -101,47 +69,110 @@ Finally, I validated the complete package with PowerShell and created a post-lab
 |---|---|
 | Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
-| Primary Domain Controller | `MRTG-DC01` |
+| Original Domain Controller | `MRTG-DC01` |
 | Additional Domain Controller | `MRTG-DC02` |
-| Site | `MRTG-HQ-Site` |
-| Lab Root Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff` |
-| SOPs Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\sops` |
-| Runbooks Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\runbooks` |
-| Handoff Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\handoff` |
-| References Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\references` |
-| Output Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\output` |
-| Evidence Path | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\evidence` |
-| Tools | PowerShell, Hyper-V Manager, Markdown |
+| Active Directory Site | `MRTG-HQ-Site` |
+| Lab Root | `C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff` |
+| SOPs Folder | `sops` |
+| Runbooks Folder | `runbooks` |
+| Handoff Folder | `handoff` |
+| References Folder | `references` |
+| Output Folder | `output` |
+| Evidence Folder | `evidence` |
+| Tools | PowerShell, Markdown, and Hyper-V |
 | Hypervisor | Hyper-V |
 
 ---
 
-## Scenario
+## Prerequisites
 
-MRTG has built an enterprise-style Active Directory and IAM environment containing users, groups, organizational units, Group Policy, delegated administration, Windows LAPS, AD CS, identity lifecycle automation, recovery artifacts, and IAM audit evidence.
+- Completed identity lifecycle automation from Lab 20
+- Completed recovery-preparation artifacts from Lab 21
+- Completed IAM security review from Lab 22
+- Access to the prior lab outputs and reports
+- Defined operational areas requiring procedures
+- Identified primary and backup ownership roles
+- Approved documentation structure
+- Secure storage location for sensitive operational documentation
 
-The environment now needs formal operational documentation so another administrator can understand how it is managed and supported.
+---
 
-The operational handoff model used in this lab was:
+## Scope
+
+### Included
+
+- Temporary Hyper-V checkpoints
+- Documentation workspace creation
+- Prior-lab reference collection
+- Joiner, Mover, and Leaver SOP
+- Access Request SOP
+- Password Reset SOP
+- Privileged Access Review SOP
+- Directory Recovery Reference
+- Administrative Responsibility Matrix
+- Operational Handoff Summary
+- Documentation Index
+- PowerShell file-inventory validation
+
+### Not Included
+
+- Active Directory configuration changes
+- Formal document approval
+- Content walkthrough with another administrator
+- Procedure execution testing
+- Recovery tabletop exercise
+- Emergency-access testing
+- Ticketing-system integration
+- Compliance-control mapping
+- Central documentation platform
+- Document version-control system
+- Formal RACI approval
+- Automated review-date tracking
+
+---
+
+## Operational Handoff Model
 
 ```text
-Reference Prior Evidence → Create SOPs → Create Recovery Reference → Define Ownership → Build Index → Validate Package
+Reference Prior Evidence
+          |
+          v
+Create Standard Procedures
+          |
+          v
+Create Recovery Reference
+          |
+          v
+Define Operational Ownership
+          |
+          v
+Create Handoff Summary
+          |
+          v
+Build Documentation Index
+          |
+          v
+Validate Package Contents
+          |
+          v
+Conduct Walkthrough and Approval
 ```
 
-This lab did not make major Active Directory changes. It focused on documentation, ownership, repeatability, evidence, and operational continuity.
+The walkthrough and formal approval stages were outside this lab's scope.
 
 ---
 
 ## Documentation Design
 
-| Documentation Area | Purpose |
+| Documentation Type | Purpose |
 |---|---|
-| SOPs | Standardize repeatable IAM procedures |
-| Runbooks | Provide operational recovery and validation references |
-| Handoff Documents | Define ownership and summarize the operating model |
-| References | Preserve supporting evidence from prior labs |
-| Evidence | Store screenshots and validation artifacts |
-| Output | Store generated output files |
+| SOP | Defines a repeatable operational procedure |
+| Runbook Reference | Provides technical validation and recovery references |
+| Responsibility Matrix | Identifies primary and backup operational ownership |
+| Handoff Summary | Describes the environment and operational priorities |
+| Documentation Index | Provides one navigation point for the package |
+| References | Connect procedures to earlier lifecycle, recovery, and audit evidence |
+| Evidence | Supports validation of package creation |
 
 ---
 
@@ -149,37 +180,36 @@ This lab did not make major Active Directory changes. It focused on documentatio
 
 ```text
 C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff
-│
-├── evidence
-├── handoff
-│   ├── MRTG-Admin-Responsibility-Matrix.md
-│   ├── MRTG-IAM-Documentation-Index.md
-│   └── MRTG-Operational-Handoff-Summary.md
-│
-├── output
-├── references
-│   ├── Lab-20-Identity-Lifecycle-Output
-│   ├── Lab-21-Recovery-Runbook
-│   ├── Lab-22-Audit-Exports
-│   └── Lab-22-Security-Review-Reports
-│
-├── runbooks
-│   └── MRTG-Directory-Recovery-Reference.md
-│
-└── sops
-    ├── MRTG-Access-Request-SOP.md
-    ├── MRTG-Joiner-Mover-Leaver-SOP.md
-    ├── MRTG-Password-Reset-SOP.md
-    └── MRTG-Privileged-Access-Review-SOP.md
+|-- evidence
+|-- handoff
+|   |-- MRTG-Admin-Responsibility-Matrix.md
+|   |-- MRTG-IAM-Documentation-Index.md
+|   `-- MRTG-Operational-Handoff-Summary.md
+|
+|-- output
+|-- references
+|   |-- Lab-20-Identity-Lifecycle-Output
+|   |-- Lab-21-Recovery-Runbook
+|   |-- Lab-22-Audit-Exports
+|   `-- Lab-22-Security-Review-Reports
+|
+|-- runbooks
+|   `-- MRTG-Directory-Recovery-Reference.md
+|
+`-- sops
+    |-- MRTG-Access-Request-SOP.md
+    |-- MRTG-Joiner-Mover-Leaver-SOP.md
+    |-- MRTG-Password-Reset-SOP.md
+    `-- MRTG-Privileged-Access-Review-SOP.md
 ```
+
+The package was stored locally on `MRTG-DC01` for the lab. This is not a resilient or appropriate long-term documentation location for production.
 
 ---
 
-## Implementation Steps
+## Implementation and Validation
 
-### Step 1 - Created Pre-Lab Checkpoint
-
-A Hyper-V checkpoint was created before beginning Lab 23.
+### 1. Created a Pre-Change Lab Checkpoint
 
 Checkpoint name:
 
@@ -187,122 +217,134 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab-23-IAM-Runbooks-SOPs-Operational-Handoff
 ```
 
-![Pre-Lab 23 Checkpoint](screenshots/lab-23-01-pre-lab-23-checkpoint.png)
+![Pre-Lab 23 checkpoint](screenshots/lab-23-01-pre-lab-23-checkpoint.png)
+
+The checkpoint was a temporary lab recovery point and was not part of the documentation package or backup strategy.
 
 ---
 
-### Step 2 - Created Lab 23 Folder Structure
-
-A dedicated Lab 23 workspace was created on `MRTG-DC01`.
-
-Folder structure:
+### 2. Created the Documentation Workspace
 
 ```text
 C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff
-├── evidence
-├── handoff
-├── output
-├── references
-├── runbooks
-└── sops
+|-- evidence
+|-- handoff
+|-- output
+|-- references
+|-- runbooks
+`-- sops
 ```
 
-![Lab 23 Folder Structure Created](screenshots/lab-23-02-folder-structure-created.png)
+![Lab 23 folder structure](screenshots/lab-23-02-folder-structure-created.png)
+
+This separated procedures, recovery references, handoff documents, and supporting evidence.
 
 ---
 
-### Step 3 - Referenced Prior Lab Evidence
-
-Evidence from previous labs was copied into the Lab 23 `references` folder.
+### 3. Collected Prior-Lab References
 
 | Reference Folder | Source |
 |---|---|
-| `Lab-20-Identity-Lifecycle-Output` | Lab 20 Joiner, Mover, and Leaver output |
-| `Lab-21-Recovery-Runbook` | Lab 21 directory recovery runbook |
-| `Lab-22-Audit-Exports` | Lab 22 IAM audit CSV exports |
-| `Lab-22-Security-Review-Reports` | Lab 22 IAM security review summary |
+| `Lab-20-Identity-Lifecycle-Output` | Joiner, Mover, and Leaver results |
+| `Lab-21-Recovery-Runbook` | Directory-recovery documentation |
+| `Lab-22-Audit-Exports` | IAM audit CSV files |
+| `Lab-22-Security-Review-Reports` | IAM security-review summary |
 
-This connected the operational documentation to previously validated lifecycle, recovery, and audit evidence.
+![Prior-lab evidence referenced](screenshots/lab-23-03-prior-lab-evidence-referenced.png)
 
-![Prior Lab Evidence Referenced](screenshots/lab-23-03-prior-lab-evidence-referenced.png)
+These copies connected the handoff documents to previous work.
+
+Because the references remained on the same server and host, they were organizational copies rather than independent archives.
 
 ---
 
-## SOP Creation
+## Standard Operating Procedures
 
-### Step 4 - Created Joiner, Mover, and Leaver SOP
+### 4. Created the Joiner, Mover, and Leaver SOP
 
-A Joiner, Mover, and Leaver SOP was created to document identity lifecycle procedures.
-
-SOP file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\sops\MRTG-Joiner-Mover-Leaver-SOP.md
+sops\MRTG-Joiner-Mover-Leaver-SOP.md
+```
+
+![Joiner, Mover, and Leaver SOP](screenshots/lab-23-04-joiner-mover-leaver-sop-created.png)
+
+The SOP documented:
+
+- Approved-request requirements
+- New-user onboarding
+- Department transfers
+- Attribute and OU updates
+- Old-access removal
+- New-access assignment
+- User offboarding
+- Account disablement
+- Evidence requirements
+- Post-change validation
+
+A complete Leaver process also requires review of active sessions, non-AD applications, data ownership, devices, certificates, and retention requirements.
+
+---
+
+### 5. Created the Access Request SOP
+
+File:
+
+```text
+sops\MRTG-Access-Request-SOP.md
 ```
 
 The SOP documented:
 
-- New-user onboarding
-- Department transfers
-- Access updates
-- User offboarding
-- Account disablement
-- Department group removal
-- Required evidence
-- Governance requirements
+- Requester identification
+- Target-user identification
+- Business justification
+- Manager or resource-owner approval
+- Group-based access assignment
+- Membership validation
+- Evidence retention
+- Escalation for sensitive access
 
-The procedures required approved requests, validated user attributes, automation output, directory validation, and retained evidence.
-
-![Joiner Mover Leaver SOP Created](screenshots/lab-23-04-joiner-mover-leaver-sop-created.png)
+![Access Request and Password Reset SOPs](screenshots/lab-23-05-access-request-and-password-reset-sops-created.png)
 
 ---
 
-### Step 5 - Created Access Request and Password Reset SOPs
+### 6. Created the Password Reset SOP
 
-Two SOPs were created for common IAM and help desk workflows.
-
-SOP files:
+File:
 
 ```text
-MRTG-Access-Request-SOP.md
-MRTG-Password-Reset-SOP.md
+sops\MRTG-Password-Reset-SOP.md
 ```
 
-The Access Request SOP documented:
-
-- Approved request validation
-- Requester and user identification
-- Business justification
-- Access owner or manager approval
-- Group-based access assignment
-- Group membership validation
-- Evidence retention
-
-The Password Reset SOP documented:
+The SOP documented:
 
 - User identity verification
-- Security concern evaluation
-- Password reset execution
-- Password change at next logon
-- Sign-in validation
+- Suspicious-request evaluation
+- Approved reset execution
+- Password change at next sign-in
+- User communication
 - Ticket documentation
-- Escalation of suspicious requests
+- Escalation requirements
 
-![Access Request and Password Reset SOPs Created](screenshots/lab-23-05-access-request-and-password-reset-sops-created.png)
+Temporary passwords must never be recorded in tickets, screenshots, chat messages, or public documentation.
+
+A password reset should also consider active compromise, session revocation, and additional account-recovery controls.
 
 ---
 
-### Step 6 - Created Privileged Access Review SOP
+### 7. Created the Privileged Access Review SOP
 
-A Privileged Access Review SOP was created to standardize reviews of elevated access.
-
-SOP file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\sops\MRTG-Privileged-Access-Review-SOP.md
+sops\MRTG-Privileged-Access-Review-SOP.md
 ```
 
-The SOP covered:
+![Privileged Access Review SOP](screenshots/lab-23-06-privileged-access-review-sop-created.png)
+
+Review areas included:
 
 - Domain Admins
 - Enterprise Admins
@@ -311,50 +353,48 @@ The SOP covered:
 - Account Operators
 - Server Operators
 - Backup Operators
-- Delegated admin groups
-- LAPS password-reader groups
+- Delegated administration
+- LAPS password readers
 - AD CS-related groups
 
-The review procedure required:
+The procedure documented:
 
-1. Validating domain health
-2. Exporting privileged group membership
-3. Reviewing Domain Admins separately
-4. Reviewing delegated administration
-5. Reviewing LAPS password-reader access
-6. Reviewing AD CS-related groups
-7. Identifying unexpected or stale accounts
-8. Comparing findings with approved access records
-9. Documenting findings
-10. Escalating questionable access for remediation
-
-![Privileged Access Review SOP Created](screenshots/lab-23-06-privileged-access-review-sop-created.png)
+1. Validate directory health
+2. Export direct and effective membership
+3. Review Domain Admins separately
+4. Review delegated administration
+5. Review LAPS readers
+6. Review PKI-related access
+7. Identify questionable accounts
+8. Compare findings with approved records
+9. Document findings
+10. Assign remediation for validated exceptions
 
 ---
 
-## Runbook Reference
+## Recovery Reference
 
-### Step 7 - Created Directory Recovery Reference
+### 8. Created the Directory Recovery Reference
 
-A Directory Recovery Reference was created based on the recovery and resilience work completed in Lab 21.
-
-Runbook file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\runbooks\MRTG-Directory-Recovery-Reference.md
+runbooks\MRTG-Directory-Recovery-Reference.md
 ```
 
-The reference documented:
+![Directory Recovery Reference](screenshots/lab-23-07-directory-recovery-runbook-reference-created.png)
 
-- Domain controller health checks
-- DNS and domain controller discovery
-- Active Directory replication health
+The reference included:
+
+- Domain controller health commands
+- DNS and domain-controller discovery
+- Replication-health commands
 - FSMO role ownership
-- System State Backup availability
-- GPO backup availability
-- AD inventory exports
-- Privileged group membership exports
-- Identity automation artifacts
+- System State Backup reference
+- GPO backup reference
+- Directory inventory
+- Privileged-group reference
+- Automation-artifact reference
 - Post-recovery validation
 
 Key commands:
@@ -368,116 +408,98 @@ nltest /dsgetdc:mrtg.local
 wbadmin get versions -backuptarget:E:
 ```
 
-The document was designed as an operational reference and did not replace a complete disaster recovery plan.
-
-![Directory Recovery Runbook Reference Created](screenshots/lab-23-07-directory-recovery-runbook-reference-created.png)
+This document is an operational reference. It is not a complete forest-recovery plan and was not tested through a restore exercise.
 
 ---
 
 ## Handoff Documentation
 
-### Step 8 - Created Admin Responsibility Matrix
+### 9. Created the Administrative Responsibility Matrix
 
-An Admin Responsibility Matrix was created to define ownership for major IAM operational tasks.
-
-Matrix file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\handoff\MRTG-Admin-Responsibility-Matrix.md
+handoff\MRTG-Admin-Responsibility-Matrix.md
 ```
 
-The matrix documented:
+![Administrative Responsibility Matrix](screenshots/lab-23-08-admin-responsibility-matrix-created.png)
 
-- Operational area
-- Primary owner
-- Backup owner
-- Required evidence or output
-
-Example responsibilities:
-
-| Area | Primary Owner | Backup Owner | Evidence or Output |
+| Area | Primary Role | Backup Role | Required Evidence |
 |---|---|---|---|
-| User onboarding | Help Desk / IAM Admin | Senior Admin | Joiner CSV, script output, ticket |
-| User offboarding | Help Desk / IAM Admin | Senior Admin | Leaver CSV, disabled account validation |
-| Password resets | Help Desk / IAM Admin | Ticket Owner | Ticket note, reset validation |
-| Access requests | IAM Admin | Department Owner | Approved request, membership validation |
-| Privileged access review | Senior Admin | Security Reviewer | Group export, review summary |
-| LAPS reader review | Security Admin | Senior Admin | LAPS group export |
-| AD CS group review | PKI / AD Admin | Security Admin | AD CS group review export |
-| Directory recovery validation | Senior Admin | Systems Admin | Recovery runbook, health validation |
-| IAM audit evidence | IAM Admin | Security Reviewer | CSV exports, summary report |
+| User onboarding | Help Desk or IAM Administrator | Senior Administrator | Request, input data, output, and validation |
+| User offboarding | Help Desk or IAM Administrator | Senior Administrator | Request, disablement, access review, and validation |
+| Password resets | Help Desk or IAM Administrator | Ticket Owner | Identity verification and ticket record |
+| Access requests | IAM Administrator | Department Owner | Approval and membership validation |
+| Privileged review | Senior Administrator | Security Reviewer | Membership exports and review summary |
+| LAPS reader review | Security Administrator | Senior Administrator | Reader-group and extended-rights review |
+| AD CS review | PKI or AD Administrator | Security Administrator | CA and template access review |
+| Directory recovery | Senior Administrator | Systems Administrator | Runbook, backup status, and health evidence |
+| IAM audit evidence | IAM Administrator | Security Reviewer | Exports, findings, and retained evidence |
 
-![Admin Responsibility Matrix Created](screenshots/lab-23-08-admin-responsibility-matrix-created.png)
+The matrix identifies responsibility assignments but was not formally approved as a RACI model.
 
 ---
 
-### Step 9 - Created Operational Handoff Summary
+### 10. Created the Operational Handoff Summary
 
-An Operational Handoff Summary was created to explain the IAM environment and handoff package.
-
-Handoff file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\handoff\MRTG-Operational-Handoff-Summary.md
+handoff\MRTG-Operational-Handoff-Summary.md
 ```
+
+![Operational Handoff Summary](screenshots/lab-23-09-operational-handoff-summary-created.png)
 
 The summary documented:
 
 - Environment overview
-- Handoff package contents
+- Handoff-package contents
 - Operational priorities
-- Handoff notes
+- Known limitations
+- Required evidence
+- Ownership references
+- Maintenance expectations
 
-The environment overview included:
+Environment components included:
 
-```text
-Active Directory Domain Services
-Organizational Unit structure
-Department-based security groups
-Group Policy controls
-Delegated administration
-Windows LAPS password-reader controls
-Active Directory Certificate Services
-Identity lifecycle automation
-Directory backup and recovery artifacts
-IAM security review evidence
-```
-
-Operational priorities included limiting privileged access, using groups for access assignments, preserving lifecycle evidence, validating domain health, maintaining recovery artifacts, and keeping documentation updated.
-
-![Operational Handoff Summary Created](screenshots/lab-23-09-operational-handoff-summary-created.png)
+- Active Directory Domain Services
+- OU structure
+- Department security groups
+- Group Policy
+- Delegated administration
+- Windows LAPS
+- Active Directory Certificate Services
+- Lifecycle automation
+- Recovery artifacts
+- IAM review evidence
 
 ---
 
-### Step 10 - Created Documentation Index
+### 11. Created the Documentation Index
 
-A central IAM Documentation Index was created to make the handoff package easier to navigate.
-
-Index file:
+File:
 
 ```text
-C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff\handoff\MRTG-IAM-Documentation-Index.md
+handoff\MRTG-IAM-Documentation-Index.md
 ```
+
+![IAM Documentation Index](screenshots/lab-23-10-documentation-index-created.png)
 
 The index organized:
 
 - SOPs
-- Runbook references
+- Recovery references
 - Handoff documents
 - Prior-lab references
-- Operational-use guidance
+- Intended operational use
 
-The index provides administrators with a single starting point for understanding how the MRTG IAM environment is operated, reviewed, recovered, and handed off.
-
-![Documentation Index Created](screenshots/lab-23-10-documentation-index-created.png)
+The index provides a central entry point for the package.
 
 ---
 
-## Handoff Package Validation
+## Package Validation
 
-### Step 11 - Validated Handoff Package
-
-The complete handoff package was validated with PowerShell.
+### 12. Inventoried the Handoff Files
 
 Command used:
 
@@ -485,10 +507,12 @@ Command used:
 $LabRoot = "C:\MRTG-Labs\Lab-23-IAM-Runbooks-SOPs-Operational-Handoff"
 
 Get-ChildItem $LabRoot -Recurse |
-Where-Object { -not $_.PSIsContainer } |
-Select-Object Directory,Name,Length |
-Format-Table -AutoSize
+    Where-Object { -not $_.PSIsContainer } |
+    Select-Object Directory, Name, Length |
+    Format-Table -AutoSize
 ```
+
+![Handoff package validated](screenshots/lab-23-11-handoff-package-validated.png)
 
 Validated handoff documents:
 
@@ -498,7 +522,7 @@ MRTG-IAM-Documentation-Index.md
 MRTG-Operational-Handoff-Summary.md
 ```
 
-Validated runbook:
+Validated recovery reference:
 
 ```text
 MRTG-Directory-Recovery-Reference.md
@@ -513,22 +537,11 @@ MRTG-Password-Reset-SOP.md
 MRTG-Privileged-Access-Review-SOP.md
 ```
 
-Validated references included:
-
-```text
-Lab 20 lifecycle output
-Lab 21 recovery runbook
-Lab 22 audit exports
-Lab 22 security review report
-```
-
-![Handoff Package Validated](screenshots/lab-23-11-handoff-package-validated.png)
+This command confirmed that expected files existed and had content. It did not validate technical accuracy, approvals, links, readability, or procedure effectiveness.
 
 ---
 
-### Step 12 - Created Post-Lab Checkpoint
-
-A post-lab checkpoint was created after validating the operational handoff package.
+### 13. Created the Final Lab Checkpoint
 
 Checkpoint name:
 
@@ -536,7 +549,9 @@ Checkpoint name:
 MRTG-DC01_Post-Lab-23-IAM-Runbooks-SOPs-Operational-Handoff-Validated
 ```
 
-![Post-Lab 23 Checkpoint](screenshots/lab-23-12-post-lab-23-checkpoint.png)
+![Post-Lab 23 checkpoint](screenshots/lab-23-12-post-lab-23-checkpoint.png)
+
+The checkpoint was a temporary lab tool and was not a documentation backup.
 
 ---
 
@@ -544,35 +559,95 @@ MRTG-DC01_Post-Lab-23-IAM-Runbooks-SOPs-Operational-Handoff-Validated
 
 | Category | Deliverable | Purpose |
 |---|---|---|
-| SOP | `MRTG-Joiner-Mover-Leaver-SOP.md` | Standardize identity lifecycle operations |
-| SOP | `MRTG-Access-Request-SOP.md` | Standardize access approval and assignment |
-| SOP | `MRTG-Password-Reset-SOP.md` | Standardize secure password resets |
-| SOP | `MRTG-Privileged-Access-Review-SOP.md` | Standardize privileged access reviews |
-| Runbook | `MRTG-Directory-Recovery-Reference.md` | Provide recovery validation guidance |
-| Handoff | `MRTG-Admin-Responsibility-Matrix.md` | Define primary and backup ownership |
-| Handoff | `MRTG-Operational-Handoff-Summary.md` | Summarize the environment and priorities |
-| Handoff | `MRTG-IAM-Documentation-Index.md` | Provide a central navigation point |
-| References | Labs 20, 21, and 22 artifacts | Connect procedures to prior evidence |
+| SOP | `MRTG-Joiner-Mover-Leaver-SOP.md` | Standardizes lifecycle procedures |
+| SOP | `MRTG-Access-Request-SOP.md` | Standardizes access approval and assignment |
+| SOP | `MRTG-Password-Reset-SOP.md` | Standardizes identity verification and password-reset handling |
+| SOP | `MRTG-Privileged-Access-Review-SOP.md` | Standardizes elevated-access review |
+| Runbook Reference | `MRTG-Directory-Recovery-Reference.md` | Provides recovery checks and artifact references |
+| Handoff | `MRTG-Admin-Responsibility-Matrix.md` | Identifies primary and backup roles |
+| Handoff | `MRTG-Operational-Handoff-Summary.md` | Summarizes the environment and operating priorities |
+| Handoff | `MRTG-IAM-Documentation-Index.md` | Provides central package navigation |
+| References | Labs 20, 21, and 22 artifacts | Connects procedures to previous evidence |
 
 ---
 
-## Validation Summary
+## Validation Results
 
-| Test | Expected Result | Actual Result | Status |
-|---|---|---|---|
-| Pre-lab checkpoint created | Checkpoint exists before changes | Pre-lab checkpoint created | Passed |
-| Folder structure created | Required folders exist | Six folders validated | Passed |
-| Prior evidence referenced | Labs 20 through 22 evidence available | Four reference folders created | Passed |
-| Lifecycle SOP created | Joiner, Mover, and Leaver procedures documented | SOP created | Passed |
-| Access Request SOP created | Access request process documented | SOP created | Passed |
-| Password Reset SOP created | Password reset process documented | SOP created | Passed |
-| Privileged Access SOP created | Privileged review process documented | SOP created | Passed |
-| Recovery reference created | Recovery reference exists | Reference created | Passed |
-| Responsibility matrix created | Process ownership documented | Matrix created | Passed |
-| Handoff summary created | Operating model summarized | Summary created | Passed |
-| Documentation index created | Central index exists | Index created | Passed |
-| Package validated | Expected files exist and are readable | Package validated | Passed |
-| Post-lab checkpoint created | Checkpoint exists after validation | Post-lab checkpoint created | Passed |
+| Validation Item | Result |
+|---|---|
+| Temporary pre-change checkpoint created | Passed |
+| Documentation workspace created | Passed |
+| Prior-lab references collected | Passed |
+| Joiner, Mover, and Leaver SOP created | Passed |
+| Access Request SOP created | Passed |
+| Password Reset SOP created | Passed |
+| Privileged Access Review SOP created | Passed |
+| Directory Recovery Reference created | Passed |
+| Administrative Responsibility Matrix created | Passed |
+| Operational Handoff Summary created | Passed |
+| Documentation Index created | Passed |
+| Expected files inventoried | Passed |
+| Formal document approval | Not completed |
+| Second-administrator walkthrough | Not completed |
+| Procedure execution testing | Not completed |
+| Recovery tabletop exercise | Not completed |
+| Version-control workflow | Not implemented |
+| Temporary final checkpoint created | Passed |
+
+---
+
+## Security and IAM Relevance
+
+IAM operations require technology, process, ownership, evidence, and continuity.
+
+This lab supports:
+
+- Standardized lifecycle operations
+- Controlled access requests
+- Secure password-reset procedures
+- Privileged-access governance
+- Recovery documentation
+- Primary and backup ownership
+- Evidence requirements
+- Knowledge transfer
+- Operational continuity
+- Audit preparation
+
+Documentation is itself a sensitive asset. Recovery instructions, privileged procedures, infrastructure details, and account-management workflows require access control and change monitoring.
+
+---
+
+## Risks Addressed
+
+This lab reduces the risk of:
+
+- Undocumented identity procedures
+- Inconsistent lifecycle processing
+- Missing access approvals
+- Weak password-reset handling
+- Unstructured privileged-access reviews
+- Unclear administrative ownership
+- Difficult-to-locate recovery references
+- Knowledge loss during staff transitions
+- Missing handoff documentation
+
+The package does not yet mitigate outdated procedures, incorrect content, unauthorized document changes, or untested instructions.
+
+---
+
+## Control Mapping
+
+| Control Area | Lab Contribution |
+|---|---|
+| Lifecycle Governance | Documents Joiner, Mover, and Leaver procedures |
+| Access Governance | Documents approval and group-assignment requirements |
+| Account Recovery | Documents password-reset identity verification |
+| Privileged Access | Documents recurring review procedures |
+| Recovery Readiness | Provides directory-recovery references |
+| Operational Ownership | Identifies primary and backup roles |
+| Knowledge Transfer | Creates a handoff summary and index |
+| Audit Readiness | Defines evidence expectations |
+| Documentation Governance | Identifies approval, versioning, and review gaps |
 
 ---
 
@@ -580,187 +655,89 @@ MRTG-DC01_Post-Lab-23-IAM-Runbooks-SOPs-Operational-Handoff-Validated
 
 | Evidence | Screenshot |
 |---|---|
-| Pre-lab checkpoint | `screenshots/lab-23-01-pre-lab-23-checkpoint.png` |
-| Lab folder structure | `screenshots/lab-23-02-folder-structure-created.png` |
-| Prior-lab evidence references | `screenshots/lab-23-03-prior-lab-evidence-referenced.png` |
-| Joiner, Mover, and Leaver SOP | `screenshots/lab-23-04-joiner-mover-leaver-sop-created.png` |
+| Pre-change checkpoint | `screenshots/lab-23-01-pre-lab-23-checkpoint.png` |
+| Documentation workspace | `screenshots/lab-23-02-folder-structure-created.png` |
+| Prior-lab references | `screenshots/lab-23-03-prior-lab-evidence-referenced.png` |
+| Lifecycle SOP | `screenshots/lab-23-04-joiner-mover-leaver-sop-created.png` |
 | Access Request and Password Reset SOPs | `screenshots/lab-23-05-access-request-and-password-reset-sops-created.png` |
 | Privileged Access Review SOP | `screenshots/lab-23-06-privileged-access-review-sop-created.png` |
 | Directory Recovery Reference | `screenshots/lab-23-07-directory-recovery-runbook-reference-created.png` |
-| Admin Responsibility Matrix | `screenshots/lab-23-08-admin-responsibility-matrix-created.png` |
+| Administrative Responsibility Matrix | `screenshots/lab-23-08-admin-responsibility-matrix-created.png` |
 | Operational Handoff Summary | `screenshots/lab-23-09-operational-handoff-summary-created.png` |
-| IAM Documentation Index | `screenshots/lab-23-10-documentation-index-created.png` |
-| Validated handoff package | `screenshots/lab-23-11-handoff-package-validated.png` |
-| Post-lab checkpoint | `screenshots/lab-23-12-post-lab-23-checkpoint.png` |
+| Documentation Index | `screenshots/lab-23-10-documentation-index-created.png` |
+| Package inventory | `screenshots/lab-23-11-handoff-package-validated.png` |
+| Final lab checkpoint | `screenshots/lab-23-12-post-lab-23-checkpoint.png` |
 
 ---
 
-## Troubleshooting Notes
+## What I Would Improve in Production
 
-No major technical failures occurred during this lab.
+In a production environment, I would:
 
-The primary challenge was converting technical tasks from previous labs into documentation that another administrator could follow without relying on undocumented knowledge.
-
-The documentation needed to distinguish between:
-
-- Procedures and technical commands
-- Primary and backup ownership
-- Required approvals and implementation steps
-- Operational evidence and screenshots
-- Recovery references and full recovery plans
-- Documentation creation and formal organizational approval
-
-The final validation confirmed that the expected documents and prior-lab references were present in the handoff package.
-
----
-
-## Security Concepts Reinforced
-
-- Operational resilience
-- IAM process standardization
-- Identity lifecycle governance
-- Secure access request handling
-- User identity verification
-- Privileged access governance
-- Least privilege
-- Separation of duties
-- Administrative ownership
-- Backup ownership
-- Evidence retention
-- Recovery readiness
-- Knowledge transfer
-- Documentation access control
-- Audit readiness
-
----
-
-## Real-World Relevance
-
-IAM environments are not successful only because they are technically configured. They must also be understandable, repeatable, auditable, and supportable.
-
-In enterprise and government-regulated environments, documentation allows administrators, auditors, security reviewers, and incident responders to understand how identity processes operate.
-
-This lab connects directly to real-world IAM and IT operations:
-
-- Documenting user lifecycle procedures
-- Creating repeatable access request processes
-- Defining secure password reset procedures
-- Standardizing privileged access reviews
-- Linking recovery references to operational documentation
-- Defining primary and backup ownership
-- Establishing evidence requirements
-- Supporting audit readiness
-- Reducing dependence on individual administrators
-- Preparing operational knowledge for staff transitions
-
-The key lesson is that IAM includes technology, process, ownership, evidence, and operational continuity.
-
----
-
-## Security Considerations
-
-This lab created documentation and handoff references but did not make access changes.
-
-In production, SOPs and runbooks should be reviewed, approved, version-controlled, protected, and updated as systems and policies change.
-
-Production controls should include:
-
-- Formal document approval workflows
-- Version history
-- Change control references
-- Assigned document owners
-- Scheduled review dates
-- Separation of requester, approver, and implementer duties
-- Restricted access to sensitive recovery documentation
-- Security review of privileged procedures
-- Integration with ticketing and audit systems
-- Retention requirements
-- Regular tabletop exercises
-- Monitoring for unauthorized document changes
-- Secure storage of sensitive commands and recovery details
+- Store documentation outside the domain controller
+- Use a version-controlled documentation platform
+- Assign document owners
+- Record approval and review dates
+- Add document classifications
+- Restrict access by role
+- Monitor unauthorized changes
+- Integrate procedures with the ticketing platform
+- Link procedures to approved request forms
+- Add escalation contacts and decision points
+- Create a formally approved RACI matrix
+- Map procedures to applicable controls
+- Conduct a second-administrator walkthrough
+- Test procedures with controlled scenarios
+- Conduct recovery tabletop exercises
+- Create emergency-access and break-glass procedures
+- Create administrator-onboarding checklists
+- Schedule periodic documentation reviews
+- Archive superseded versions
+- Store references and evidence in protected off-host storage
+- Avoid relying on Hyper-V checkpoints for documentation protection
 
 ---
 
 ## Lessons Learned
 
-- IAM documentation should connect to real operational evidence
-- SOPs make identity tasks consistent and repeatable
-- Password resets are security-sensitive identity events
-- Access requests require approval and business justification
-- Privileged access reviews need defined evidence requirements
-- Recovery references should be easy to locate before an incident
-- Critical IAM processes need primary and backup owners
-- Documentation indexes make larger handoff packages easier to navigate
-- Prior-lab evidence strengthens operational documentation
-- Documentation must be reviewed as the environment changes
-- A supportable IAM environment is more mature than one that is only configured correctly
+This lab reinforced that technical implementation is only one part of IAM maturity.
 
----
+Procedures must explain:
 
-## What I Would Do Differently in Production
+- Who performs the task
+- Who approves the task
+- What inputs are required
+- Which systems are affected
+- How success is validated
+- What evidence is retained
+- When escalation is required
+- Who owns the document
 
-In a production or government-regulated environment, I would expand this package into a formally governed IAM operations manual.
-
-A stronger production design would include:
-
-- Formal document owners
-- Approval and review dates
-- Version-controlled documentation
-- Document classification labels
-- Role-based documentation access
-- Integration with a ticketing system
-- Links to approved access workflows
-- Links to backup and recovery platforms
-- Links to centralized audit evidence
-- Escalation paths for security incidents
-- A formal RACI matrix
-- Compliance control mapping
-- Quarterly privileged access reviews
-- Annual recovery tabletop exercises
-- Emergency access procedures
-- Break-glass account procedures
-- New IAM administrator onboarding checklists
-- Document change notifications
-- Periodic testing of documented procedures
-
-For this lab, the goal was to demonstrate the core mechanics of creating a practical operational handoff package for an enterprise IAM environment.
-
----
-
-## Skills Demonstrated
-
-- IAM operational documentation
-- SOP creation
-- Runbook reference creation
-- Identity lifecycle documentation
-- Access request documentation
-- Password reset documentation
-- Privileged access review documentation
-- Directory recovery documentation
-- Administrative responsibility mapping
-- Operational handoff planning
-- Documentation indexing
-- Evidence-based package validation
-- PowerShell file validation
-- IAM process ownership mapping
-- Audit and recovery evidence referencing
-- Knowledge transfer planning
-- Operational continuity planning
+The main lesson was that file existence is not the same as operational validation. A high-quality handoff requires review, approval, walkthroughs, and periodic testing.
 
 ---
 
 ## Outcome
 
-Lab 23 successfully created and validated an operational handoff package for the MRTG enterprise IAM environment.
+Lab 23 successfully created a structured IAM operational handoff package.
 
-The package included four IAM SOPs, a directory recovery reference, an administrative responsibility matrix, an operational handoff summary, a central documentation index, and supporting references from Labs 20, 21, and 22.
+The package included:
 
-The final result was a supportable documentation package that another administrator could use to understand the environment, follow repeatable procedures, review access, locate recovery artifacts, and continue operating the identity environment.
+- Four IAM SOPs
+- One Directory Recovery Reference
+- One Administrative Responsibility Matrix
+- One Operational Handoff Summary
+- One IAM Documentation Index
+- References from Labs 20, 21, and 22
+
+The files were inventoried and confirmed present.
+
+The package provides a strong documentation foundation, but formal approval and second-administrator procedure testing remain necessary before it could be considered production-ready.
 
 ---
 
 ## Next Lab
 
-[Lab 24 - Enterprise IAM Capstone Validation](../Lab-24-Enterprise-IAM-Capstone-Validation/)
+[Lab 24: Enterprise IAM Capstone Validation](../Lab-24-Enterprise-IAM-Capstone-Validation/)
 
-Lab 24 will validate the MRTG identity environment as an integrated enterprise IAM system by reviewing architecture, lifecycle operations, privileged access, recovery readiness, audit evidence, and operational documentation.
+Lab 24 validates the MRTG identity environment across architecture, lifecycle operations, privileged access, monitoring, recovery preparation, and operational documentation.
