@@ -1,4 +1,4 @@
-# Lab-26 — Scheduled Task with Least-Privilege Service Account
+# Lab 26 - Scheduled Task with Least-Privilege Service Account
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -10,44 +10,91 @@
 
 ---
 
-## Objective
+## Overview
 
-The objective of this lab is to use a governed service account to run a scheduled task while maintaining least privilege.
+In this lab, I used the governed `svc-audit-review` service account to run a Windows scheduled task while maintaining least privilege.
 
-This lab builds on Lab 25, where the `svc-audit-review` service account was created, documented, and validated as a governed non-human identity.
+This lab built on Lab 25, where the account was created, documented, and validated as a non-human identity.
 
-In Lab 26, that service account is used to run a controlled automation task without being added to privileged Active Directory groups.
+The service account received only the folder permissions and Windows user right required to execute the task. It was not added to an administrative or privileged Active Directory group.
 
 ---
 
 ## Business Problem
 
-Monroe Redstone Technology Group needs a way to run routine audit-review automation without using a personal administrator account or granting unnecessary privileges to a service account.
+MRTG needed to run routine audit-review automation without using a personal administrator account or granting unnecessary privileges to a service account.
 
-In many environments, service accounts are overprivileged because administrators give them broad access just to make a task work.
+Service accounts are often overprivileged because broad permissions are assigned simply to make an automated process work.
 
 This creates risk because service accounts may:
 
-- Run automated jobs
-- Access files or systems
-- Persist for long periods of time
-- Be forgotten after implementation
-- Have permissions that are rarely reviewed
-- Become a target for misuse or lateral movement
+- Run without direct user interaction
+- Persist for long periods
+- Access sensitive resources
+- Store reusable credentials
+- Receive limited review
+- Become targets for credential theft
+- Support lateral movement when overprivileged
 
-This lab demonstrates a safer approach by granting the service account only the specific permissions required to run the scheduled task.
+This lab addressed that risk by granting the service account only the access required for one controlled scheduled task.
 
 ---
 
 ## Lab Summary
 
-In this lab, I configured the `svc-audit-review` service account to run a scheduled task named `MRTG Audit Review Marker`.
+I created a dedicated `C:\MRTG-Audit` folder and a PowerShell audit-review marker script.
 
-The task runs a PowerShell script that writes a timestamped audit-review marker to an output file.
+The `svc-audit-review` account received Modify permission on only the required folder. The `Log on as a batch job` user right was configured through Group Policy so the account could run a scheduled task while no user was logged on.
 
-The service account was granted Modify access only to the required folder and was assigned the `Log on as a batch job` right through Group Policy.
+I created the `MRTG Audit Review Marker` task without enabling highest privileges. The task successfully generated a timestamped output file.
 
-The account was not added to privileged groups.
+A final group membership review confirmed that the service account remained a member of only Domain Users.
+
+---
+
+## Objectives
+
+- Create a pre-lab Hyper-V checkpoint
+- Create a dedicated audit folder
+- Create a PowerShell validation script
+- Identify the scheduled task batch-logon requirement
+- Configure `Log on as a batch job`
+- Grant only the required NTFS folder permissions
+- Create a scheduled task using the governed service account
+- Avoid running the task with highest privileges
+- Confirm the account remained non-privileged
+- Execute the task and validate its output
+- Create a post-lab Hyper-V checkpoint
+
+---
+
+## Scope
+
+### Included
+
+- Hyper-V checkpoints
+- Audit folder creation
+- PowerShell script creation
+- NTFS permission assignment
+- Group Policy user rights configuration
+- Scheduled task configuration
+- Service account group membership review
+- Task execution
+- Output validation
+- Audit evidence collection
+
+### Not Included
+
+- Group Managed Service Account deployment
+- Credential vault integration
+- Automated password rotation
+- Centralized script repository
+- PowerShell code signing
+- SIEM monitoring
+- Production change approval
+- Scheduled task alerting
+- Service account logon restriction GPOs
+- Enterprise job-scheduling platform integration
 
 ---
 
@@ -55,6 +102,7 @@ The account was not added to privileged groups.
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
 | Service Account | `svc-audit-review` |
@@ -62,289 +110,496 @@ The account was not added to privileged groups.
 | Script File | `C:\MRTG-Audit\audit-review-marker.ps1` |
 | Output File | `C:\MRTG-Audit\audit-review-output.txt` |
 | Scheduled Task | `MRTG Audit Review Marker` |
-| Group Policy Used | `MRTG-GPO-Lab26-Service-Account-Batch-Logon` |
-| Lab Organization | Monroe Redstone Technology Group |
-| Virtualization Platform | Hyper-V |
+| Group Policy | `MRTG-GPO-Lab26-Service-Account-Batch-Logon` |
+| Required User Right | `Log on as a batch job` |
+| Management Tools | Task Scheduler, Group Policy Management, File Explorer |
+| Hypervisor | Hyper-V |
 
 ---
 
-## Lab Scenario
+## Scenario
 
-MRTG needs a service account to run a basic audit-review scheduled task.
+MRTG needs a service account to execute a basic audit-review automation task.
 
-The service account should be able to complete the task, but it should not receive broad administrative access.
+The account must be able to run the task while no user is logged on and write the result to an approved folder.
 
-The goal is to prove that a service account can perform a defined automation function when given:
+It must not receive broad administrative access.
 
-- Access to only the folder it needs
-- The specific Windows logon right required for scheduled tasks
-- No unnecessary privileged group membership
+The least-privilege model used in this lab was:
 
----
-
-## Hyper-V Pre-Lab Checkpoint
-
-Before beginning Lab 26, I created a Hyper-V checkpoint to preserve the pre-change state of the domain controller.
-
-Checkpoint created: `MRTG-DC01_Pre-Lab26-Least-Privilege-Scheduled-Task`
-
-This checkpoint provides a rollback point before configuring folder permissions, Group Policy settings, or the scheduled task.
-
-![Hyper-V pre-lab checkpoint](images/lab26-hyperv-pre-lab-checkpoint.png)
+```text
+Governed Identity → Specific User Right → Resource-Level Permission → Non-Elevated Task → Output Validation
+```
 
 ---
 
-## Audit Folder Created
+## Access Model
 
-A dedicated folder was created on the domain controller to store the audit-review script and output file.
-
-Folder path: `C:\MRTG-Audit`
-
-This folder was used as the controlled resource for the scheduled task.
-
-![MRTG audit folder](images/lab26-mrtg-audit-folder.png)
-
----
-
-## PowerShell Script Created
-
-A PowerShell script was created inside the `C:\MRTG-Audit` folder.
-
-Script file: `audit-review-marker.ps1`
-
-The script writes a timestamped audit-review marker to an output text file.
-
-Script purpose:
-
-- Validate that the scheduled task can run successfully
-- Generate simple evidence of task execution
-- Confirm that the service account can write to the approved folder
-
-![Audit review script](images/lab26-audit-review-script.png)
+| Requirement | Control |
+|---|---|
+| Execute a scheduled task while logged off | `Log on as a batch job` |
+| Read the PowerShell script | Read and execute permission on `C:\MRTG-Audit` |
+| Create and update the output file | Modify permission on `C:\MRTG-Audit` |
+| Avoid unnecessary elevation | Highest privileges not enabled |
+| Avoid broad domain access | Domain Users membership only |
+| Preserve execution evidence | Timestamped output file |
+| Support rollback | Pre-lab and post-lab checkpoints |
 
 ---
 
-## Folder Permission Assigned
+## Implementation Steps
 
-The `svc-audit-review` service account was granted Modify access to the `C:\MRTG-Audit` folder.
+### Step 1 - Created Pre-Lab Checkpoint
 
-Permission granted: `Modify`
+A Hyper-V checkpoint was created before configuring the scheduled task.
 
-Full Control was not granted.
+Checkpoint name:
 
-This supports least privilege by giving the account enough access to create and update the task output file without granting broad control over the system.
+```text
+MRTG-DC01_Pre-Lab26-Least-Privilege-Scheduled-Task
+```
 
-![Folder permissions for service account](images/lab26-folder-permissions-service-account.png)
+This preserved the domain controller state before modifying folder permissions, Group Policy, or Task Scheduler.
 
----
-
-## Scheduled Task Permission Issue
-
-When creating the scheduled task, Windows displayed a warning that the selected service account required the `Log on as a batch job` user right.
-
-This occurred because the task was configured to run as `svc-audit-review` whether the user was logged on or not.
-
-Instead of adding the service account to an administrative group, I resolved the issue by granting only the specific user right required for the task.
-
-![Scheduled task batch logon warning](images/lab26-batch-logon-warning.png)
+![Pre-Lab Checkpoint](screenshots/lab-26-01-pre-lab-checkpoint.png)
 
 ---
 
-## Batch Logon Right Assigned Through Group Policy
+### Step 2 - Created the MRTG Audit Folder
 
-To resolve the scheduled task permission requirement, I configured a Group Policy setting to grant `svc-audit-review` the `Log on as a batch job` right.
+A dedicated folder was created on `MRTG-DC01`.
+
+Folder path:
+
+```text
+C:\MRTG-Audit
+```
+
+The folder provided a controlled location for the PowerShell script and its output.
+
+![MRTG Audit Folder Created](screenshots/lab-26-02-mrtg-audit-folder-created.png)
+
+---
+
+### Step 3 - Created the Audit Review Marker Script
+
+A PowerShell script was created in the audit folder.
+
+Script path:
+
+```text
+C:\MRTG-Audit\audit-review-marker.ps1
+```
+
+The script was designed to:
+
+- Execute through Task Scheduler
+- Write a timestamped audit-review marker
+- Create an output file
+- Provide evidence that the service account could complete the approved task
+
+Expected output path:
+
+```text
+C:\MRTG-Audit\audit-review-output.txt
+```
+
+![Audit Review Marker Script Created](screenshots/lab-26-03-audit-review-marker-script-created.png)
+
+---
+
+### Step 4 - Configured the Batch Logon Right Through Group Policy
+
+The service account required the `Log on as a batch job` user right to run the scheduled task while no user was logged on.
+
+Group Policy:
+
+```text
+MRTG-GPO-Lab26-Service-Account-Batch-Logon
+```
 
 Policy path:
 
-`Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > User Rights Assignment > Log on as a batch job`
+```text
+Computer Configuration
+└── Policies
+    └── Windows Settings
+        └── Security Settings
+            └── Local Policies
+                └── User Rights Assignment
+                    └── Log on as a batch job
+```
 
-Assigned account: `mrtg\svc-audit-review`
+Assigned identity:
 
-This allowed the service account to run the scheduled task without being added to privileged groups.
+```text
+mrtg\svc-audit-review
+```
 
-![Batch logon right GPO](images/lab26-batch-logon-right-gpo.png)
+This granted the specific Windows user right required by Task Scheduler without placing the account in an administrative group.
+
+![Batch Logon Right GPO Configured](screenshots/lab-26-04-batch-logon-right-gpo-configured.png)
 
 ---
 
-## Scheduled Task Configuration
+### Step 5 - Documented the Batch Logon Warning
 
-A scheduled task named `MRTG Audit Review Marker` was created using Task Scheduler.
+Task Scheduler displayed a warning that the selected account required `Log on as a batch job`.
 
-The task was configured to run as the `svc-audit-review` service account.
+Observed warning:
 
-Key task settings:
+```text
+This task requires that the user account specified has Log on as batch job rights.
+```
 
-| Setting | Configuration |
+The warning confirmed the exact user right required for the task.
+
+The issue was addressed through the dedicated Group Policy setting instead of adding the account to a privileged group.
+
+![Batch Logon Right Warning](screenshots/lab-26-05-batch-logon-right-warning.png)
+
+---
+
+### Step 6 - Assigned Folder Permissions
+
+The `svc-audit-review` account was granted Modify access to:
+
+```text
+C:\MRTG-Audit
+```
+
+Validated permissions included:
+
+- Modify
+- Read and execute
+- List folder contents
+- Read
+- Write
+
+Full Control was not granted.
+
+This allowed the service account to read the script and create or update the output file without receiving broader system permissions.
+
+![Folder Permissions for Service Account](screenshots/lab-26-06-folder-permissions-service-account.png)
+
+---
+
+### Step 7 - Configured the Scheduled Task
+
+A scheduled task named `MRTG Audit Review Marker` was created.
+
+Task configuration:
+
+| Setting | Value |
 |---|---|
 | Task Name | `MRTG Audit Review Marker` |
 | Run As Account | `svc-audit-review` |
-| Run Whether User Is Logged On Or Not | Enabled |
-| Run With Highest Privileges | Not enabled |
-| Script Location | `C:\MRTG-Audit\audit-review-marker.ps1` |
+| Run Whether User Is Logged On or Not | Enabled |
+| Do Not Store Password | Disabled |
+| Run With Highest Privileges | Disabled |
+| Script | `C:\MRTG-Audit\audit-review-marker.ps1` |
 
-The task was intentionally not configured to run with highest privileges.
+Task description:
 
-![Scheduled task service account](images/lab26-scheduled-task-service-account.png)
+```text
+Runs a basic audit-review marker script using a least-privilege service account.
+```
 
----
+The task was intentionally configured without highest privileges.
 
-## Task Output Validation
-
-After the scheduled task was created, it was manually executed to validate functionality.
-
-The task successfully created the output file:
-
-`C:\MRTG-Audit\audit-review-output.txt`
-
-The output confirmed that the audit-review script executed successfully.
-
-![Task output validation](images/lab26-task-output-validation.png)
+![Scheduled Task Service Account](screenshots/lab-26-07-scheduled-task-service-account.png)
 
 ---
 
-## Service Account Group Membership Validation
+### Step 8 - Validated Service Account Group Membership
 
-After the scheduled task was successfully executed, the `svc-audit-review` account was reviewed again in Active Directory.
+The service account was reviewed again after the scheduled task was configured.
 
-The account remained a member of only:
+Validated membership:
 
-`Domain Users`
+```text
+Domain Users
+```
 
-This confirmed that the scheduled task was not made functional by adding the service account to privileged groups.
+The account was not added to:
 
-![Service account group membership validation](images/lab26-service-account-group-membership-validation.png)
+```text
+Domain Admins
+Enterprise Admins
+Schema Admins
+Administrators
+Account Operators
+Server Operators
+Backup Operators
+```
+
+This confirmed that task functionality was achieved without privileged Active Directory group membership.
+
+![Service Account Group Membership Validation](screenshots/lab-26-08-service-account-group-membership-validation.png)
 
 ---
 
-## Service Account Access Model
+### Step 9 - Validated Task Output
 
-The service account was granted only the access required for the task.
+The scheduled task was executed to validate the complete workflow.
 
-| Access Requirement | Control Used |
+The task successfully created:
+
+```text
+C:\MRTG-Audit\audit-review-output.txt
+```
+
+Validated output:
+
+```text
+Audit review task executed by service account at 2026-05-26 11:01:05
+```
+
+This confirmed that the service account could:
+
+- Run the scheduled task
+- Read the approved script
+- Write to the approved folder
+- Generate execution evidence
+- Complete the task without administrative group membership
+
+![Task Output Validation](screenshots/lab-26-09-task-output-validation.png)
+
+---
+
+### Step 10 - Created Post-Lab Checkpoint
+
+A post-lab checkpoint was created after validating the task.
+
+Checkpoint name:
+
+```text
+MRTG-DC01_Post-Lab26-Least-Privilege-Scheduled-Task-Validated
+```
+
+This preserved the validated Lab 26 configuration before beginning Lab 27.
+
+![Post-Lab Checkpoint](screenshots/lab-26-10-post-lab-checkpoint.png)
+
+---
+
+## Least-Privilege Analysis
+
+The task required three distinct capabilities:
+
+| Capability | Permission Source |
 |---|---|
-| Write to the audit folder | Modify permission on `C:\MRTG-Audit` |
-| Run scheduled task while not logged on | `Log on as a batch job` user right |
-| Avoid excessive privilege | No privileged AD group membership |
-| Preserve task evidence | Output file generated by script |
-| Support rollback | Hyper-V pre-lab and post-lab checkpoints |
+| Start as a background scheduled task | `Log on as a batch job` |
+| Read and execute the script | NTFS permissions on `C:\MRTG-Audit` |
+| Create and update the output file | Modify permission on `C:\MRTG-Audit` |
+
+The account did not require:
+
+- Domain Admins membership
+- Local Administrators membership
+- Full Control on the folder
+- Highest Task Scheduler privileges
+- Interactive logon
+- Broad access to unrelated folders
+
+This demonstrates that least privilege requires reviewing multiple control layers rather than checking only Active Directory group membership.
 
 ---
 
 ## Risk Addressed
 
-Overprivileged service accounts create security risk because they may allow automated processes to run with more access than required.
+Overprivileged service accounts increase the impact of credential compromise and automation misuse.
 
-This lab reduces that risk by showing how a service account can be used for a specific scheduled task without granting broad administrative privileges.
+This lab addressed risks including:
 
-The main risks addressed include:
-
-- Service accounts being added to privileged groups unnecessarily
-- Automation running under personal administrator accounts
-- Lack of clear access boundaries for scheduled tasks
-- Excessive permissions assigned to non-human identities
-- Poor validation of service account privilege level
-- Lack of evidence proving how a service account is used
+- Scheduled tasks running under personal administrator accounts
+- Service accounts receiving unnecessary administrative access
+- Broad file system permissions
+- Uncontrolled user rights assignments
+- Tasks running with highest privileges unnecessarily
+- Missing evidence of task execution
+- Failure to validate access after implementation
+- Long-lived non-human identities with unclear permissions
 
 ---
 
 ## Control Mapping
 
-This lab supports the following IAM and security concepts:
-
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Implementation |
 |---|---|
-| Least privilege | Grants only the permissions required for the scheduled task |
-| Non-human identity governance | Uses a documented service account from Lab 25 |
-| Privileged access control | Confirms the service account was not added to privileged groups |
-| User rights assignment | Grants `Log on as a batch job` through Group Policy |
-| Access validation | Confirms successful task execution and group membership |
-| Audit readiness | Captures configuration and validation evidence |
-| Operational security | Uses a repeatable and documented automation pattern |
-| Change control readiness | Uses checkpoints before and after the lab |
+| Non-human identity governance | Used the governed account created in Lab 25 |
+| Least privilege | Granted only required user rights and NTFS access |
+| Privileged access control | Kept the account out of privileged groups |
+| User rights assignment | Configured `Log on as a batch job` through Group Policy |
+| Resource authorization | Granted Modify access only to the task folder |
+| Execution control | Disabled highest-privilege execution |
+| Access validation | Rechecked group membership after configuration |
+| Audit readiness | Generated timestamped execution evidence |
+| Change protection | Created pre-lab and post-lab checkpoints |
 
 ---
 
-## Validation
+## Validation Summary
 
-The following validation checks were completed:
-
-| Validation Item | Result |
-|---|---|
-| Pre-lab checkpoint created | Passed |
-| `C:\MRTG-Audit` folder created | Passed |
-| PowerShell audit-review script created | Passed |
-| `svc-audit-review` granted Modify access to the folder | Passed |
-| Full Control was not granted to the service account | Passed |
-| Scheduled task created using `svc-audit-review` | Passed |
-| `Run with highest privileges` was not enabled | Passed |
-| Batch logon requirement identified | Passed |
-| `Log on as a batch job` assigned through GPO | Passed |
-| Scheduled task executed successfully | Passed |
-| Output file created successfully | Passed |
-| Service account remained only in Domain Users | Passed |
-| Post-lab checkpoint created | Passed |
+| Test | Expected Result | Actual Result | Status |
+|---|---|---|---|
+| Pre-lab checkpoint created | Rollback point exists | Checkpoint created | Passed |
+| Audit folder created | `C:\MRTG-Audit` exists | Folder created | Passed |
+| PowerShell script created | Marker script exists | Script created | Passed |
+| Batch logon requirement identified | Required user right documented | Warning captured | Passed |
+| Batch logon right configured | Service account assigned required right | GPO configured | Passed |
+| Folder permission assigned | Account can modify the task folder | Modify granted | Passed |
+| Full Control avoided | Account does not have Full Control | Full Control not granted | Passed |
+| Scheduled task created | Task uses `svc-audit-review` | Task created | Passed |
+| Highest privileges avoided | Elevated execution disabled | Setting remained disabled | Passed |
+| Group membership reviewed | Account remains non-privileged | Domain Users only | Passed |
+| Task executed | Script runs successfully | Execution completed | Passed |
+| Output created | Timestamped output file exists | Output validated | Passed |
+| Post-lab checkpoint created | Validated rollback point exists | Checkpoint created | Passed |
 
 ---
 
 ## Evidence Collected
 
-The following evidence was collected during the lab:
-
-| Evidence | File |
+| Evidence | Screenshot |
 |---|---|
-| Pre-lab Hyper-V checkpoint | `images/lab26-hyperv-pre-lab-checkpoint.png` |
-| Audit folder created | `images/lab26-mrtg-audit-folder.png` |
-| PowerShell script created | `images/lab26-audit-review-script.png` |
-| Folder permissions assigned to service account | `images/lab26-folder-permissions-service-account.png` |
-| Batch logon warning | `images/lab26-batch-logon-warning.png` |
-| Batch logon right assigned through GPO | `images/lab26-batch-logon-right-gpo.png` |
-| Scheduled task configured with service account | `images/lab26-scheduled-task-service-account.png` |
-| Task output validation | `images/lab26-task-output-validation.png` |
-| Service account group membership validation | `images/lab26-service-account-group-membership-validation.png` |
-| Post-lab Hyper-V checkpoint | `images/lab26-hyperv-post-lab-checkpoint.png` |
+| Pre-lab checkpoint | `screenshots/lab-26-01-pre-lab-checkpoint.png` |
+| Audit folder | `screenshots/lab-26-02-mrtg-audit-folder-created.png` |
+| PowerShell marker script | `screenshots/lab-26-03-audit-review-marker-script-created.png` |
+| Batch logon GPO | `screenshots/lab-26-04-batch-logon-right-gpo-configured.png` |
+| Batch logon warning | `screenshots/lab-26-05-batch-logon-right-warning.png` |
+| Service account folder permissions | `screenshots/lab-26-06-folder-permissions-service-account.png` |
+| Scheduled task configuration | `screenshots/lab-26-07-scheduled-task-service-account.png` |
+| Service account group membership | `screenshots/lab-26-08-service-account-group-membership-validation.png` |
+| Successful task output | `screenshots/lab-26-09-task-output-validation.png` |
+| Post-lab checkpoint | `screenshots/lab-26-10-post-lab-checkpoint.png` |
 
 ---
 
-## Hyper-V Post-Lab Checkpoint
+## Troubleshooting Notes
 
-After completing the scheduled task configuration and validation, a post-lab checkpoint was created.
+Task Scheduler initially reported that the service account required `Log on as a batch job`.
 
-Checkpoint created: `MRTG-DC01_Post-Lab26-Least-Privilege-Scheduled-Task-Validated`
+The issue was resolved by configuring the specific user right through Group Policy.
 
-This checkpoint preserves the completed Lab 26 state and provides a rollback point before beginning Lab 27.
+The account was not added to a privileged group, and the task was not configured to run with highest privileges.
 
-![Hyper-V post-lab checkpoint](images/lab26-hyperv-post-lab-checkpoint.png)
+This demonstrates an important troubleshooting principle:
+
+```text
+Identify the missing permission → Grant the narrow requirement → Retest → Confirm no extra privilege was introduced
+```
 
 ---
 
-## What I Would Improve in Production
+## Security Considerations
 
-In a production environment, I would improve this process by:
+The scheduled task required the service account password to be stored by Task Scheduler because it was configured to run while the account was logged off.
 
-- Using a formal service account request and approval workflow
-- Documenting the business owner and technical owner for the scheduled task
-- Using Group Managed Service Accounts where supported
-- Storing scripts in a controlled administrative script repository
-- Digitally signing PowerShell scripts where appropriate
-- Avoiding long-term use of `-ExecutionPolicy Bypass`
-- Monitoring service account logon activity
-- Alerting on abnormal service account behavior
-- Reviewing folder permissions on a recurring schedule
-- Reviewing user rights assignments through Group Policy
-- Documenting task ownership, purpose, and dependency impact
-- Using change control before modifying service account permissions or task configuration
+In production, this creates credential-management considerations.
+
+Stronger controls would include:
+
+- Group Managed Service Accounts where supported
+- Automated credential rotation
+- Credential vault integration
+- Deny interactive logon
+- Deny Remote Desktop Services logon
+- Script signing
+- Restricted PowerShell execution
+- Task history monitoring
+- Alerts for task changes
+- Alerts for service account logons
+- Restricted access to task definitions
+- Periodic folder permission reviews
+
+---
+
+## Real-World Relevance
+
+Scheduled tasks and service accounts are commonly used for:
+
+- Report generation
+- File processing
+- Backup operations
+- System maintenance
+- Monitoring
+- Log collection
+- Data synchronization
+- Identity lifecycle automation
+- Compliance evidence generation
+
+In enterprise and government-regulated environments, these tasks must not rely on personal administrator accounts.
+
+A properly governed automation identity should have:
+
+- A documented owner
+- A defined purpose
+- Narrow resource access
+- Required user rights only
+- No unnecessary administrative membership
+- Protected credentials
+- Monitored activity
+- Retained execution evidence
+- A recurring review schedule
+
+---
+
+## What I Would Do Differently in Production
+
+In a production environment, I would implement:
+
+- A formal service account request and approval workflow
+- Business and technical ownership
+- Group Managed Service Accounts where supported
+- Credential vault integration
+- Automated password rotation
+- Deny interactive logon controls
+- Deny Remote Desktop logon controls
+- A controlled script repository
+- Digitally signed PowerShell scripts
+- Restricted script modification permissions
+- Task Scheduler operational logging
+- Centralized service account monitoring
+- Alerts for task creation or modification
+- Alerts for abnormal service account activity
+- Periodic NTFS permission reviews
+- Group Policy change control
+- Documented task dependencies
+- A formal task retirement process
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that making a service account work should not mean giving it administrator access.
+- Making a service account functional should not require administrator access
+- User rights assignments are separate from group membership
+- Scheduled tasks require `Log on as a batch job`
+- NTFS permissions should be limited to the required resource
+- Modify access can be sufficient without Full Control
+- Highest privileges should remain disabled unless required
+- Service account membership should be revalidated after implementation
+- Task output provides useful operational evidence
+- Troubleshooting should identify the narrow permission requirement
+- Least privilege must be validated across identity, file system, policy, and task settings
 
-The scheduled task initially required the `Log on as a batch job` right. Instead of solving that issue by adding the account to a privileged group, I granted the specific right required through Group Policy.
+---
 
-This is a better security pattern because it keeps the service account limited to the access it needs.
+## Skills Demonstrated
 
-The most important takeaway is that least privilege is not just about group membership. It also includes file permissions, user rights assignments, task configuration, and validation after the work is complete.
+- Service account governance
+- Least-privilege design
+- Windows Task Scheduler configuration
+- Group Policy user rights assignment
+- NTFS permission management
+- PowerShell automation
+- Scheduled task troubleshooting
+- Non-human identity validation
+- Privileged group review
+- Task output validation
+- Audit evidence collection
+- Hyper-V checkpoint management
+- Production security analysis
 
 ---
 
@@ -355,21 +610,20 @@ Lab 26 successfully demonstrated how to use a governed service account for a sch
 The lab demonstrated:
 
 - Controlled use of a non-human identity
-- Folder-level permission assignment
-- Scheduled task configuration using a service account
-- Identification and resolution of a batch logon rights issue
-- Group Policy-based user rights assignment
-- Successful task execution and output validation
-- Confirmation that the service account remained non-privileged
-- Evidence collection for audit readiness
+- Resource-level NTFS permission assignment
+- Group Policy-based batch logon rights
+- Non-elevated scheduled task execution
+- Successful automation output
+- Continued non-privileged group membership
+- Audit-ready validation evidence
 - Pre-lab and post-lab rollback points
 
-This lab extends the service account governance foundation from Lab 25 into a practical least-privilege automation scenario.
+The service account completed its defined function without receiving broad administrative access.
 
 ---
 
 ## Next Lab
 
-[Lab 27 — BitLocker and Endpoint Encryption Recovery](../Lab-27-BitLocker-and-Endpoint-Encryption-Recovery)
+[Lab 27 - BitLocker and Endpoint Encryption Recovery](../Lab-27-BitLocker-and-Endpoint-Encryption-Recovery/)
 
-Lab 27 will focus on BitLocker, endpoint encryption, recovery key handling, and layered endpoint security controls.
+Lab 27 will focus on BitLocker deployment, endpoint encryption, recovery key handling, recovery validation, and layered endpoint security controls.
