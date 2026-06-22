@@ -1,4 +1,4 @@
-# Lab 30 — IAM Operations, Monitoring, and Governance Capstone
+# Lab 30 - IAM Operations, Monitoring, and Governance Capstone
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -10,64 +10,112 @@
 
 ---
 
-## Objective
+## Overview
 
-The objective of this lab is to complete an IAM operations, monitoring, and governance capstone review across the MRTG Active Directory lab environment.
+In this lab, I completed an IAM operations, monitoring, and governance capstone across the Monroe Redstone Technology Group environment.
 
-This lab validates that the previous IAM expansion labs are not just configured, but operational, reviewable, monitored, and documented.
-
-This capstone reviews:
+The capstone reviewed the controls implemented in Labs 25 through 29:
 
 - Service account governance
 - Least-privilege scheduled task automation
 - BitLocker endpoint encryption
-- Local administrator access remediation
+- Local administrator remediation
 - Splunk identity monitoring
 - Operational evidence
-- Governance decisions
 - Final rollback checkpoints
+
+The purpose was to confirm that these controls remained visible, reviewable, and documented after implementation.
 
 ---
 
 ## Business Problem
 
-Monroe Redstone Technology Group needs to confirm that identity controls implemented across the environment are still valid, supportable, and aligned with least privilege.
+MRTG needed to verify that previously implemented identity and security controls had not become stale, misconfigured, or overprivileged.
 
-Individual technical controls are useful, but they do not provide long-term security value unless they are reviewed and validated.
+A control provides limited long-term value if nobody confirms that:
 
-This lab addresses the need to:
+- The account still has an owner
+- The assigned permissions remain appropriate
+- Automation still uses the intended identity
+- Endpoint encryption remains active
+- Removed privileged access has not returned
+- Monitoring tools remain available
+- Detection searches still execute
+- Evidence remains available for review
 
-- Review service accounts for ownership and scope
-- Confirm service accounts are not over-privileged
-- Validate least-privilege automation still exists
-- Confirm endpoint encryption remains enabled
-- Verify local administrator remediation remains in place
-- Confirm SIEM monitoring is still accessible
-- Review identity-related Splunk searches
-- Preserve the final operational state with checkpoints
+This lab addressed that problem through a structured operational governance review.
 
 ---
 
 ## Lab Summary
 
-In this lab, I performed a governance review across the IAM controls built in Labs 25 through 29.
+I created pre-lab checkpoints for `MRTG-DC01`, `MRTG-LOG01`, and `MRTG-CLIENT-01`.
 
-The review confirmed that service accounts were organized and documented, the audit-review scheduled task still used a least-privilege service account, BitLocker remained enabled on the client endpoint, local administrator access remained remediated, and Splunk was still available for identity monitoring.
+On the client, I confirmed that BitLocker remained active with TPM and numerical password protectors. I also reviewed the local Administrators group and confirmed that only the built-in Administrator account was listed.
 
-This lab serves as the final operational capstone for the IAM expansion series.
+On the domain controller, I reviewed the Service Accounts OU, verified the ownership and review information for `svc-audit-review`, and confirmed that the account remained a member of only Domain Users.
+
+I reviewed the Lab 26 scheduled task, its PowerShell action, and the existing script and output artifacts.
+
+On the logging server, I confirmed that Splunk Enterprise remained accessible and reviewed searches for successful logons, failed logons, and local security group changes.
+
+Finally, I created post-lab checkpoints for all three systems.
 
 ---
 
-## Lab Scope
+## Objectives
 
-| Area | Reviewed Control |
-|---|---|
-| Service Account Governance | Service account OU, description, ownership, and group membership |
-| Least-Privilege Automation | Scheduled task configuration, action path, script, and output |
-| Endpoint Encryption | BitLocker protection status and key protectors |
-| Local Administrator Access | Local Administrators group membership |
-| SIEM Monitoring | Splunk availability and identity-focused searches |
-| Operational Resilience | Pre-lab and post-lab Hyper-V checkpoints |
+- Create pre-lab checkpoints for all reviewed systems
+- Validate BitLocker protection
+- Review local administrator membership
+- Review the Service Accounts OU
+- Validate service account documentation
+- Validate service account group membership
+- Review the scheduled task identity
+- Review the scheduled task action
+- Confirm the script and output artifacts exist
+- Confirm Splunk Enterprise remains accessible
+- Review successful logon events
+- Review failed logon events
+- Review local group change events
+- Document monitoring limitations
+- Create post-lab checkpoints
+- Complete the IAM expansion series
+
+---
+
+## Scope
+
+### Included
+
+- Active Directory service account review
+- Service account ownership review
+- Service account group membership review
+- Scheduled task configuration review
+- Scheduled task action review
+- Script and output artifact review
+- BitLocker status validation
+- Local Administrators group review
+- Splunk availability validation
+- Authentication event searches
+- Local group change searches
+- Hyper-V checkpoints
+- Governance findings
+- Audit evidence
+
+### Not Included
+
+- New service account creation
+- Scheduled task reconfiguration
+- Scheduled task execution testing
+- BitLocker recovery testing
+- Local administrator remediation
+- Remote Windows event forwarding
+- New Splunk dashboards
+- New Splunk alerts
+- Production policy enforcement
+- Formal compliance certification
+- Disaster recovery testing
 
 ---
 
@@ -75,128 +123,262 @@ This lab serves as the final operational capstone for the IAM expansion series.
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Primary Domain Controller | `MRTG-DC01` |
-| Logging / SIEM Server | `MRTG-LOG01` |
+| Logging Server | `MRTG-LOG01` |
 | Client Endpoint | `MRTG-CLIENT-01` |
-| SIEM Platform | Splunk Enterprise |
+| SIEM Platform | Splunk Enterprise `10.4.0` |
+| SIEM URL | `http://localhost:8000` |
 | Endpoint Encryption | BitLocker |
+| Service Account | `svc-audit-review` |
+| Scheduled Task | `MRTG Audit Review Marker` |
 | Automation Platform | Windows Task Scheduler |
-| Virtualization Platform | Hyper-V |
-| Lab Organization | Monroe Redstone Technology Group |
+| Hypervisor | Hyper-V |
 
 ---
 
 ## Systems Reviewed
 
-| System | Role |
-|---|---|
-| `MRTG-DC01` | Primary domain controller and Active Directory management system |
-| `MRTG-LOG01` | Logging and SIEM server running Splunk Enterprise |
-| `MRTG-CLIENT-01` | Domain-joined workstation used for endpoint and local administrator validation |
+| System | Role | Capstone Review |
+|---|---|---|
+| `MRTG-DC01` | Domain controller | Service account governance |
+| `MRTG-LOG01` | Logging server | Splunk availability and searches |
+| `MRTG-CLIENT-01` | Domain workstation | BitLocker, local administrators, and scheduled task |
 
 ---
 
 ## Expansion Labs Consolidated
 
-| Lab | Control Area | Capstone Review Focus |
+| Lab | Control Area | Capstone Review |
 |---|---|---|
-| Lab 25 | Service Account Governance Foundation | Confirm service accounts are organized, documented, and reviewed |
-| Lab 26 | Scheduled Task with Least-Privilege Service Account | Confirm automation still runs under a scoped service account |
-| Lab 27 | BitLocker and Endpoint Encryption Recovery | Confirm endpoint encryption remains enabled |
-| Lab 28 | Local Administrator Access Review and Remediation | Confirm unnecessary local admin exposure remains removed |
-| Lab 29 | SIEM Identity Monitoring with Splunk | Confirm Splunk is accessible and identity searches are usable |
+| Lab 25 | Service Account Governance | Account location, ownership, review frequency, and membership |
+| Lab 26 | Least-Privilege Scheduled Task | Task identity, action, script, and output artifacts |
+| Lab 27 | BitLocker Protection | Encryption status and key protectors |
+| Lab 28 | Local Administrator Remediation | Current local Administrators membership |
+| Lab 29 | Splunk Identity Monitoring | Platform availability and identity searches |
 
 ---
 
-## Hyper-V Pre-Lab Checkpoints
+## Governance Review Model
 
-Before beginning the capstone review, I created pre-lab checkpoints for the systems involved.
-
-### DC01 Pre-Lab Checkpoint
-
-Checkpoint created:
-
-`MRTG-DC01_Pre-Lab30-IAM-Operations-Governance-Capstone`
-
-![DC01 pre-lab checkpoint](images/lab30-dc01-pre-lab-checkpoint.png)
-
-### LOG01 Pre-Lab Checkpoint
-
-Checkpoint created:
-
-`MRTG-LOG01_Pre-Lab30-IAM-Operations-Governance-Capstone`
-
-![LOG01 pre-lab checkpoint](images/lab30-log01-pre-lab-checkpoint.png)
-
-### CLIENT01 Pre-Lab Checkpoint
-
-Checkpoint created:
-
-`MRTG-CLIENT-01_Pre-Lab30-IAM-Operations-Governance-Capstone`
-
-![CLIENT01 pre-lab checkpoint](images/lab30-client01-pre-lab-checkpoint.png)
+```text
+Review Identity → Validate Privilege → Review Automation → Validate Endpoint Controls → Review Monitoring → Preserve Evidence
+```
 
 ---
 
-## Service Account OU Review
+## Implementation Steps
 
-On `MRTG-DC01`, I reviewed the Service Accounts OU in Active Directory Users and Computers.
+### Step 1 - Created DC01 Pre-Lab Checkpoint
 
-Path reviewed:
+A pre-lab checkpoint was created for `MRTG-DC01`.
 
-`mrtg.local → _MRTG → Service Accounts`
+Checkpoint name:
 
-The OU contained the governed service accounts from the IAM expansion labs.
+```text
+MRTG-DC01_Pre-Lab30-IAM-Operations-Governance-Capstone
+```
+
+![DC01 Pre-Lab Checkpoint](screenshots/lab-30-01-dc01-pre-lab-checkpoint.png)
+
+---
+
+### Step 2 - Created LOG01 Pre-Lab Checkpoint
+
+A pre-lab checkpoint was created for `MRTG-LOG01`.
+
+Checkpoint name:
+
+```text
+MRTG-LOG01_Pre-Lab30-IAM-Operations-Governance-Capstone
+```
+
+![LOG01 Pre-Lab Checkpoint](screenshots/lab-30-02-log01-pre-lab-checkpoint.png)
+
+---
+
+### Step 3 - Created CLIENT-01 Pre-Lab Checkpoint
+
+A pre-lab checkpoint was created for `MRTG-CLIENT-01`.
+
+Checkpoint name:
+
+```text
+MRTG-CLIENT-01_Pre-Lab30-IAM-Operations-Governance-Capstone
+```
+
+![CLIENT-01 Pre-Lab Checkpoint](screenshots/lab-30-03-client01-pre-lab-checkpoint.png)
+
+---
+
+## Endpoint Security Review
+
+### Step 4 - Reviewed BitLocker Status
+
+BitLocker status was reviewed on `MRTG-CLIENT-01`.
+
+Command used:
+
+```powershell
+manage-bde -status C:
+```
+
+Observed results:
+
+| Setting | Value |
+|---|---|
+| Volume | `C:` |
+| BitLocker Version | `2.0` |
+| Conversion Status | Used Space Only Encrypted |
+| Percentage Encrypted | `100.0%` |
+| Encryption Method | `XTS-AES 128` |
+| Protection Status | `Protection On` |
+| Lock Status | `Unlocked` |
+| Key Protector | TPM |
+| Key Protector | Numerical Password |
+
+The endpoint remained encrypted and actively protected.
+
+![BitLocker Status Review](screenshots/lab-30-04-bitlocker-status-review.png)
+
+---
+
+### BitLocker Governance Finding
+
+| Governance Check | Result |
+|---|---|
+| Drive fully encrypted | Passed |
+| Protection status enabled | Passed |
+| TPM protector present | Passed |
+| Numerical recovery protector present | Passed |
+| Encryption control remained active | Passed |
+
+The recovery password was not exposed in the evidence.
+
+---
+
+### Step 5 - Reviewed Local Administrator Membership
+
+The local Administrators group was reviewed on `MRTG-CLIENT-01`.
+
+Command used:
+
+```powershell
+net localgroup administrators
+```
+
+Observed membership:
+
+```text
+Administrator
+```
+
+The previously remediated `localadmin` account was not present.
+
+`MRTG\Domain Admins`, which appeared during the Lab 28 review, was also not present in the current output.
+
+The screenshot confirms the current state but does not independently identify which later policy or administrative action removed the domain group.
+
+![Local Administrator Membership Review](screenshots/lab-30-05-local-admin-membership-review.png)
+
+---
+
+### Local Administrator Governance Finding
+
+| Governance Check | Result |
+|---|---|
+| Local Administrators group reviewed | Passed |
+| Built-in Administrator present | Confirmed |
+| `localadmin` absent | Confirmed |
+| `MRTG\Domain Admins` absent | Confirmed |
+| Current membership reduced | Confirmed |
+
+A production review would also confirm that the built-in Administrator password is managed by Windows LAPS.
+
+---
+
+## Service Account Governance Review
+
+### Step 6 - Reviewed the Service Accounts OU
+
+The Service Accounts OU was reviewed through Active Directory Users and Computers.
+
+Path:
+
+```text
+mrtg.local
+└── _MRTG
+    └── Service Accounts
+```
 
 Visible service accounts:
 
-- `Service App Deploy`
-- `Service Audit Review`
-- `Service Backup`
+```text
+Service App Deploy
+Service Audit Review
+Service Backup
+```
 
-![Service account OU review](images/lab30-service-account-ou-review.png)
+The dedicated OU continued to separate non-human identities from standard user accounts.
 
----
-
-## Service Account Properties Review
-
-I reviewed the `Service Audit Review` account properties.
-
-The account description confirmed that the service account was documented with purpose, ownership, and review frequency.
-
-Description reviewed:
-
-`Lab 25 svc acct. Owner: IT Ops. Review: Qtrly.`
-
-![Service account properties review](images/lab30-service-account-properties-review.png)
+![Service Account OU Review](screenshots/lab-30-06-service-account-ou-review.png)
 
 ---
 
-## Service Account Group Membership Review
+### Step 7 - Reviewed Service Account Properties
 
-I reviewed the group membership for the `Service Audit Review` service account.
+The properties of Service Audit Review were reviewed.
 
-The account was only a member of:
+Account:
 
-`Domain Users`
+```text
+svc-audit-review
+```
 
-![Service account group membership review](images/lab30-service-account-group-membership-review.png)
+Description:
 
-This confirms that the service account was not assigned to privileged groups such as:
+```text
+Lab 25 svc acct. Owner: IT Ops. Review: Qtrly.
+```
 
-- `Domain Admins`
-- `Enterprise Admins`
-- `Administrators`
-- `Account Operators`
-- `Server Operators`
-- `Backup Operators`
+The description continued to document:
+
+- Account purpose
+- Responsible team
+- Quarterly review frequency
+
+![Service Account Properties Review](screenshots/lab-30-07-service-account-properties-review.png)
 
 ---
 
-## Service Account Governance Finding
+### Step 8 - Reviewed Service Account Group Membership
 
-The `Service Audit Review` account remained aligned to least privilege.
+The Member Of tab was reviewed for Service Audit Review.
+
+Observed membership:
+
+```text
+Domain Users
+```
+
+The account was not shown as a member of administrative groups such as:
+
+```text
+Domain Admins
+Enterprise Admins
+Schema Admins
+Administrators
+Account Operators
+Server Operators
+Backup Operators
+```
+
+![Service Account Group Membership Review](screenshots/lab-30-08-service-account-group-membership-review.png)
+
+---
+
+### Service Account Governance Finding
 
 | Governance Check | Result |
 |---|---|
@@ -204,421 +386,493 @@ The `Service Audit Review` account remained aligned to least privilege.
 | Account purpose documented | Passed |
 | Owner documented | Passed |
 | Review frequency documented | Passed |
-| Privileged group membership avoided | Passed |
-| Limited to Domain Users | Passed |
+| Domain Users membership confirmed | Passed |
+| Privileged group membership not observed | Passed |
+
+The account remained aligned with the Lab 25 governance standard.
 
 ---
 
-## Scheduled Task Service Account Review
+## Least-Privilege Automation Review
 
-I reviewed the Lab 26 scheduled task in Task Scheduler.
+### Step 9 - Reviewed the Scheduled Task Identity
 
-Task reviewed:
+The Lab 26 scheduled task was reviewed in Task Scheduler.
 
-`MRTG Audit Review Marker`
+Task name:
 
-The task was configured to run under the service account:
+```text
+MRTG Audit Review Marker
+```
 
-`svc-audit-review`
+Run-as account:
 
-The task description confirmed its intended use:
+```text
+svc-audit-review
+```
 
-`Runs a basic audit-review marker script using a least-privilege service account.`
+Task description:
 
-![Scheduled task service account review](images/lab30-scheduled-task-service-account-review.png)
+```text
+Runs a basic audit-review marker script using a least-privilege service account.
+```
 
----
+The task remained present and configured to use the governed service account.
 
-## Scheduled Task Action Review
-
-I reviewed the scheduled task action.
-
-The task action was configured to run a PowerShell script from the MRTG audit folder.
-
-Action reviewed:
-
-`powershell.exe -ExecutionPolicy Bypass -File "C:\MRTG-Audit\audit-review-marker.ps1"`
-
-![Scheduled task action review](images/lab30-scheduled-task-action-review.png)
+![Scheduled Task Service Account Review](screenshots/lab-30-09-scheduled-task-service-account-review.png)
 
 ---
 
-## Scheduled Task Output Review
+### Step 10 - Reviewed the Scheduled Task Action
 
-I reviewed the scheduled task output folder.
+The task action was reviewed.
 
-Folder reviewed:
+Configured action:
 
-`C:\MRTG-Audit`
+```text
+powershell.exe -ExecutionPolicy Bypass -File "C:\MRTG-Audit\audit-review-marker.ps1"
+```
 
-Visible files:
+The action still referenced the expected PowerShell script.
 
-- `audit-review-marker`
-- `audit-review-output`
+`ExecutionPolicy Bypass` was acceptable for the lab but would require stronger script controls in production.
 
-![Scheduled task output review](images/lab30-scheduled-task-output-review.png)
-
-This confirmed that the scheduled task script and output artifact still existed.
+![Scheduled Task Action Review](screenshots/lab-30-10-scheduled-task-action-review.png)
 
 ---
 
-## Least-Privilege Automation Finding
+### Step 11 - Reviewed the Scheduled Task Artifacts
 
-The scheduled task remained operationally reviewable.
+The task folder was reviewed.
+
+Folder:
+
+```text
+C:\MRTG-Audit
+```
+
+Visible artifacts:
+
+```text
+audit-review-marker.ps1
+audit-review-output.txt
+```
+
+The script and prior output file remained available.
+
+Their existence confirms artifact retention, but it does not independently prove that the task was executed again during Lab 30.
+
+![Scheduled Task Output Review](screenshots/lab-30-11-scheduled-task-output-review.png)
+
+---
+
+### Automation Governance Finding
 
 | Governance Check | Result |
 |---|---|
 | Scheduled task exists | Passed |
-| Task uses service account | Passed |
-| Service account is least-privilege | Passed |
-| Script path is documented | Passed |
-| Output artifact exists | Passed |
-| Automation evidence is available | Passed |
+| Governed service account configured | Passed |
+| Expected script path configured | Passed |
+| Script artifact exists | Passed |
+| Prior output artifact exists | Passed |
+| Fresh execution validated during Lab 30 | Not tested |
+
+The configuration remained reviewable, but a production control review should also execute the task and confirm a current success result.
 
 ---
 
-## BitLocker Protection Review
+## SIEM Monitoring Review
 
-On `MRTG-CLIENT-01`, I reviewed BitLocker status using PowerShell.
+### Step 12 - Reviewed Splunk Enterprise Availability
 
-Command used:
+Splunk Enterprise was opened on `MRTG-LOG01`.
 
-`manage-bde -status C:`
+URL:
 
-The output confirmed that BitLocker protection remained enabled.
+```text
+http://localhost:8000
+```
 
-Key results:
+The home page loaded successfully.
 
-| Setting | Value |
-|---|---|
-| Percentage Encrypted | `100.0%` |
-| Encryption Method | `XTS-AES 128` |
-| Protection Status | `Protection On` |
-| Lock Status | `Unlocked` |
-| Key Protector | `TPM` |
-| Key Protector | `Numerical Password` |
+This confirmed that Splunk Web remained available.
 
-![BitLocker status review](images/lab30-bitlocker-status-review.png)
+![Splunk Home Review](screenshots/lab-30-12-splunk-home-review.png)
 
 ---
 
-## Endpoint Encryption Finding
+### Step 13 - Reviewed Successful Logon Events
 
-BitLocker remained enabled and protected on `MRTG-CLIENT-01`.
+Successful logons were searched using Event ID `4624`.
 
-| Governance Check | Result |
-|---|---|
-| BitLocker enabled | Passed |
-| Drive fully encrypted | Passed |
-| Protection status on | Passed |
-| TPM protector present | Passed |
-| Numerical password protector present | Passed |
-| Endpoint encryption control remains active | Passed |
+Search:
 
----
+```spl
+index=main sourcetype="WinEventLog:Security" EventCode=4624
+```
 
-## Local Administrator Membership Review
+The selected 24-hour window returned 99 events.
 
-On `MRTG-CLIENT-01`, I reviewed the local Administrators group.
+This confirmed that successful logon events remained searchable in the current `MRTG-LOG01` dataset.
 
-Command used:
-
-`net localgroup administrators`
-
-The output showed that the local Administrators group was limited to:
-
-`Administrator`
-
-![Local admin membership review](images/lab30-local-admin-membership-review.png)
-
-The previously remediated account was not present:
-
-`localadmin`
+![Splunk Successful Logon Review](screenshots/lab-30-13-splunk-successful-logon-review.png)
 
 ---
 
-## Local Administrator Governance Finding
+### Step 14 - Reviewed Failed Logon Events
 
-The local administrator remediation from Lab 28 remained in place.
+Failed logons were searched using Event ID `4625`.
 
-| Governance Check | Result |
-|---|---|
-| Local Administrators group reviewed | Passed |
-| Built-in Administrator present | Passed |
-| `localadmin` removed | Passed |
-| Local admin exposure reduced | Passed |
-| Remediation still valid | Passed |
+Search:
 
----
+```spl
+index=main sourcetype="WinEventLog:Security" EventCode=4625
+```
 
-## Splunk Home Review
+The selected 24-hour window returned zero events.
 
-On `MRTG-LOG01`, I opened Splunk Enterprise in the browser.
+This means no matching failed logon events were present in the current dataset and selected time range.
 
-URL reviewed:
+It does not prove that no failed logons occurred elsewhere in the MRTG environment.
 
-`http://localhost:8000`
-
-Splunk Enterprise loaded successfully.
-
-![Splunk home review](images/lab30-splunk-home-review.png)
+![Splunk Failed Logon Review](screenshots/lab-30-14-splunk-failed-logon-review.png)
 
 ---
 
-## Splunk Successful Logon Review
+### Step 15 - Reviewed Local Group Change Events
 
-I reviewed successful logon events in Splunk.
+Local security group changes were searched using Event IDs `4732` and `4733`.
 
-Search used:
+Search:
 
-`index=main sourcetype="WinEventLog:Security" EventCode=4624`
+```spl
+index=main sourcetype="WinEventLog:Security" (EventCode=4732 OR EventCode=4733)
+```
 
-The search returned successful logon events during the review window.
+The selected 24-hour window returned zero events.
 
-![Splunk successful logon review](images/lab30-splunk-successful-logon-review.png)
+This means no matching local group changes were present in the current dataset and time range.
 
----
-
-## Splunk Failed Logon Review
-
-I reviewed failed logon events in Splunk.
-
-Search used:
-
-`index=main sourcetype="WinEventLog:Security" EventCode=4625`
-
-No failed logon events were observed during the selected review window.
-
-![Splunk failed logon review](images/lab30-splunk-failed-logon-review.png)
-
-This indicates that no failed authentication attempts were detected in the selected time range.
+![Splunk Local Group Change Review](screenshots/lab-30-15-splunk-local-group-change-review.png)
 
 ---
 
-## Splunk Local Group Change Review
-
-I reviewed local group membership change events in Splunk.
-
-Search used:
-
-`index=main sourcetype="WinEventLog:Security" (EventCode=4732 OR EventCode=4733)`
-
-No local group membership change events were observed during the selected review window.
-
-![Splunk local group change review](images/lab30-splunk-local-group-change-review.png)
-
-This indicates that no local group membership changes were detected in the selected time range.
-
----
-
-## SIEM Monitoring Finding
-
-Splunk remained accessible and usable for identity monitoring.
+### SIEM Governance Finding
 
 | Monitoring Check | Result |
 |---|---|
 | Splunk Web accessible | Passed |
-| Successful logon search reviewed | Passed |
-| Failed logon search reviewed | Passed |
-| Local group change search reviewed | Passed |
-| Windows Security logs searchable | Passed |
-| SIEM review process validated | Passed |
+| Successful logon search executable | Passed |
+| Successful logon events present | 99 events |
+| Failed logon search executable | Passed |
+| Failed logon events present | 0 events |
+| Local group change search executable | Passed |
+| Local group change events present | 0 events |
 
 ---
 
-## Governance Review Table
+## SIEM Scope Limitation
 
-| Control Area | Lab Source | Current Status | Risk Reviewed | Governance Decision |
-|---|---|---|---|---|
-| Service account governance | Lab 25 | Validated | Service accounts can become unmanaged privileged identities | Continue quarterly review |
-| Least-privilege automation | Lab 26 | Validated | Scheduled tasks can overuse privileged accounts | Keep service account scoped to required folder access |
-| Endpoint encryption | Lab 27 | Validated | Lost or stolen endpoints may expose data | Keep BitLocker enabled and protect recovery keys |
-| Local administrator access | Lab 28 | Validated | Local admin sprawl increases endpoint risk | Continue periodic local admin reviews |
-| SIEM identity monitoring | Lab 29 | Validated | Identity events may go unnoticed | Continue monitoring logons and group changes |
+The Splunk configuration reviewed in this capstone indexed the local Windows Security log from `MRTG-LOG01`.
 
----
+The evidence does not show remote event forwarding from:
 
-## IAM Operations Review
+- `MRTG-DC01`
+- `MRTG-DC02`
+- `MRTG-CLIENT-01`
 
-This capstone demonstrated that IAM operations are not limited to creating accounts or assigning access.
+Therefore, the Splunk results should not be interpreted as complete domain-wide monitoring.
 
-Operational IAM also requires:
-
-- Reviewing privileged and non-privileged accounts
-- Validating service account ownership
-- Confirming automation still runs as intended
-- Reviewing endpoint protection controls
-- Checking local administrator exposure
-- Searching identity-related events
-- Documenting evidence
-- Preserving rollback points
+A production design would deploy Splunk Universal Forwarders to the domain controllers and selected endpoints.
 
 ---
 
-## Security Relevance
+## Governance Review Summary
 
-This lab reinforces multiple security principles.
-
-| Principle | How This Lab Supports It |
-|---|---|
-| Least privilege | Service accounts and local administrators were reviewed for unnecessary access |
-| Defense in depth | Endpoint encryption, access control, and SIEM monitoring were reviewed together |
-| Audit readiness | Evidence was collected across AD, Task Scheduler, BitLocker, local groups, and Splunk |
-| Operational resilience | Pre-lab and post-lab checkpoints were created |
-| Governance | Ownership, review frequency, and control status were documented |
-| Monitoring | Splunk was used to review identity-related events |
-| Access control | Local administrator exposure remained reduced |
-
----
-
-## Risk Addressed
-
-This lab addressed the risk of controls becoming stale after implementation.
-
-Key risks reviewed:
-
-- Service accounts without ownership
-- Service accounts with excessive group membership
-- Scheduled tasks running under overly privileged accounts
-- Endpoint encryption being disabled after setup
-- Local administrator accounts reappearing after remediation
-- Identity events not being reviewed
-- Lack of evidence for operational control status
-- No rollback point after final validation
+| Control Area | Source Lab | Current Finding | Governance Decision |
+|---|---|---|---|
+| Service account governance | Lab 25 | Account remained documented and non-privileged | Continue quarterly reviews |
+| Least-privilege automation | Lab 26 | Task, identity, action, and artifacts remained present | Add fresh execution validation |
+| Endpoint encryption | Lab 27 | BitLocker remained protected | Continue compliance monitoring |
+| Local administrator access | Lab 28 | Only built-in Administrator was listed | Continue recurring membership reviews |
+| SIEM monitoring | Lab 29 | Splunk and searches remained available | Expand remote event collection |
 
 ---
 
 ## Control Validation Summary
 
-| Control | Validation Method | Result |
-|---|---|---|
-| Service account OU organization | Active Directory Users and Computers | Passed |
-| Service account documentation | AD account description | Passed |
-| Service account privilege review | Member Of tab | Passed |
-| Scheduled task identity | Task Scheduler General tab | Passed |
-| Scheduled task action | Task Scheduler Actions tab | Passed |
-| Scheduled task output | `C:\MRTG-Audit` folder review | Passed |
-| BitLocker protection | `manage-bde -status C:` | Passed |
-| Local administrator remediation | `net localgroup administrators` | Passed |
-| Splunk availability | Splunk home page | Passed |
-| Successful logon monitoring | Splunk EventCode `4624` search | Passed |
-| Failed logon monitoring | Splunk EventCode `4625` search | Reviewed |
-| Local group change monitoring | Splunk EventCode `4732` and `4733` search | Reviewed |
+| Control | Validation Method | Result | Status |
+|---|---|---|---|
+| DC01 rollback point | Hyper-V checkpoint | Created | Passed |
+| LOG01 rollback point | Hyper-V checkpoint | Created | Passed |
+| CLIENT-01 rollback point | Hyper-V checkpoint | Created | Passed |
+| BitLocker protection | `manage-bde -status C:` | Protection On | Passed |
+| TPM protector | `manage-bde` | Present | Passed |
+| Numerical protector | `manage-bde` | Present | Passed |
+| Local administrator membership | `net localgroup administrators` | Administrator only | Passed |
+| Service account organization | Active Directory Users and Computers | Dedicated OU confirmed | Passed |
+| Service account documentation | Description field | Owner and review recorded | Passed |
+| Service account privilege | Member Of tab | Domain Users only | Passed |
+| Scheduled task identity | Task Scheduler | `svc-audit-review` | Passed |
+| Scheduled task action | Task Scheduler | Expected script referenced | Passed |
+| Script artifact | File Explorer | Present | Passed |
+| Prior output artifact | File Explorer | Present | Passed |
+| Fresh task execution | Not performed | Not validated | Not Tested |
+| Splunk availability | Splunk Web | Home page loaded | Passed |
+| Successful logon monitoring | Event ID `4624` | 99 events | Passed |
+| Failed logon monitoring | Event ID `4625` | 0 events | Reviewed |
+| Local group monitoring | Event IDs `4732`, `4733` | 0 events | Reviewed |
+
+---
+
+## Post-Lab Checkpoints
+
+### Step 16 - Created DC01 Post-Lab Checkpoint
+
+Checkpoint name:
+
+```text
+MRTG-DC01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated
+```
+
+![DC01 Post-Lab Checkpoint](screenshots/lab-30-16-dc01-post-lab-checkpoint.png)
+
+---
+
+### Step 17 - Created LOG01 Post-Lab Checkpoint
+
+Checkpoint name:
+
+```text
+MRTG-LOG01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated
+```
+
+![LOG01 Post-Lab Checkpoint](screenshots/lab-30-17-log01-post-lab-checkpoint.png)
+
+---
+
+### Step 18 - Created CLIENT-01 Post-Lab Checkpoint
+
+Checkpoint name:
+
+```text
+MRTG-CLIENT-01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated
+```
+
+![CLIENT-01 Post-Lab Checkpoint](screenshots/lab-30-18-client01-post-lab-checkpoint.png)
 
 ---
 
 ## Evidence Collected
 
-| Evidence | File |
+| Evidence | Screenshot |
 |---|---|
-| DC01 pre-lab checkpoint | `images/lab30-dc01-pre-lab-checkpoint.png` |
-| LOG01 pre-lab checkpoint | `images/lab30-log01-pre-lab-checkpoint.png` |
-| CLIENT01 pre-lab checkpoint | `images/lab30-client01-pre-lab-checkpoint.png` |
-| Service account OU review | `images/lab30-service-account-ou-review.png` |
-| Service account properties review | `images/lab30-service-account-properties-review.png` |
-| Service account group membership review | `images/lab30-service-account-group-membership-review.png` |
-| Scheduled task service account review | `images/lab30-scheduled-task-service-account-review.png` |
-| Scheduled task action review | `images/lab30-scheduled-task-action-review.png` |
-| Scheduled task output review | `images/lab30-scheduled-task-output-review.png` |
-| BitLocker status review | `images/lab30-bitlocker-status-review.png` |
-| Local administrator membership review | `images/lab30-local-admin-membership-review.png` |
-| Splunk home review | `images/lab30-splunk-home-review.png` |
-| Splunk successful logon review | `images/lab30-splunk-successful-logon-review.png` |
-| Splunk failed logon review | `images/lab30-splunk-failed-logon-review.png` |
-| Splunk local group change review | `images/lab30-splunk-local-group-change-review.png` |
-| CLIENT01 post-lab checkpoint | `images/lab30-client01-post-lab-checkpoint.png` |
-| DC01 post-lab checkpoint | `images/lab30-dc01-post-lab-checkpoint.png` |
-| LOG01 post-lab checkpoint | `images/lab30-log01-post-lab-checkpoint.png` |
+| DC01 pre-lab checkpoint | `screenshots/lab-30-01-dc01-pre-lab-checkpoint.png` |
+| LOG01 pre-lab checkpoint | `screenshots/lab-30-02-log01-pre-lab-checkpoint.png` |
+| CLIENT-01 pre-lab checkpoint | `screenshots/lab-30-03-client01-pre-lab-checkpoint.png` |
+| BitLocker status | `screenshots/lab-30-04-bitlocker-status-review.png` |
+| Local administrator membership | `screenshots/lab-30-05-local-admin-membership-review.png` |
+| Service Accounts OU | `screenshots/lab-30-06-service-account-ou-review.png` |
+| Service account properties | `screenshots/lab-30-07-service-account-properties-review.png` |
+| Service account group membership | `screenshots/lab-30-08-service-account-group-membership-review.png` |
+| Scheduled task identity | `screenshots/lab-30-09-scheduled-task-service-account-review.png` |
+| Scheduled task action | `screenshots/lab-30-10-scheduled-task-action-review.png` |
+| Scheduled task artifacts | `screenshots/lab-30-11-scheduled-task-output-review.png` |
+| Splunk home page | `screenshots/lab-30-12-splunk-home-review.png` |
+| Successful logon search | `screenshots/lab-30-13-splunk-successful-logon-review.png` |
+| Failed logon search | `screenshots/lab-30-14-splunk-failed-logon-review.png` |
+| Local group change search | `screenshots/lab-30-15-splunk-local-group-change-review.png` |
+| DC01 post-lab checkpoint | `screenshots/lab-30-16-dc01-post-lab-checkpoint.png` |
+| LOG01 post-lab checkpoint | `screenshots/lab-30-17-log01-post-lab-checkpoint.png` |
+| CLIENT-01 post-lab checkpoint | `screenshots/lab-30-18-client01-post-lab-checkpoint.png` |
 
 ---
 
-## Hyper-V Post-Lab Checkpoints
+## Troubleshooting and Review Notes
 
-After completing the capstone review, I created post-lab checkpoints for the reviewed systems.
+### Local Administrators Membership Changed
 
-### CLIENT01 Post-Lab Checkpoint
+Lab 28 ended with `Administrator` and `MRTG\Domain Admins` listed.
 
-Checkpoint created:
+Lab 30 showed only:
 
-`MRTG-CLIENT-01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated`
+```text
+Administrator
+```
 
-![CLIENT01 post-lab checkpoint](images/lab30-client01-post-lab-checkpoint.png)
+The current state is more restrictive, but the capstone evidence does not identify the change that removed `MRTG\Domain Admins`.
 
-### DC01 Post-Lab Checkpoint
+In production, that difference should be traced to:
 
-Checkpoint created:
+- A change ticket
+- Group Policy
+- Endpoint management policy
+- Administrative action
+- Configuration management history
 
-`MRTG-DC01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated`
+### Scheduled Task Was Not Re-Executed
 
-![DC01 post-lab checkpoint](images/lab30-dc01-post-lab-checkpoint.png)
+The scheduled task, script, and prior output existed.
 
-### LOG01 Post-Lab Checkpoint
+However, the evidence did not show a new Lab 30 execution result.
 
-Checkpoint created:
+A stronger operational validation would run the task and confirm:
 
-`MRTG-LOG01_Post-Lab30-IAM-Operations-Governance-Capstone-Validated`
+- Last Run Time
+- Last Run Result
+- New output timestamp
+- Task Scheduler operational event
+- Service account logon event
 
-![LOG01 post-lab checkpoint](images/lab30-log01-post-lab-checkpoint.png)
+### Splunk Searches Returned Zero Events
+
+The failed logon and local group change searches returned zero results in the selected 24-hour window.
+
+This is not a failed validation. It confirms that the searches executed but found no matching events within the available LOG01 dataset.
 
 ---
 
-## What I Would Improve in Production
+## Security Considerations
 
-In a production environment, I would improve this process by:
+The review identified several production concerns:
 
-- Building a formal service account review schedule
-- Requiring service account owners and expiration/review dates
-- Using managed service accounts where appropriate
-- Centralizing scheduled task inventory
-- Alerting on scheduled tasks running as privileged accounts
-- Storing BitLocker recovery keys in a controlled enterprise location
-- Monitoring BitLocker status across all endpoints
-- Enforcing local administrator baselines with policy
-- Deploying Splunk Universal Forwarders to endpoints and servers
-- Creating Splunk dashboards for IAM operations
-- Creating alerts for repeated failed logons
-- Creating alerts for privileged group changes
-- Reviewing local administrator membership at scale
-- Building formal IAM control evidence packages
-- Mapping controls to compliance requirements
-- Documenting exception handling and approval workflows
+- `ExecutionPolicy Bypass` weakens script execution controls
+- Existing output does not prove current task health
+- Splunk collected only LOG01 local events
+- Hyper-V checkpoints are not enterprise backups
+- The built-in Administrator still requires LAPS governance
+- Recovery keys require protected escrow
+- Service account passwords require rotation or managed identities
+- Splunk administrative access requires role separation
+
+These do not invalidate the lab. They define the next maturity level.
+
+---
+
+## IAM and Security Relevance
+
+| Principle | Capstone Application |
+|---|---|
+| Least privilege | Reviewed service account and local administrator access |
+| Identity governance | Confirmed account ownership and review frequency |
+| Defense in depth | Combined encryption, privilege control, automation, and monitoring |
+| Continuous validation | Rechecked controls after implementation |
+| Audit readiness | Preserved review evidence |
+| Operational resilience | Created rollback checkpoints |
+| Detection engineering | Reused identity-focused SPL searches |
+| Non-human identity management | Reviewed service account scope and automation |
+| Endpoint governance | Reviewed BitLocker and local administrator membership |
+
+---
+
+## Risk Addressed
+
+This capstone addressed the risk of controls becoming stale after deployment.
+
+Risks reviewed included:
+
+- Orphaned service accounts
+- Excessive service account privilege
+- Scheduled tasks using inappropriate identities
+- Missing automation artifacts
+- Disabled endpoint encryption
+- Reintroduced local administrator access
+- Unavailable monitoring tools
+- Untested SIEM searches
+- Missing operational evidence
+- Unexplained configuration drift
+
+---
+
+## What I Would Do Differently in Production
+
+In a production or government-regulated environment, I would implement:
+
+- Formal quarterly service account reviews
+- Business and technical account owners
+- Group Managed Service Accounts
+- Automated credential rotation
+- Central scheduled task inventory
+- Current task execution validation
+- Script signing
+- Removal of unnecessary `ExecutionPolicy Bypass`
+- BitLocker compliance reporting
+- Recovery key escrow and access auditing
+- Windows LAPS enforcement
+- Local administrator membership baselines
+- Change tracking for privileged group membership
+- Splunk Universal Forwarders
+- Domain controller Security log collection
+- Dedicated Windows Security indexes
+- Splunk role-based access control
+- Authentication and privilege dashboards
+- Alerts for failed logon thresholds
+- Alerts for privileged group changes
+- SIEM health monitoring
+- Formal exception management
+- Compliance control mapping
+- Evidence retention standards
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that IAM work does not end after a control is configured.
+- IAM controls require recurring review
+- Service account ownership must remain visible
+- Group membership should be revalidated after implementation
+- Automation configuration and execution health are different checks
+- Existing output is not proof of current execution
+- BitLocker encryption and protectors should be reviewed together
+- Local administrator membership can drift between reviews
+- Configuration differences should be traceable to approved changes
+- SIEM search scope depends on collected data sources
+- Zero events do not mean a search failed
+- Hyper-V checkpoints support labs but do not replace backups
+- Operational IAM connects governance, endpoint security, automation, and monitoring
 
-Service accounts need ownership and review. Scheduled tasks need to run under the correct identity. Endpoint encryption needs to remain enabled. Local administrator remediation needs to be verified. SIEM monitoring needs to be checked and used.
+---
 
-The biggest takeaway is that good IAM operations require a review cycle.
+## Skills Demonstrated
 
-A control that is not reviewed can quietly become stale, misconfigured, or risky.
-
-This capstone pulled the previous labs together into one operational review and showed how identity governance, endpoint security, automation, and monitoring support each other.
+- IAM governance review
+- Service account auditing
+- Non-human identity governance
+- Active Directory Users and Computers
+- Group membership validation
+- Scheduled task review
+- PowerShell automation review
+- BitLocker validation
+- Local administrator review
+- Splunk availability validation
+- SPL authentication searches
+- Zero-result analysis
+- Configuration drift analysis
+- Audit evidence collection
+- Hyper-V checkpoint management
+- Production control planning
 
 ---
 
 ## Outcome
 
-Lab 30 successfully validated the IAM operations and governance state of the MRTG lab environment.
+Lab 30 successfully completed the IAM operations, monitoring, and governance capstone.
 
-The lab confirmed:
+The review confirmed:
 
-- Service accounts were organized in the correct OU
-- Service account documentation remained in place
-- The `Service Audit Review` account was not privileged
-- The scheduled task still used `svc-audit-review`
-- The scheduled task action and output artifacts still existed
-- BitLocker remained enabled on `MRTG-CLIENT-01`
-- The local `localadmin` account remained removed
-- Splunk remained accessible on `MRTG-LOG01`
-- Successful logon events were searchable
-- Failed logon monitoring was reviewed
-- Local group change monitoring was reviewed
-- Final post-lab checkpoints preserved the validated state
+- Service accounts remained organized in a dedicated OU
+- `svc-audit-review` retained ownership and review documentation
+- The service account remained a member of only Domain Users
+- The scheduled task remained configured to use the service account
+- The expected task action and artifacts remained present
+- BitLocker remained fully encrypted and protected
+- The unnecessary `localadmin` membership remained removed
+- The current local Administrators group contained only Administrator
+- Splunk Enterprise remained accessible
+- Successful logon events remained searchable
+- Failed logon and local group change searches remained usable
+- Final checkpoints preserved the reviewed state
 
-This completed the IAM expansion series by showing that the environment is not only configured, but reviewed, monitored, documented, and ready for operational handoff.
+The capstone demonstrated that the expansion controls were not only implemented but could be revisited through a structured governance review.
 
 ---
 
@@ -626,13 +880,24 @@ This completed the IAM expansion series by showing that the environment is not o
 
 Lab 30 completes the IAM operations expansion track.
 
-This final capstone ties together:
+The expansion included:
 
-- Lab 25 — Service Account Governance Foundation
-- Lab 26 — Scheduled Task with Least-Privilege Service Account
-- Lab 27 — BitLocker and Endpoint Encryption Recovery
-- Lab 28 — Local Administrator Access Review and Remediation
-- Lab 29 — SIEM Identity Monitoring with Splunk
-- Lab 30 — IAM Operations, Monitoring, and Governance Capstone
+- Lab 25 - Service Account Governance Foundation
+- Lab 26 - Scheduled Task with Least-Privilege Service Account
+- Lab 27 - BitLocker and Endpoint Encryption Recovery
+- Lab 28 - Local Administrator Access Review and Remediation
+- Lab 29 - SIEM Identity Monitoring with Splunk
+- Lab 30 - IAM Operations, Monitoring, and Governance Capstone
 
-Together, these labs demonstrate identity governance, endpoint protection, least-privilege operations, monitoring, and audit-ready documentation in a simulated enterprise Active Directory environment.
+Together, these labs demonstrate practical experience with:
+
+- Non-human identity governance
+- Least-privilege automation
+- Endpoint encryption
+- Local administrator remediation
+- Identity monitoring
+- Operational validation
+- Audit-ready documentation
+- Security control governance
+
+The completed MRTG IAM lab series now provides an end-to-end portfolio covering Active Directory foundations, identity lifecycle operations, security controls, recovery, auditing, documentation, endpoint protection, monitoring, and governance.
