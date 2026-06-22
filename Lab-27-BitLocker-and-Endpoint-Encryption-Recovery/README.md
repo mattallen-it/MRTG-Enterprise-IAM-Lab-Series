@@ -1,4 +1,4 @@
-# Lab-27 — BitLocker & Endpoint Encryption Recovery
+# Lab 27 - BitLocker and Endpoint Encryption Recovery
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)
 ![Technology](https://img.shields.io/badge/Technology-BitLocker-blue)
@@ -9,42 +9,99 @@
 
 ---
 
-## Objective
+## Overview
 
-The objective of this lab is to enable and validate BitLocker protection on an endpoint while documenting recovery key handling and encryption limitations.
+In this lab, I enabled and validated BitLocker protection on `MRTG-CLIENT-01` while documenting secure recovery key handling.
 
-This lab focuses on endpoint encryption as part of a broader identity and security operations model. BitLocker protects data at rest, but recovery access must be handled carefully because recovery keys are sensitive recovery material.
+The endpoint drive was already encrypted, but BitLocker protection was off because no key protectors were configured.
+
+After activation, the protection status changed to `Protection On`, and the operating system drive showed both TPM and numerical password protectors.
+
+The recovery key value was intentionally excluded from screenshots and public documentation.
 
 ---
 
 ## Business Problem
 
-Monroe Redstone Technology Group needs endpoint encryption to protect workstation data if a device is lost, stolen, or accessed while powered off.
+MRTG needed endpoint encryption to protect workstation data if a device was lost, stolen, removed, or accessed while powered off.
 
-However, enabling encryption is only part of the control. Recovery keys must also be protected, documented, and handled properly.
+Enabling encryption alone is not enough. The organization must also confirm that protection is active and that valid key protectors are configured.
 
-If recovery keys are exposed or poorly controlled, they can become a privileged access path.
+Recovery keys create an additional governance requirement because anyone with the recovery password may be able to unlock the protected drive.
 
-This lab addresses the need to:
+This lab addressed the need to:
 
-- Enable BitLocker protection on a workstation
-- Validate TPM readiness
-- Confirm BitLocker protection status
-- Document recovery key handling
-- Avoid exposing recovery key material in public documentation
-- Explain BitLocker limitations as part of layered endpoint security
+- Validate endpoint encryption status
+- Confirm TPM readiness
+- Enable BitLocker protection
+- Create a numerical recovery password
+- Document secure recovery key handling
+- Prevent recovery material from appearing in public evidence
+- Validate the final protection state
+- Explain BitLocker limitations within a layered security model
 
 ---
 
 ## Lab Summary
 
-In this lab, I enabled BitLocker protection on `MRTG-CLIENT-01`.
+I created pre-lab checkpoints for `MRTG-DC01` and `MRTG-CLIENT-01`.
 
-The endpoint already showed encrypted status, but BitLocker protection was not active because no key protectors were configured.
+On the client, I used `manage-bde` and `Get-Tpm` to review the initial state. The drive was fully encrypted, but protection was off and no key protectors were present.
 
-After activation, BitLocker protection changed from `Protection Off` to `Protection On`, and the endpoint showed both TPM and numerical password key protectors.
+I enabled BitLocker protection and selected the Microsoft Print to PDF workflow for recovery key backup without exposing the key in the documentation.
 
-The recovery key backup step was completed during activation, but the recovery key value is intentionally not displayed in this documentation.
+The BitLocker Control Panel showed `C: BitLocker on`, and final command-line validation confirmed `Protection On` with TPM and numerical password protectors.
+
+Finally, I created post-lab checkpoints for the client and domain controller.
+
+---
+
+## Objectives
+
+- Create pre-lab checkpoints for the client and domain controller
+- Review the initial BitLocker state
+- Validate TPM readiness
+- Identify the difference between encryption and active protection
+- Enable BitLocker protection
+- Configure TPM and numerical password protectors
+- Use a recovery key backup workflow
+- Exclude recovery key material from public documentation
+- Validate BitLocker through Control Panel
+- Validate the final state with `manage-bde`
+- Document BitLocker limitations
+- Create post-lab checkpoints
+
+---
+
+## Scope
+
+### Included
+
+- Hyper-V checkpoints
+- TPM readiness validation
+- Initial BitLocker status review
+- BitLocker protection activation
+- Recovery key backup workflow
+- Recovery key handling documentation
+- Control Panel validation
+- Command-line protection validation
+- Key protector validation
+- Layered endpoint security analysis
+- Audit evidence collection
+
+### Not Included
+
+- Forced BitLocker recovery testing
+- Recovery password entry testing
+- Recovery key escrow to Active Directory
+- Recovery key escrow to Microsoft Entra ID
+- Group Policy deployment
+- Microsoft Intune deployment
+- Organization-wide compliance reporting
+- BitLocker suspension testing
+- Removable drive encryption
+- Secure Boot validation
+- Production recovery key access auditing
 
 ---
 
@@ -52,342 +109,474 @@ The recovery key backup step was completed during activation, but the recovery k
 
 | Component | Details |
 |---|---|
+| Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
 | Endpoint | `MRTG-CLIENT-01` |
+| Operating System | Windows 11 |
+| Protected Volume | `C:` |
 | Encryption Tool | BitLocker Drive Encryption |
-| Validation Tool | `manage-bde` |
-| TPM Validation | `Get-Tpm` |
-| Virtualization Platform | Hyper-V |
-| Lab Organization | Monroe Redstone Technology Group |
+| Status Tool | `manage-bde` |
+| TPM Tool | `Get-Tpm` |
+| Encryption Method | `XTS-AES 128` |
+| Encryption Scope | Used space only |
+| Hypervisor | Hyper-V |
 
 ---
 
-## Hyper-V Pre-Lab Checkpoints
+## Scenario
 
-Before making changes, I created pre-lab checkpoints for both the domain controller and the client endpoint.
+MRTG needs to protect data stored on a Windows endpoint.
 
-These checkpoints preserve the pre-change state before BitLocker activation and endpoint encryption validation.
+The drive must remain inaccessible to unauthorized users if the virtual disk or device is removed, stolen, or accessed while powered off.
 
-### Domain Controller Pre-Lab Checkpoint
+The endpoint must use its TPM for normal startup and retain a numerical recovery password for authorized recovery scenarios.
 
-Checkpoint created:
+The security model used in this lab was:
 
-`MRTG-DC01_Pre-Lab27-BitLocker-Endpoint-Recovery`
-
-![DC01 pre-lab checkpoint](images/lab27-dc01-pre-lab-checkpoint.png)
-
-### Client Pre-Lab Checkpoint
-
-Checkpoint created:
-
-`MRTG-CLIENT-01_Pre-Lab27-BitLocker-Endpoint-Recovery`
-
-![Client pre-lab checkpoint](images/lab27-client01-pre-lab-checkpoint.png)
+```text
+Validate TPM → Review Encryption State → Protect Recovery Material → Enable Protection → Validate Key Protectors
+```
 
 ---
 
-## Initial BitLocker and TPM Status
+## Encryption and Protection Model
 
-Before enabling BitLocker protection, I validated the endpoint encryption and TPM state using PowerShell.
+BitLocker encryption status and protection status are related but separate.
+
+| State | Meaning |
+|---|---|
+| Drive encrypted | Data on the volume has been encrypted |
+| Protection off | BitLocker protectors are not actively enforcing access protection |
+| Protection on | BitLocker protectors are actively protecting access to the encrypted volume |
+| TPM protector | The TPM releases key material when startup integrity checks succeed |
+| Numerical password | A recovery password can unlock the volume when normal protection cannot |
+
+The initial drive was encrypted but unprotected.
+
+The final goal was:
+
+```text
+Encrypted Volume + TPM Protector + Numerical Recovery Password + Protection On
+```
+
+---
+
+## Implementation Steps
+
+### Step 1 - Created DC01 Pre-Lab Checkpoint
+
+A checkpoint was created for `MRTG-DC01` before beginning the lab.
+
+Checkpoint name:
+
+```text
+MRTG-DC01_Pre-Lab27-BitLocker-Endpoint-Recovery
+```
+
+![DC01 Pre-Lab Checkpoint](screenshots/lab-27-01-dc01-pre-lab-checkpoint.png)
+
+---
+
+### Step 2 - Created CLIENT-01 Pre-Lab Checkpoint
+
+A checkpoint was created for `MRTG-CLIENT-01` before changing its BitLocker configuration.
+
+Checkpoint name:
+
+```text
+MRTG-CLIENT-01_Pre-Lab27-BitLocker-Endpoint-Recovery
+```
+
+This provided a rollback point for the client before protection was activated.
+
+![CLIENT-01 Pre-Lab Checkpoint](screenshots/lab-27-02-client01-pre-lab-checkpoint.png)
+
+---
+
+### Step 3 - Validated Initial BitLocker and TPM Status
+
+The initial BitLocker and TPM states were reviewed.
 
 Commands used:
 
-`manage-bde -status`
+```powershell
+manage-bde -status
+Get-Tpm
+```
 
-`Get-Tpm`
-
-The initial `manage-bde` output showed that the drive was already encrypted, but BitLocker protection was not active.
-
-Key initial findings:
+Initial BitLocker results:
 
 | Setting | Initial State |
 |---|---|
+| Volume | `C:` |
+| BitLocker Version | `2.0` |
+| Conversion Status | Used Space Only Encrypted |
 | Percentage Encrypted | `100.0%` |
-| Conversion Status | `Used Space Only Encrypted` |
+| Encryption Method | `XTS-AES 128` |
 | Protection Status | `Protection Off` |
 | Lock Status | `Unlocked` |
-| Key Protectors | `None Found` |
+| Identification Field | Unknown |
+| Key Protectors | None Found |
 
-The TPM check confirmed that TPM was present and ready.
+TPM validation:
 
-Key TPM findings:
-
-| TPM Setting | Status |
+| TPM Setting | Result |
 |---|---|
-| TpmPresent | `True` |
-| TpmReady | `True` |
-| TpmEnabled | `True` |
-| TpmActivated | `True` |
-| TpmOwned | `True` |
+| `TpmPresent` | `True` |
+| `TpmReady` | `True` |
+| `TpmEnabled` | `True` |
+| `TpmActivated` | `True` |
+| `TpmOwned` | `True` |
+| `RestartPending` | `False` |
 
-![Manage-BDE and TPM status](images/lab27-manage-bde-and-tpm-status.png)
+The endpoint was encrypted, but BitLocker was not actively protected because no key protectors were configured.
+
+![TPM and BitLocker Status Before Protection](screenshots/lab-27-03-tpm-and-bitlocker-status-before-protection.png)
 
 ---
 
-## Technical Interpretation
+### Step 4 - Selected the Recovery Key Print Workflow
 
-The endpoint showed encryption was already present, but BitLocker protection was not fully active.
+During BitLocker activation, Windows presented options for backing up the recovery key.
 
-This is an important distinction.
+Microsoft Print to PDF was selected as the lab recovery key backup workflow.
 
-Encryption being present does not automatically mean the endpoint is fully protected by BitLocker. BitLocker protection requires key protectors such as TPM and a numerical recovery password.
+The actual recovery password was not captured in any public screenshot or README content.
 
-Initial state:
-
-| Area | Status |
-|---|---|
-| Disk encryption | Present |
-| BitLocker protection | Off |
-| Key protectors | Not configured |
-
-Final goal:
-
-| Area | Status |
-|---|---|
-| Disk encryption | Present |
-| BitLocker protection | On |
-| Key protectors | TPM and numerical password |
-
----
-
-## BitLocker Recovery Key Backup Option
-
-During BitLocker activation, Windows prompted for a recovery key backup method.
-
-I selected the option to print the recovery key using Microsoft Print to PDF.
-
-The recovery key value is intentionally not shown in this documentation.
-
-BitLocker recovery keys are sensitive recovery material and should not be exposed in public repositories, screenshots, or LinkedIn posts.
-
-![BitLocker print recovery key option](images/lab27-bitlocker-print-recovery-key-option.png)
+![BitLocker Recovery Key Print Option](screenshots/lab-27-04-bitlocker-recovery-key-print-option.png)
 
 ---
 
 ## Recovery Key Handling
 
-The recovery key backup step was completed during activation, but the actual recovery key value is intentionally excluded from this documentation.
+A BitLocker recovery password is sensitive authentication material.
 
-This lab documents the recovery handling process without exposing sensitive recovery material.
+It can bypass the normal TPM-based startup process and unlock the protected volume during a recovery event.
 
-Recovery keys should be treated like privileged access artifacts because they can be used to unlock protected systems.
+Recovery keys should not be stored in:
 
-In a production environment, BitLocker recovery keys should be escrowed to an approved protected location such as:
+- Public GitHub repositories
+- LinkedIn posts
+- Unprotected screenshots
+- Public documentation
+- Unencrypted email
+- General-purpose shared folders
+- Unapproved personal storage
 
-- Active Directory
+Approved production storage may include:
+
+- Active Directory Domain Services
 - Microsoft Entra ID
-- A privileged documentation vault
-- An approved enterprise recovery key repository
+- Microsoft Intune
+- A privileged access management platform
+- An approved enterprise recovery repository
 
-Access to BitLocker recovery material should be limited to authorized administrators and reviewed periodically.
+Access should be restricted, logged, reviewed, and tied to a valid support or recovery request.
 
 ---
 
-## BitLocker Protection Enabled
+### Step 5 - Confirmed BitLocker Through Control Panel
 
-After completing the BitLocker activation process, I validated the endpoint protection state using:
+The BitLocker Control Panel confirmed that protection was active on the operating system drive.
 
-`manage-bde -status C:`
+Displayed status:
 
-The updated status showed that BitLocker protection was active.
+```text
+C: BitLocker on
+```
 
-Key final findings:
+The interface also provided options to:
+
+- Suspend protection
+- Back up the recovery key
+- Turn off BitLocker
+
+![BitLocker Control Panel Enabled](screenshots/lab-27-05-bitlocker-control-panel-enabled.png)
+
+---
+
+### Step 6 - Validated Protection and Key Protectors
+
+The final BitLocker state was validated from the command line.
+
+Command used:
+
+```powershell
+manage-bde -status C:
+```
+
+Final results:
 
 | Setting | Final State |
 |---|---|
+| Volume | `C:` |
+| BitLocker Version | `2.0` |
+| Conversion Status | Used Space Only Encrypted |
 | Percentage Encrypted | `100.0%` |
-| Conversion Status | `Used Space Only Encrypted` |
+| Encryption Method | `XTS-AES 128` |
 | Protection Status | `Protection On` |
 | Lock Status | `Unlocked` |
-| Key Protector | `TPM` |
-| Key Protector | `Numerical Password` |
+| Key Protector | TPM |
+| Key Protector | Numerical Password |
 
-![Manage-BDE protection on status](images/lab27-manage-bde-protection-on-status.png)
+The presence of both protectors confirmed that the endpoint could use TPM-based startup protection and an authorized recovery password.
 
----
-
-## BitLocker Control Panel Validation
-
-The BitLocker Control Panel also confirmed that BitLocker protection was active on the operating system drive.
-
-Final GUI status:
-
-`C: BitLocker on`
-
-![BitLocker control panel after](images/lab27-bitlocker-control-panel-after.png)
+![BitLocker Protection On Validation](screenshots/lab-27-06-bitlocker-protection-on-validation.png)
 
 ---
 
-## BitLocker Limitations and Layered Endpoint Security
+### Step 7 - Created CLIENT-01 Post-Lab Checkpoint
 
-BitLocker protects data at rest, especially if a device is lost, stolen, removed, or accessed while powered off.
+A post-lab checkpoint was created for the protected client.
 
-However, BitLocker is not a standalone security solution.
+Checkpoint name:
 
-BitLocker does not replace:
+```text
+MRTG-CLIENT-01_Post-Lab27-BitLocker-Endpoint-Recovery-Validated
+```
 
-- Strong authentication
-- Least privilege
-- Local administrator control
-- Endpoint hardening
-- Logging and monitoring
-- Physical security
-- Patch management
-- Secure recovery key handling
+![CLIENT-01 Post-Lab Checkpoint](screenshots/lab-27-07-client01-post-lab-checkpoint.png)
 
-If a system is already unlocked, an attacker has valid credentials, or local administrative access is compromised, BitLocker alone does not prevent all forms of misuse.
+---
 
-For this reason, BitLocker should be treated as one layer in a broader endpoint and identity security model.
+### Step 8 - Created DC01 Post-Lab Checkpoint
+
+A post-lab checkpoint was created for the domain controller.
+
+Checkpoint name:
+
+```text
+MRTG-DC01_Post-Lab27-BitLocker-Endpoint-Recovery-Validated
+```
+
+![DC01 Post-Lab Checkpoint](screenshots/lab-27-08-dc01-post-lab-checkpoint.png)
+
+---
+
+## Before and After Comparison
+
+| Control | Before | After |
+|---|---|---|
+| Drive encryption | 100% encrypted | 100% encrypted |
+| Encryption method | XTS-AES 128 | XTS-AES 128 |
+| Protection status | Off | On |
+| TPM readiness | Ready | Ready |
+| TPM protector | Not present | Present |
+| Numerical password | Not present | Present |
+| Control Panel status | Not validated | BitLocker on |
+| Recovery handling | Not documented | Documented without exposing the key |
+
+---
+
+## BitLocker Limitations
+
+BitLocker protects data at rest.
+
+It is most effective when a device is:
+
+- Powered off
+- Lost or stolen
+- Accessed through removed storage
+- Booted outside its trusted configuration
+
+BitLocker does not independently protect against:
+
+- Attackers using an already unlocked session
+- Compromised user credentials
+- Malware running after authentication
+- Excessive local administrator access
+- Weak account security
+- Missing patches
+- Unmonitored endpoint activity
+- Recovery key exposure
+- Data copied from an unlocked system
+
+BitLocker must be combined with authentication, least privilege, endpoint hardening, monitoring, patching, and controlled recovery procedures.
 
 ---
 
 ## IAM and Security Relevance
 
-This lab connects to IAM because recovery keys represent sensitive access material.
-
-Even though BitLocker is an endpoint security control, recovery key access still needs governance.
-
-Important IAM connections include:
+BitLocker is an endpoint security technology, but recovery key access is an IAM responsibility.
 
 | IAM Area | Relevance |
 |---|---|
-| Access control | Recovery keys should only be available to authorized administrators |
-| Least privilege | Recovery access should not be broadly available |
-| Audit readiness | Recovery handling should be documented |
-| Privileged access | Recovery keys can unlock protected systems |
-| Operational security | Recovery procedures should be controlled and repeatable |
-| Endpoint identity | Device protection supports secure identity operations |
+| Authentication | TPM-based protection supports trusted startup |
+| Authorization | Only approved personnel should retrieve recovery keys |
+| Least privilege | Recovery key access should be narrowly assigned |
+| Privileged access | A recovery password can unlock a protected device |
+| Audit readiness | Recovery requests and key retrieval should be logged |
+| Identity governance | Recovery access requires ownership and periodic review |
+| Operational resilience | Authorized recovery prevents permanent loss of access |
+| Device identity | TPM-backed protection ties access to trusted hardware state |
 
 ---
 
 ## Risk Addressed
 
-Unprotected endpoints create risk because data may be exposed if a device is lost, stolen, or accessed while powered off.
-
-Poorly handled recovery keys also create risk because unauthorized users may be able to unlock encrypted systems.
-
-This lab reduces those risks by enabling BitLocker protection, validating TPM readiness, confirming active key protectors, and documenting recovery key handling.
-
-The main risks addressed include:
+This lab addressed risks including:
 
 - Data exposure from lost or stolen endpoints
-- BitLocker protection appearing incomplete or inactive
-- Recovery keys being mishandled or exposed
-- Lack of validation after encryption changes
-- Weak documentation around endpoint protection
-- Treating encryption as a standalone control instead of part of layered security
+- Mistaking encryption for active protection
+- Missing key protectors
+- Unprotected recovery passwords
+- Public exposure of recovery material
+- Lack of post-configuration validation
+- Incomplete endpoint security documentation
+- Treating encryption as a standalone security solution
 
 ---
 
 ## Control Mapping
 
-This lab supports the following IAM and security concepts:
-
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Implementation |
 |---|---|
-| Endpoint encryption | Enables BitLocker protection on a workstation |
-| Data protection | Protects data at rest on the endpoint |
-| Recovery governance | Documents recovery key handling without exposing the key |
-| Least privilege | Treats recovery material as sensitive access material |
-| TPM validation | Confirms TPM is present and ready |
-| Security validation | Uses `manage-bde` and Control Panel to confirm protection |
-| Audit readiness | Collects screenshots and validation evidence |
-| Layered security | Explains BitLocker limitations and compensating controls |
-| Operational resilience | Maintains pre-lab and post-lab rollback points |
+| Endpoint encryption | Confirmed the operating system volume was encrypted |
+| Data-at-rest protection | Enabled active BitLocker protection |
+| Hardware-backed security | Validated TPM readiness and the TPM protector |
+| Recovery capability | Configured a numerical recovery password |
+| Recovery governance | Excluded recovery material from public evidence |
+| Security validation | Used Control Panel and `manage-bde` |
+| Least privilege | Treated recovery access as privileged |
+| Layered security | Documented controls BitLocker does not replace |
+| Change protection | Created pre-lab and post-lab checkpoints |
+| Audit readiness | Preserved non-sensitive validation evidence |
 
 ---
 
-## Validation
+## Validation Summary
 
-The following validation checks were completed:
-
-| Validation Item | Result |
-|---|---|
-| DC01 pre-lab checkpoint created | Passed |
-| CLIENT-01 pre-lab checkpoint created | Passed |
-| Initial BitLocker status reviewed | Passed |
-| TPM status validated | Passed |
-| Initial protection status confirmed as off | Passed |
-| Recovery key backup option selected | Passed |
-| Recovery key value excluded from public documentation | Passed |
-| BitLocker protection enabled | Passed |
-| TPM key protector confirmed | Passed |
-| Numerical password protector confirmed | Passed |
-| Control Panel showed BitLocker on | Passed |
-| DC01 post-lab checkpoint created | Passed |
-| CLIENT-01 post-lab checkpoint created | Passed |
+| Test | Expected Result | Actual Result | Status |
+|---|---|---|---|
+| DC01 pre-lab checkpoint created | Rollback point exists | Checkpoint created | Passed |
+| CLIENT-01 pre-lab checkpoint created | Client rollback point exists | Checkpoint created | Passed |
+| Initial encryption reviewed | Drive state documented | 100% encrypted | Passed |
+| Initial protection reviewed | Protection state documented | Protection Off | Passed |
+| TPM validated | TPM present and ready | TPM ready | Passed |
+| Initial protectors reviewed | Missing protectors identified | None found | Passed |
+| Recovery workflow selected | Backup method available | Print workflow selected | Passed |
+| Recovery key protected | Key absent from public evidence | Key not exposed | Passed |
+| Control Panel validated | BitLocker shown as enabled | BitLocker on | Passed |
+| Protection activated | Final protection status on | Protection On | Passed |
+| TPM protector validated | TPM listed | TPM present | Passed |
+| Numerical protector validated | Recovery protector listed | Numerical password present | Passed |
+| CLIENT-01 post-lab checkpoint created | Validated client state preserved | Checkpoint created | Passed |
+| DC01 post-lab checkpoint created | Validated DC state preserved | Checkpoint created | Passed |
 
 ---
 
 ## Evidence Collected
 
-The following evidence was collected during the lab:
-
-| Evidence | File |
+| Evidence | Screenshot |
 |---|---|
-| DC01 pre-lab checkpoint | `images/lab27-dc01-pre-lab-checkpoint.png` |
-| CLIENT-01 pre-lab checkpoint | `images/lab27-client01-pre-lab-checkpoint.png` |
-| Initial BitLocker and TPM status | `images/lab27-manage-bde-and-tpm-status.png` |
-| BitLocker recovery key print option | `images/lab27-bitlocker-print-recovery-key-option.png` |
-| BitLocker protection enabled status | `images/lab27-manage-bde-protection-on-status.png` |
-| BitLocker Control Panel final status | `images/lab27-bitlocker-control-panel-after.png` |
-| DC01 post-lab checkpoint | `images/lab27-dc01-post-lab-checkpoint.png` |
-| CLIENT-01 post-lab checkpoint | `images/lab27-client01-post-lab-checkpoint.png` |
+| DC01 pre-lab checkpoint | `screenshots/lab-27-01-dc01-pre-lab-checkpoint.png` |
+| CLIENT-01 pre-lab checkpoint | `screenshots/lab-27-02-client01-pre-lab-checkpoint.png` |
+| Initial TPM and BitLocker status | `screenshots/lab-27-03-tpm-and-bitlocker-status-before-protection.png` |
+| Recovery key print workflow | `screenshots/lab-27-04-bitlocker-recovery-key-print-option.png` |
+| BitLocker Control Panel validation | `screenshots/lab-27-05-bitlocker-control-panel-enabled.png` |
+| Final protection and key protectors | `screenshots/lab-27-06-bitlocker-protection-on-validation.png` |
+| CLIENT-01 post-lab checkpoint | `screenshots/lab-27-07-client01-post-lab-checkpoint.png` |
+| DC01 post-lab checkpoint | `screenshots/lab-27-08-dc01-post-lab-checkpoint.png` |
 
 ---
 
-## Hyper-V Post-Lab Checkpoints
+## Troubleshooting Notes
 
-After completing BitLocker activation and validation, I created post-lab checkpoints for both the client and domain controller.
+The initial status created an important distinction:
 
-### Domain Controller Post-Lab Checkpoint
+```text
+Percentage Encrypted: 100.0%
+Protection Status: Protection Off
+Key Protectors: None Found
+```
 
-Checkpoint created:
+The drive contained encrypted data, but the protection mechanism was not actively enforced.
 
-`MRTG-DC01_Post-Lab27-BitLocker-Endpoint-Recovery-Validated`
+The issue was resolved by activating BitLocker and configuring TPM and numerical password protectors.
 
-![DC01 post-lab checkpoint](images/lab27-dc01-post-lab-checkpoint.png)
+Final validation showed:
 
-### Client Post-Lab Checkpoint
-
-Checkpoint created:
-
-`MRTG-CLIENT-01_Post-Lab27-BitLocker-Endpoint-Recovery-Validated`
-
-![Client post-lab checkpoint](images/lab27-client01-post-lab-checkpoint.png)
+```text
+Protection Status: Protection On
+Key Protectors:
+- TPM
+- Numerical Password
+```
 
 ---
 
-## What I Would Improve in Production
+## Security Considerations
 
-In a production environment, I would improve this process by:
+The recovery password was intentionally excluded from the evidence.
 
-- Escrowing BitLocker recovery keys to Active Directory or Microsoft Entra ID
-- Restricting recovery key access to authorized administrators
-- Auditing recovery key access
-- Documenting recovery procedures in an approved internal system
-- Using endpoint management tools to enforce BitLocker policy
-- Applying BitLocker settings through Group Policy or Microsoft Intune
-- Monitoring devices for encryption compliance
-- Alerting on BitLocker suspension or protection changes
-- Testing recovery procedures in a controlled process
-- Avoiding local or user-controlled recovery key storage
-- Aligning encryption policy with organizational compliance requirements
+The print-to-PDF workflow was acceptable for demonstrating the backup option in a lab, but storing a recovery key in a local PDF is not an appropriate production escrow strategy unless the file is transferred immediately to an approved protected repository and securely removed from local storage.
+
+Hyper-V checkpoints were used as lab rollback points. They are not substitutes for:
+
+- BitLocker recovery passwords
+- System backups
+- Recovery key escrow
+- Disaster recovery procedures
+- Restore testing
+
+---
+
+## What I Would Do Differently in Production
+
+In a production or government-regulated environment, I would implement:
+
+- Automatic recovery key escrow to Active Directory or Microsoft Entra ID
+- Microsoft Intune or Group Policy enforcement
+- Restricted recovery key retrieval permissions
+- Logged recovery key access
+- Help desk identity verification procedures
+- Ticket requirements for key retrieval
+- Encryption compliance reporting
+- Alerts when BitLocker is suspended
+- Alerts when protection is disabled
+- Recovery testing under controlled conditions
+- Secure Boot validation
+- TPM health monitoring
+- Standard encryption algorithms defined by policy
+- Removable media encryption controls
+- Recovery key rotation after disclosure
+- Centralized endpoint monitoring
+- Documented device retirement procedures
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that endpoint encryption is not complete until protection status and key protectors are validated.
+- Encryption percentage and protection status are separate measurements
+- A fully encrypted drive can still show protection off
+- BitLocker requires active key protectors
+- TPM readiness should be validated before activation
+- Numerical recovery passwords are privileged security material
+- Recovery keys should never appear in public documentation
+- Control Panel and command-line validation provide complementary evidence
+- BitLocker protects data at rest, not an already unlocked session
+- Encryption must be combined with identity and endpoint controls
+- Hyper-V checkpoints do not replace recovery key escrow
+- A complete recovery test would require a separate controlled validation
 
-The endpoint initially showed that the drive was encrypted, but BitLocker protection was off and no key protectors were configured.
+---
 
-After activation, BitLocker showed `Protection On` with TPM and numerical password protectors.
+## Skills Demonstrated
 
-The lab also reinforced that recovery keys are sensitive. They should not be exposed in public screenshots or documentation. Recovery key handling should be controlled, documented, and reviewed like other privileged access paths.
-
-The biggest takeaway is that BitLocker is one layer of endpoint security. It protects data at rest, but it does not replace authentication, least privilege, monitoring, endpoint hardening, or recovery governance.
+- BitLocker administration
+- Endpoint encryption validation
+- TPM readiness assessment
+- `manage-bde` usage
+- PowerShell TPM validation
+- Recovery key governance
+- Key protector validation
+- Data-at-rest security analysis
+- Sensitive evidence handling
+- Layered endpoint security analysis
+- Hyper-V checkpoint management
+- Audit documentation
+- Production control planning
 
 ---
 
@@ -397,22 +586,23 @@ Lab 27 successfully enabled and validated BitLocker protection on `MRTG-CLIENT-0
 
 The lab demonstrated:
 
-- Pre-lab rollback planning
-- Initial BitLocker and TPM validation
+- Pre-change rollback planning
+- TPM readiness validation
+- Identification of an encrypted but unprotected drive
 - BitLocker activation
-- Recovery key handling without public key exposure
-- TPM and numerical password protector validation
-- BitLocker Control Panel validation
-- Documentation of BitLocker limitations
-- Post-lab rollback planning
-- Endpoint encryption tied back to IAM and security governance
+- TPM and numerical password protection
+- Secure recovery key documentation
+- Control Panel and command-line validation
+- Layered endpoint security analysis
+- Post-change rollback planning
+- Audit-ready evidence without exposing recovery material
 
-This lab strengthens the MRTG environment by adding endpoint encryption and recovery handling to the IAM operations expansion track.
+The endpoint finished the lab with `Protection On`, a TPM protector, and a numerical recovery password.
 
 ---
 
 ## Next Lab
 
-[Lab 28 — Local Administrator Access Review and Remediation](../Lab-28-Local-Administrator-Access-Review-and-Remediation)
+[Lab 28 - Local Administrator Access Review and Remediation](../Lab-28-Local-Administrator-Access-Review-and-Remediation/)
 
-Lab 28 will focus on reviewing local administrator exposure, validating privileged access controls, and documenting remediation steps for endpoint administrator risk.
+Lab 28 will review local administrator exposure, validate privileged endpoint access, remove unnecessary membership, and document the remediation process.
