@@ -1,4 +1,4 @@
-# Lab 09 — Password Policy and Account Lockout Hardening
+# Lab 09: Password Policy and Account Lockout Hardening
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -11,41 +11,39 @@
 
 ## Objective
 
-The objective of this lab is to harden domain authentication in the `mrtg.local` Active Directory domain by configuring password policy and account lockout settings.
+Harden domain authentication in the `mrtg.local` Active Directory domain by configuring password and account-lockout policy.
 
-This lab focuses on domain-level authentication controls using the Default Domain Policy.
-
-The goal is to enforce stronger password requirements, limit repeated failed sign-in attempts, and validate real account lockout behavior from both the user and administrator perspectives.
+This lab applies baseline authentication controls at the domain level, validates the effective settings with PowerShell, and tests account lockout from both the user and administrator perspectives.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-Monroe Redstone Technology Group needs stronger baseline authentication controls to reduce weak password practices and limit repeated failed sign-in attempts against domain accounts.
+Monroe Redstone Technology Group requires centralized authentication controls to reduce weak password practices and limit repeated failed sign-in attempts against domain accounts.
 
-Without password and lockout policy enforcement, users may rely on weak passwords, reuse old passwords, or allow repeated failed authentication attempts without consequence.
+Without an enforced domain policy, users may select weak passwords, reuse previous passwords, or experience inconsistent lockout behavior.
 
 This lab addresses the need to:
 
 - Configure centralized password requirements
-- Configure account lockout controls
-- Apply policy at the correct domain scope
-- Validate the effective domain password policy
-- Trigger a real account lockout from a client workstation
-- Confirm the locked account state from the administrator side
-- Strengthen authentication security across the domain
+- Configure account-lockout controls
+- Apply account policy at the correct domain scope
+- Validate the effective domain policy
+- Trigger an account lockout from a domain-joined workstation
+- Confirm the locked state from an administrative session
+- Document authentication-control behavior
 
 ---
 
 ## Lab Summary
 
-In this lab, I configured domain-level password policy and account lockout settings in the Default Domain Policy.
+In this lab, I configured password and account-lockout settings in the Default Domain Policy.
 
-I applied the policy, validated the effective domain password settings with PowerShell, and tested lockout behavior using a standard domain user account.
+The updated policy was applied, and the effective values were validated with `Get-ADDefaultDomainPasswordPolicy`.
 
-The lab confirmed that repeated failed sign-in attempts triggered account lockout and that the locked state could be verified from an administrative PowerShell session.
+Kevin Carter's standard domain account was then used to generate repeated failed sign-in attempts from `MRTG-CLIENT-01`. The account reached the configured lockout threshold, and the locked state was confirmed from `MRTG-DC01` with `Search-ADAccount -LockedOut`.
 
-This lab reinforces a core IAM principle: authentication controls must be configured, applied, and validated through real user behavior.
+This lab demonstrated that authentication controls must be configured, applied, and tested through actual account behavior.
 
 ---
 
@@ -57,12 +55,25 @@ This lab reinforces a core IAM principle: authentication controls must be config
 | Domain Controller | `MRTG-DC01` |
 | Client Workstation | `MRTG-CLIENT-01` |
 | Directory Service | Active Directory Domain Services |
-| Policy Tool | Group Policy Management Console |
-| Validation Tool | PowerShell |
-| Test User | `Kevin Carter` |
+| Policy | Default Domain Policy |
+| Policy Tool | Group Policy Management |
+| Validation Tool | PowerShell with the Active Directory module |
+| Test User | Kevin Carter |
 | Test User UPN | `kevin.carter@mrtg.local` |
-| Policy Target | Default Domain Policy |
-| Lab Organization | Monroe Redstone Technology Group |
+| Virtualization Platform | Hyper-V |
+| Organization | Monroe Redstone Technology Group |
+
+---
+
+## Prerequisites
+
+- Operational `mrtg.local` Active Directory domain
+- `MRTG-DC01` functioning as the domain controller
+- `MRTG-CLIENT-01` joined to the domain
+- Standard test account for Kevin Carter
+- Administrative access to Group Policy Management
+- Active Directory PowerShell module
+- Network connectivity between the client and domain controller
 
 ---
 
@@ -70,66 +81,67 @@ This lab reinforces a core IAM principle: authentication controls must be config
 
 ### Included
 
-- Domain GPO structure review
+- Domain Group Policy structure review
 - Password policy configuration
-- Account lockout policy configuration
-- Default Domain Policy scope confirmation
-- Policy application with `gpupdate /force`
+- Account-lockout policy configuration
+- Domain-root GPO link confirmation
+- Policy update with `gpupdate /force`
 - Effective policy validation with PowerShell
-- Standard user lockout testing
-- Administrative locked account verification
+- Failed sign-in testing
+- User-side lockout validation
+- Administrator-side lockout verification
 
 ### Not Included
 
-- Fine-Grained Password Policies
+- Fine-grained password policies
+- Manual account unlock testing
 - Microsoft Entra ID authentication controls
-- MFA configuration
+- Multifactor authentication
 - Self-service password reset
 - Conditional Access
 - Privileged Identity Management
-- SIEM filtering
-- Advanced event correlation
+- Centralized SIEM monitoring
+- Advanced authentication-event correlation
 
 ---
 
-## Architecture
+## Policy Architecture
 
-This lab uses the Default Domain Policy to enforce classic Active Directory domain password and lockout settings.
+Classic Active Directory domain account policy is processed from GPOs linked at the domain level.
 
 ```text
 mrtg.local
-└── Default Domain Policy
-    └── Computer Configuration
-        └── Policies
-            └── Windows Settings
-                └── Security Settings
-                    └── Account Policies
-                        ├── Password Policy
-                        └── Account Lockout Policy
+`-- Default Domain Policy
+    `-- Computer Configuration
+        `-- Policies
+            `-- Windows Settings
+                `-- Security Settings
+                    `-- Account Policies
+                        |-- Password Policy
+                        `-- Account Lockout Policy
 ```
 
-This matters because classic Active Directory password and account lockout policies must be configured at the domain level to apply correctly to domain user accounts.
+This differs from workstation or user-session policy because the settings govern domain account authentication rather than a specific workstation OU.
 
-This lab is different from earlier workstation or user-session GPO labs because it focuses on domain authentication policy instead of endpoint or OU-scoped configuration.
+For a single-domain baseline, maintaining these settings in the Default Domain Policy provides a clear and predictable design.
 
 ---
 
 ## Authentication Hardening Model
 
-This lab uses two core authentication controls.
-
 | Control | Purpose |
 |---|---|
-| Password Policy | Enforces stronger password requirements |
-| Account Lockout Policy | Limits repeated failed sign-in attempts |
+| Password Policy | Defines password length, history, complexity, and age requirements |
+| Account Lockout Policy | Temporarily locks an account after repeated invalid authentication attempts |
+| Effective Policy Validation | Confirms the settings Active Directory is enforcing |
+| User-Side Testing | Confirms the control affects an actual domain sign-in |
+| Administrator Verification | Confirms the resulting account state in Active Directory |
 
-Together, these controls reduce weak password exposure and make repeated failed authentication attempts harder to abuse.
+Account lockout can slow repeated password guessing, but aggressive thresholds can also create denial-of-service and Help Desk impact. Production values must balance security, usability, and operational support.
 
 ---
 
 ## Password Policy Settings
-
-The following password policy settings were configured:
 
 | Setting | Value |
 |---|---|
@@ -140,15 +152,15 @@ The following password policy settings were configured:
 | Password must meet complexity requirements | `Enabled` |
 | Store passwords using reversible encryption | `Disabled` |
 
+These values represent the settings used in this lab. Production password policy should follow current organizational, regulatory, and threat-based requirements.
+
 ---
 
 ## Account Lockout Policy Settings
 
-The following account lockout settings were configured:
-
 | Setting | Value |
 |---|---|
-| Account lockout threshold | `5 invalid logon attempts` |
+| Account lockout threshold | `5 invalid sign-in attempts` |
 | Account lockout duration | `15 minutes` |
 | Reset account lockout counter after | `15 minutes` |
 
@@ -156,89 +168,83 @@ The following account lockout settings were configured:
 
 ## Implementation and Validation
 
-### 1. Domain GPO Structure Reviewed
+### 1. Reviewed the Domain GPO Structure
 
 Group Policy Management was opened on `MRTG-DC01`.
 
-The `mrtg.local` domain structure and available Group Policy Objects were reviewed.
+The `mrtg.local` domain and its Group Policy Objects were reviewed.
 
 ![Domain GPO structure](screenshots/lab-09-01-domain-gpo-structure.png)
 
-This confirmed that the Default Domain Policy existed and was available for domain-level account policy configuration.
+This confirmed that the Default Domain Policy was available for domain-level account-policy configuration.
 
 ---
 
-### 2. Password Policy Settings Configured
+### 2. Configured the Password Policy
 
-The Default Domain Policy was edited.
-
-Password policy settings were configured under:
+The Default Domain Policy was edited at:
 
 ```text
 Computer Configuration
-└── Policies
-    └── Windows Settings
-        └── Security Settings
-            └── Account Policies
-                └── Password Policy
+`-- Policies
+    `-- Windows Settings
+        `-- Security Settings
+            `-- Account Policies
+                `-- Password Policy
 ```
 
 ![Password policy settings](screenshots/lab-09-02-password-policy-settings.png)
 
-This established stronger baseline password requirements for the domain.
+The settings established the domain's baseline password requirements.
 
 ---
 
-### 3. Account Lockout Policy Configured
+### 3. Configured the Account Lockout Policy
 
-Account lockout settings were configured under:
+Account-lockout settings were configured at:
 
 ```text
 Computer Configuration
-└── Policies
-    └── Windows Settings
-        └── Security Settings
-            └── Account Policies
-                └── Account Lockout Policy
+`-- Policies
+    `-- Windows Settings
+        `-- Security Settings
+            `-- Account Policies
+                `-- Account Lockout Policy
 ```
 
-![Lockout policy settings](screenshots/lab-09-03-lockout-policy-settings.png)
+![Account lockout policy settings](screenshots/lab-09-03-lockout-policy-settings.png)
 
-This created an enforced response to repeated failed authentication attempts.
+This defined how Active Directory would respond to repeated invalid authentication attempts.
 
 ---
 
-### 4. Domain-Level Scope Confirmed
+### 4. Confirmed the Domain-Level Scope
 
 The Default Domain Policy link was reviewed at the `mrtg.local` domain root.
 
 ![Domain root link confirmation](screenshots/lab-09-04-domain-root-link-confirmation.png)
 
-This confirmed that the password and lockout settings were configured at the correct domain scope.
+This confirmed that the account policy was configured at the domain scope rather than on a workstation or user OU.
 
 ---
 
-### 5. Policy Applied
+### 5. Applied the Updated Policy
 
-The updated policy was applied on `MRTG-DC01`.
-
-Command used:
+The following command was run on `MRTG-DC01`:
 
 ```powershell
 gpupdate /force
 ```
 
-![GPUpdate success](screenshots/lab-09-05-gpupdate-success.png)
+![Group Policy update success](screenshots/lab-09-05-gpupdate-success.png)
 
-This confirmed that Group Policy updated successfully.
+The command completed successfully.
 
 ---
 
-### 6. Effective Default Domain Password Policy Validated
+### 6. Validated the Effective Domain Policy
 
-The effective domain password and lockout policy was validated using PowerShell.
-
-Command used:
+The effective domain password and lockout policy was reviewed with:
 
 ```powershell
 Get-ADDefaultDomainPasswordPolicy
@@ -249,42 +255,44 @@ Get-ADDefaultDomainPasswordPolicy
 Validated values included:
 
 - Complexity enabled
-- Minimum password length set to `12`
-- Password history count set to `5`
-- Maximum password age set to `90 days`
-- Lockout threshold set to `5`
-- Lockout duration set to `15 minutes`
-- Lockout observation window set to `15 minutes`
+- Minimum password length of `12`
+- Password history count of `5`
+- Maximum password age of `90 days`
+- Minimum password age of `1 day`
+- Lockout threshold of `5`
+- Lockout duration of `15 minutes`
+- Lockout observation window of `15 minutes`
+- Reversible encryption disabled
 
-This confirmed that the domain was using the configured policy values.
+This confirmed that Active Directory was reporting the intended default domain policy values.
 
 ---
 
-### 7. Test User Prepared
+### 7. Prepared the Test User
 
-The Kevin Carter account was reviewed in Active Directory Users and Computers before lockout testing.
+Kevin Carter's account was reviewed in Active Directory Users and Computers before testing.
 
 ![Test user ready](screenshots/lab-09-07-test-user-ready.png)
 
-This confirmed the test identity was available for real sign-in validation.
+This confirmed that the standard user account was available for the lockout test.
 
 ---
 
-### 8. Account Lockout Triggered from Client Workstation
+### 8. Triggered the Account Lockout
 
-Kevin Carter was used on `MRTG-CLIENT-01`.
+Repeated incorrect passwords were entered for Kevin Carter on `MRTG-CLIENT-01`.
 
-An incorrect password was entered repeatedly until the lockout threshold was reached.
+Testing continued until the configured threshold was reached.
 
 ![Account lockout triggered](screenshots/lab-09-08-account-lockout-triggered.png)
 
-The sign-in screen displayed the lockout message, confirming that the policy was enforced from the user side.
+The client displayed an account-lockout message, confirming enforcement from the user's perspective.
 
 ---
 
-### 9. Locked Account Verified from Administrator Side
+### 9. Verified the Locked Account
 
-The locked account state was verified from PowerShell on `MRTG-DC01`.
+The locked state was reviewed from an administrative PowerShell session on `MRTG-DC01`.
 
 Command used:
 
@@ -294,152 +302,143 @@ Search-ADAccount -LockedOut
 
 ![Locked account verification](screenshots/lab-09-09-locked-account-verification.png)
 
-Kevin Carter appeared in the results with the account locked.
-
-This confirmed the lockout from the administrator side.
+Kevin Carter appeared in the results, confirming that Active Directory recorded the account as locked.
 
 ---
 
-## Security Perspective
+## Security and IAM Relevance
 
-Password policy and account lockout controls are foundational identity protections.
+Password and account-lockout controls are foundational identity protections.
 
 This lab supports:
 
-- Stronger password hygiene
-- Reduced weak password exposure
-- Reduced password reuse
-- Controlled response to repeated failed authentication attempts
-- Centralized domain authentication hardening
+- Centralized authentication governance
+- Minimum password requirements
+- Password-history enforcement
+- Protection against reversible password storage
+- Response to repeated invalid authentication attempts
 - User-side enforcement validation
-- Admin-side operational verification
+- Administrator-side account-state verification
+- Evidence-based policy review
 
-The key IAM principle is that controls must be both configured and validated.
-
-A policy that exists only in the editor is not enough. The effective policy and real user behavior must confirm that the control works.
+Password policy is only one layer of authentication security. Stronger environments also use multifactor authentication, compromised-password screening, monitoring, and risk-based access controls where supported.
 
 ---
 
-## Risk Addressed
-
-Without password and lockout hardening, domain accounts are more exposed to weak password practices and repeated failed authentication attempts.
+## Risks Addressed
 
 This lab reduces the risk of:
 
-- Weak passwords
-- Excessive password reuse
-- Unrestricted failed logon attempts
-- Poor authentication baseline enforcement
-- Misconfigured domain password policy
-- Lockout settings applied at the wrong scope
-- Lack of operational validation
-- Authentication controls that exist only on paper
+- Weak password selection
+- Immediate password reuse
+- Unrestricted failed sign-in attempts
+- Incorrectly scoped domain policy
+- Inconsistent authentication controls
+- Unvalidated account-lockout behavior
+- Authentication controls existing only in documentation
+- Weak administrator visibility into locked accounts
 
 ---
 
 ## Control Mapping
 
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Contribution |
 |---|---|
-| Authentication hardening | Configures password and lockout settings |
-| Password hygiene | Enforces length, history, complexity, and age requirements |
-| Brute-force resistance | Locks accounts after repeated failed attempts |
-| Domain-level policy | Uses the Default Domain Policy at the domain root |
-| Operational validation | Confirms effective policy with PowerShell |
-| User-side enforcement | Tests lockout from the client workstation |
-| Admin-side verification | Uses `Search-ADAccount -LockedOut` |
-| Audit readiness | Captures configuration and validation evidence |
+| Authentication Hardening | Configures password and account-lockout policy |
+| Password Governance | Applies length, history, complexity, age, and storage requirements |
+| Password-Guessing Resistance | Locks accounts after repeated invalid attempts |
+| Domain Policy | Applies classic account policy at the domain root |
+| Effective Policy Validation | Uses `Get-ADDefaultDomainPasswordPolicy` |
+| User-Side Enforcement | Tests account lockout from `MRTG-CLIENT-01` |
+| Administrator Verification | Uses `Search-ADAccount -LockedOut` |
+| Audit Readiness | Captures configuration and validation evidence |
 
 ---
 
-## Validation
-
-The following validation checks were completed:
+## Validation Results
 
 | Validation Item | Result |
 |---|---|
 | Domain GPO structure reviewed | Passed |
 | Default Domain Policy identified | Passed |
 | Password policy configured | Passed |
-| Account lockout policy configured | Passed |
-| Default Domain Policy linked at domain root | Passed |
-| `gpupdate /force` completed successfully | Passed |
+| Account-lockout policy configured | Passed |
+| Domain-root GPO link confirmed | Passed |
+| Group Policy update completed | Passed |
 | Effective domain policy validated with PowerShell | Passed |
-| Kevin Carter prepared as test user | Passed |
-| Account lockout triggered from client workstation | Passed |
-| Locked account verified from administrator side | Passed |
+| Kevin Carter prepared as the test account | Passed |
+| Account lockout triggered from `MRTG-CLIENT-01` | Passed |
+| Locked account confirmed from `MRTG-DC01` | Passed |
 
 ---
 
 ## Evidence Collected
 
-The following evidence was collected during the lab:
-
 | Evidence | File |
 |---|---|
 | Domain GPO structure | `screenshots/lab-09-01-domain-gpo-structure.png` |
 | Password policy settings | `screenshots/lab-09-02-password-policy-settings.png` |
-| Lockout policy settings | `screenshots/lab-09-03-lockout-policy-settings.png` |
-| Domain root link confirmation | `screenshots/lab-09-04-domain-root-link-confirmation.png` |
-| GPUpdate success | `screenshots/lab-09-05-gpupdate-success.png` |
-| Password policy validation | `screenshots/lab-09-06-password-policy-validation.png` |
-| Test user ready | `screenshots/lab-09-07-test-user-ready.png` |
-| Account lockout triggered | `screenshots/lab-09-08-account-lockout-triggered.png` |
-| Locked account verification | `screenshots/lab-09-09-locked-account-verification.png` |
+| Account-lockout policy settings | `screenshots/lab-09-03-lockout-policy-settings.png` |
+| Domain-root link confirmation | `screenshots/lab-09-04-domain-root-link-confirmation.png` |
+| Group Policy update | `screenshots/lab-09-05-gpupdate-success.png` |
+| Effective password policy | `screenshots/lab-09-06-password-policy-validation.png` |
+| Test user readiness | `screenshots/lab-09-07-test-user-ready.png` |
+| Client-side account lockout | `screenshots/lab-09-08-account-lockout-triggered.png` |
+| Administrator-side lockout verification | `screenshots/lab-09-09-locked-account-verification.png` |
 
 ---
 
 ## What I Would Improve in Production
 
-In a production environment, I would improve this process by:
+In a production environment, I would:
 
-- Reviewing password policy against organizational security requirements
-- Using longer password or passphrase guidance where appropriate
-- Aligning settings with compliance requirements
-- Monitoring lockout events for attack patterns
-- Alerting on repeated failed authentication attempts
-- Reviewing Help Desk lockout and unlock procedures
-- Using Fine-Grained Password Policies for privileged or service accounts
-- Implementing MFA where supported
-- Integrating authentication logs with a SIEM
-- Documenting policy ownership and review cycles
-- Aligning lockout policy with user support and security needs
-- Testing policy impact before wide production rollout
+- Align password policy with current organizational and regulatory requirements
+- Favor longer passwords or passphrases over frequent arbitrary changes where policy permits
+- Avoid forced periodic password changes unless required or a compromise is suspected
+- Use password screening to block common and compromised passwords
+- Evaluate the lockout threshold against denial-of-service risk
+- Monitor failed authentication and lockout events
+- Alert on abnormal lockout patterns
+- Document Help Desk unlock and identity-verification procedures
+- Use fine-grained password policies where separate requirements are justified
+- Implement multifactor authentication where supported
+- Integrate authentication events with a SIEM
+- Define a policy owner and recurring review schedule
+- Test authentication-policy changes before broad deployment
+- Document exceptions and compensating controls
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that domain authentication hardening must be configured at the correct scope.
+This lab reinforced that classic Active Directory password and account-lockout policy must be applied at the correct domain scope.
 
-Classic Active Directory password and account lockout policy belongs at the domain level, not treated like a normal OU-linked user policy.
+The main technical lesson was that configuration in Group Policy is not sufficient proof. The effective values must be queried from Active Directory, and actual sign-in behavior must be tested.
 
-The biggest takeaway is that configuration alone is not proof. Effective policy validation and real account lockout testing are what prove the control is working.
-
-This lab also showed how authentication policy directly affects user experience and Help Desk operations.
+The lockout test also demonstrated that authentication policy directly affects Help Desk workload and user availability. Security values must therefore be selected deliberately rather than copied without considering operational impact.
 
 ---
 
 ## Outcome
 
-Lab 09 successfully implemented password policy and account lockout hardening in the MRTG Active Directory environment.
+Lab 09 successfully implemented domain password and account-lockout hardening in the MRTG environment.
 
-The lab confirmed:
+The lab confirmed that:
 
 - Password policy was configured in the Default Domain Policy
-- Account lockout policy was configured in the Default Domain Policy
-- The Default Domain Policy was linked at the domain root
+- Account-lockout policy was configured in the Default Domain Policy
+- The policy was linked at the domain root
 - Group Policy updated successfully
-- Effective password and lockout values were validated with PowerShell
-- Kevin Carter’s account locked after repeated failed sign-in attempts
-- The locked account state was confirmed from the administrator side
+- Effective values were validated with PowerShell
+- Kevin Carter's account locked after repeated failed sign-in attempts
+- The locked state was confirmed from the administrator side
 
-The environment now supports stronger domain-level authentication controls.
+The environment now enforces and validates centralized domain authentication controls.
 
 ---
 
 ## Next Lab
 
-[Lab 10 — Fine-Grained Password Policies for Tiered Identity Control](../Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control/)
+[Lab 10: Fine-Grained Password Policies for Tiered Identity Control](../Lab-10-Fine-Grained-Password-Policies-for-Tiered-Identity-Control/)
 
-Lab 10 will build on domain-level authentication hardening by applying fine-grained password policies to support tiered identity control for standard, service, and privileged accounts.
+Lab 10 applies fine-grained password policies to identities that require controls different from the default domain policy.
