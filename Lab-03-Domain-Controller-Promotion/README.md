@@ -1,4 +1,4 @@
-# Lab 03 — Domain Controller Promotion and Identity Activation
+# Lab 03: Domain Controller Promotion and Identity Activation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -11,28 +11,28 @@
 
 ## Objective
 
-The objective of this lab is to promote `MRTG-DC01` to the first domain controller in the `mrtg.local` Active Directory forest.
+Promote `MRTG-DC01` as the first domain controller in the `mrtg.local` Active Directory forest.
 
-This lab activates the identity foundation prepared in Lab 02 by creating the new forest, validating Active Directory Domain Services, confirming DNS registration, verifying domain authentication context, and creating a stable post-promotion checkpoint.
+This lab activates the identity foundation prepared in Lab 02 by creating the new forest, validating Active Directory Domain Services, confirming DNS registration, verifying the domain context, and establishing a controlled post-promotion lab recovery point.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-Monroe Redstone Technology Group needs a centralized identity authority for authentication, authorization, policy enforcement, and future IAM governance.
+Monroe Redstone Technology Group requires a centralized identity authority for authentication, authorization, policy enforcement, and IAM governance.
 
-Before users, groups, policies, access controls, and monitoring can be built, the organization needs an operational Active Directory domain.
+Before users, groups, policies, access controls, and monitoring can be implemented, the organization needs an operational Active Directory domain.
 
 This lab addresses the need to:
 
-- Promote the prepared server into a domain controller
+- Promote the prepared server as a domain controller
 - Create the `mrtg.local` Active Directory forest
 - Establish centralized domain authentication
-- Validate AD-integrated DNS zones
+- Validate Active Directory-integrated DNS zones
 - Confirm domain controller service records
 - Verify network and DNS configuration
-- Validate domain authentication context
-- Preserve a stable post-promotion baseline
+- Validate the domain authentication context
+- Preserve a controlled post-promotion lab baseline
 
 ---
 
@@ -40,9 +40,11 @@ This lab addresses the need to:
 
 In this lab, I promoted `MRTG-DC01` as the first domain controller for the new `mrtg.local` forest.
 
-After promotion, I validated that the domain existed in Active Directory Users and Computers, confirmed AD-integrated DNS zones, reviewed `_msdcs` service records, verified the domain controller IP and DNS configuration, confirmed domain authentication context, and created a post-promotion Hyper-V checkpoint.
+After promotion, I confirmed that the domain was visible in Active Directory Users and Computers, validated the Active Directory-integrated DNS zones, reviewed `_msdcs` service records, verified the server IP and DNS configuration, and confirmed the domain context from the command line.
 
-This lab transitions the MRTG environment from a prepared server into an operational identity platform.
+A Hyper-V checkpoint was created as a temporary lab recovery point after the promotion and validation steps were completed.
+
+This lab transitioned the MRTG environment from a prepared Windows Server into an operational identity platform.
 
 ---
 
@@ -54,11 +56,26 @@ This lab transitions the MRTG environment from a prepared server into an operati
 | Domain Controller | `MRTG-DC01` |
 | Operating System | Windows Server 2022 |
 | Directory Service | Active Directory Domain Services |
-| DNS | AD-integrated DNS |
-| Authentication | Kerberos-based domain authentication |
-| IP Address | `192.168.10.10` |
+| DNS | Active Directory-integrated DNS |
+| Authentication Service | Kerberos |
+| IPv4 Address | `192.168.10.10` |
+| Subnet Mask | `255.255.255.0` |
+| DNS Server | `192.168.10.10` |
 | Virtualization Platform | Hyper-V |
-| Lab Organization | Monroe Redstone Technology Group |
+| Organization | Monroe Redstone Technology Group |
+
+---
+
+## Prerequisites
+
+- Windows Server 2022 installed on `MRTG-DC01`
+- Active Directory Domain Services role installed
+- AD DS management tools installed
+- Static IPv4 configuration assigned
+- Server configured to use the planned internal DNS service
+- New forest deployment prepared for `mrtg.local`
+- AD DS prerequisite checks completed successfully
+- Administrative access to `MRTG-DC01`
 
 ---
 
@@ -66,21 +83,21 @@ This lab transitions the MRTG environment from a prepared server into an operati
 
 ### Included
 
-- New forest deployment configuration
+- New forest deployment
 - Domain controller promotion
 - `mrtg.local` forest creation
 - Active Directory Users and Computers validation
-- AD-integrated DNS zone validation
+- Active Directory-integrated DNS zone validation
 - `_msdcs` service record validation
 - Forward lookup zone validation
 - Domain controller IP and DNS validation
-- Domain authentication context validation
+- Domain context validation
 - Domain name resolution validation
 - Post-promotion Hyper-V checkpoint creation
 
 ### Not Included
 
-- OU structure design
+- Organizational Unit design
 - User and group provisioning
 - Group Policy enforcement
 - Domain-joined client configuration
@@ -88,6 +105,7 @@ This lab transitions the MRTG environment from a prepared server into an operati
 - DHCP configuration
 - Centralized logging
 - Fine-grained password policies
+- Production backup configuration
 
 ---
 
@@ -97,60 +115,59 @@ This lab establishes `MRTG-DC01` as the first domain controller in the MRTG envi
 
 ```text
 mrtg.local
-└── MRTG-DC01
-    ├── Active Directory Domain Services
-    ├── AD-integrated DNS
-    ├── Kerberos authentication
-    └── Domain controller service registration
+`-- MRTG-DC01
+    |-- Active Directory Domain Services
+    |-- Active Directory-integrated DNS
+    |-- Kerberos authentication service
+    `-- Domain controller service registration
 ```
 
-The domain controller becomes the authoritative identity provider for the lab environment.
+`MRTG-DC01` becomes the authoritative identity system for the lab domain.
 
 ```text
 MRTG-DC01
-└── mrtg.local
-    ├── Authentication
-    ├── Authorization
-    ├── DNS service location
-    ├── Directory services
-    └── Future Group Policy enforcement
+`-- mrtg.local
+    |-- Authentication
+    |-- Authorization
+    |-- Directory services
+    |-- DNS service discovery
+    `-- Future Group Policy processing
 ```
 
 ---
 
 ## Identity Activation Model
 
-Lab 02 prepared the server for Active Directory Domain Services.
-
-Lab 03 activates the domain.
+The initial identity deployment was divided into controlled phases.
 
 | Phase | Lab | Purpose |
 |---|---|---|
-| Preparation | Lab 02 | AD DS role installed and prerequisite checks passed |
-| Activation | Lab 03 | Server promoted and `mrtg.local` domain created |
-| Governance Foundation | Lab 04 | OU structure and Group Policy controls begin |
+| Infrastructure | Lab 01 | Establish the virtual environment |
+| Preparation | Lab 02 | Install AD DS and validate promotion readiness |
+| Activation | Lab 03 | Promote the server and create `mrtg.local` |
+| Governance Foundation | Lab 04 | Build the OU structure and begin policy enforcement |
 
-This separation keeps the identity build process clean, reviewable, and easier to troubleshoot.
+This separation makes the identity deployment easier to document, validate, and troubleshoot.
 
 ---
 
-## Domain Controller Role
+## Domain Controller Services
 
-After promotion, `MRTG-DC01` provides the following core services:
+After promotion, `MRTG-DC01` provides the following services:
 
 | Service | Purpose |
 |---|---|
-| Active Directory Domain Services | Stores and manages domain identities |
-| DNS | Supports domain name resolution and service discovery |
-| Kerberos | Provides domain authentication |
-| Service Records | Allows clients and services to locate domain controllers |
-| Directory Management | Enables future users, groups, OUs, and policies |
+| Active Directory Domain Services | Stores and manages domain identities and directory objects |
+| Active Directory-integrated DNS | Supports domain name resolution and service discovery |
+| Kerberos | Provides the primary domain authentication protocol |
+| DNS Service Records | Allow clients and services to locate domain controllers |
+| Directory Management | Supports future administration of users, groups, computers, OUs, and policies |
 
 ---
 
 ## Implementation and Validation
 
-### 1. New Forest Deployment Configured
+### 1. Configured the New Forest Deployment
 
 The Active Directory Domain Services Configuration Wizard was used to configure a new forest.
 
@@ -168,25 +185,33 @@ mrtg.local
 
 ![New forest deployment configuration](screenshots/lab-03-01-new-forest-mrtg-local.png)
 
-This step started the identity activation process for the MRTG domain.
+This initiated the identity activation process for the MRTG environment.
 
 ---
 
-### 2. Active Directory Domain Created
+### 2. Promoted MRTG-DC01
 
-After promotion, Active Directory Users and Computers was opened to confirm that the `mrtg.local` domain existed.
+The promotion process installed the required domain controller components, created the new forest, and restarted the server.
+
+After the restart, `MRTG-DC01` operated as the first domain controller for `mrtg.local`.
+
+---
+
+### 3. Confirmed the Active Directory Domain
+
+Active Directory Users and Computers was opened to confirm that the `mrtg.local` domain existed.
 
 ![Active Directory domain created](screenshots/lab-03-02-active-directory-domain-created.png)
 
-This confirmed that the new Active Directory domain was created successfully.
+This confirmed that the forest and domain were created successfully.
 
 ---
 
-### 3. DNS `_msdcs` Service Records Validated
+### 4. Validated DNS Service Records
 
 DNS Manager was used to review the `_msdcs.mrtg.local` zone.
 
-The zone contained domain controller service location records required for Active Directory discovery.
+The zone contained the service location records used by systems and services to discover Active Directory domain controllers.
 
 ![DNS msdcs service records](screenshots/lab-03-03-dns-msdcs-service-records.png)
 
@@ -194,9 +219,9 @@ This confirmed that domain controller service registration was present.
 
 ---
 
-### 4. DNS Forward Lookup Zones Validated
+### 5. Validated Forward Lookup Zones
 
-DNS Manager was used to validate the forward lookup zones.
+DNS Manager was used to review the forward lookup zones.
 
 Confirmed zones included:
 
@@ -207,13 +232,17 @@ mrtg.local
 
 ![DNS forward lookup zones](screenshots/lab-03-04-dns-forward-lookup-zones.png)
 
-This confirmed that AD-integrated DNS zones were created and running.
+This confirmed that the Active Directory-integrated DNS zones were available.
 
 ---
 
-### 5. Domain Controller Network Configuration Validated
+### 6. Validated the Network Configuration
 
-`ipconfig /all` was used to confirm the domain controller network configuration.
+The following command was used to review the complete network configuration:
+
+```cmd
+ipconfig /all
+```
 
 Validated values included:
 
@@ -224,15 +253,15 @@ Validated values included:
 | Subnet Mask | `255.255.255.0` |
 | DNS Server | `192.168.10.10` |
 
-![Domain controller ipconfig](screenshots/lab-03-05-domain-controller-ipconfig.png)
+![Domain controller IP configuration](screenshots/lab-03-05-domain-controller-ipconfig.png)
 
-This confirmed that the domain controller was using itself for DNS resolution.
+This confirmed that the domain controller used its own DNS service for Active Directory name resolution.
 
 ---
 
-### 6. Domain Authentication and Name Resolution Validated
+### 7. Validated the Domain Context and Name Resolution
 
-Domain context and domain name resolution were validated from the command line.
+The domain context and domain name resolution were reviewed from the command line.
 
 Commands used:
 
@@ -242,7 +271,7 @@ whoami
 ping mrtg.local
 ```
 
-Validated results included:
+Validated results:
 
 ```text
 USERDOMAIN = MRTG
@@ -252,13 +281,15 @@ mrtg.local resolved to 192.168.10.10
 
 ![Domain authentication validation](screenshots/lab-03-06-domain-authentication-validation.png)
 
-This confirmed that the server was operating in the domain context and that the domain name resolved correctly.
+These results confirmed that the administrator session was operating in the MRTG domain context and that the domain name resolved successfully.
+
+This evidence confirms the domain context but does not independently prove that a Kerberos ticket was used. Kerberos ticket validation would require tools such as `klist`.
 
 ---
 
-### 7. Post-Promotion Checkpoint Created
+### 8. Created a Post-Promotion Lab Checkpoint
 
-A Hyper-V checkpoint was created after successful promotion and validation.
+A Hyper-V checkpoint was created after the promotion and validation steps were completed.
 
 Checkpoint name:
 
@@ -266,129 +297,125 @@ Checkpoint name:
 Post-DC-Promotion
 ```
 
-![Post DC promotion checkpoint](screenshots/lab-03-07-post-dc-promotion-checkpoint.png)
+![Post-DC promotion checkpoint](screenshots/lab-03-07-post-dc-promotion-checkpoint.png)
 
-This preserved a stable post-promotion baseline for future labs and rollback.
+The checkpoint provided a temporary recovery point for the controlled lab environment. It was not treated as a replacement for a supported Active Directory backup.
 
 ---
 
-## Security Perspective
+## Security and IAM Relevance
 
-This lab establishes the first Tier 0 identity asset in the MRTG environment.
+This lab established the first Tier 0-equivalent identity asset in the MRTG environment.
 
-A domain controller is a critical security system because it controls authentication, authorization, directory services, and future policy enforcement.
+A domain controller is a critical security system because it controls authentication, authorization, directory information, and policy processing for the domain.
 
-From a security and IAM perspective, this lab supports:
+This lab supports:
 
-- Centralized domain authentication
-- AD-integrated DNS service discovery
-- Kerberos-based identity operations
+- Centralized identity and authentication services
+- Active Directory-integrated DNS service discovery
+- Kerberos authentication capability
 - Controlled identity infrastructure activation
-- Tier 0 infrastructure awareness
-- Evidence-based validation
-- Stable rollback readiness through checkpointing
+- Privileged infrastructure awareness
+- Evidence-based deployment validation
+- Documented network and DNS configuration
 
-Compromise of a domain controller can compromise the entire identity domain, so this system must be treated as privileged infrastructure.
+Compromise of a domain controller can lead to compromise of the entire identity domain. Access to `MRTG-DC01` must therefore be tightly restricted and monitored.
 
 ---
 
-## Risk Addressed
-
-Without a properly promoted and validated domain controller, the environment cannot reliably support identity operations.
+## Risks Addressed
 
 This lab reduces the risk of:
 
-- Failed domain creation
-- Missing AD-integrated DNS zones
-- Broken domain controller service discovery
-- Incorrect DNS self-reference
-- Weak post-promotion validation
-- No rollback point after identity activation
-- Poor evidence for foundational identity infrastructure
+- Failed or incomplete forest creation
+- Missing Active Directory-integrated DNS zones
+- Missing domain controller service records
+- Incorrect DNS configuration
+- Failed domain name resolution
+- Undocumented identity infrastructure deployment
+- Incomplete post-promotion validation
+- Weak awareness of domain controller security sensitivity
 
 ---
 
 ## Control Mapping
 
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Contribution |
 |---|---|
-| Identity activation | Promotes `MRTG-DC01` as the first domain controller |
-| Centralized authentication | Creates the `mrtg.local` domain |
-| DNS service discovery | Validates `_msdcs` and forward lookup zones |
-| Network validation | Confirms IP and DNS configuration |
-| Authentication validation | Confirms domain context and domain resolution |
-| Operational resilience | Creates post-promotion checkpoint |
-| Audit readiness | Captures evidence of domain creation and validation |
-| Tier 0 awareness | Establishes the first privileged identity infrastructure asset |
+| Identity Activation | Promotes `MRTG-DC01` as the first domain controller |
+| Centralized Authentication | Creates the `mrtg.local` domain and Kerberos authentication service |
+| DNS Service Discovery | Validates `_msdcs` records and forward lookup zones |
+| Network Validation | Confirms the static IP and DNS configuration |
+| Domain Validation | Confirms the domain context and name resolution |
+| Privileged Infrastructure | Establishes the first Tier 0-equivalent identity asset |
+| Audit Readiness | Captures evidence of domain creation and service validation |
+| Lab Recoverability | Creates a temporary post-promotion checkpoint |
 
 ---
 
-## Validation
-
-The following validation checks were completed:
+## Validation Results
 
 | Validation Item | Result |
 |---|---|
 | New forest deployment configured | Passed |
-| `mrtg.local` root domain entered | Passed |
-| `MRTG-DC01` promoted as domain controller | Passed |
+| `mrtg.local` entered as the root domain | Passed |
+| `MRTG-DC01` promoted as a domain controller | Passed |
 | `mrtg.local` visible in Active Directory Users and Computers | Passed |
 | `_msdcs.mrtg.local` DNS zone present | Passed |
 | `mrtg.local` DNS zone present | Passed |
 | Domain controller service records present | Passed |
-| Domain controller IP configuration validated | Passed |
+| Static IPv4 configuration validated | Passed |
 | DNS self-reference validated | Passed |
 | Domain context confirmed with `%USERDOMAIN%` | Passed |
 | Domain identity confirmed with `whoami` | Passed |
 | `mrtg.local` resolved to `192.168.10.10` | Passed |
-| Post-promotion checkpoint created | Passed |
+| Post-promotion lab checkpoint created | Passed |
 
 ---
 
 ## Evidence Collected
 
-The following evidence was collected during the lab:
-
 | Evidence | File |
 |---|---|
 | New forest deployment configuration | `screenshots/lab-03-01-new-forest-mrtg-local.png` |
-| Active Directory domain created | `screenshots/lab-03-02-active-directory-domain-created.png` |
+| Active Directory domain creation | `screenshots/lab-03-02-active-directory-domain-created.png` |
 | DNS `_msdcs` service records | `screenshots/lab-03-03-dns-msdcs-service-records.png` |
 | DNS forward lookup zones | `screenshots/lab-03-04-dns-forward-lookup-zones.png` |
 | Domain controller IP configuration | `screenshots/lab-03-05-domain-controller-ipconfig.png` |
-| Domain authentication validation | `screenshots/lab-03-06-domain-authentication-validation.png` |
-| Post-DC promotion checkpoint | `screenshots/lab-03-07-post-dc-promotion-checkpoint.png` |
+| Domain context and name resolution | `screenshots/lab-03-06-domain-authentication-validation.png` |
+| Post-promotion lab checkpoint | `screenshots/lab-03-07-post-dc-promotion-checkpoint.png` |
 
 ---
 
 ## What I Would Improve in Production
 
-In a production environment, I would improve this process by:
+In a production environment, I would:
 
-- Using a formal domain controller promotion checklist
-- Validating DNS design before promotion
-- Confirming domain and forest naming standards
-- Documenting Tier 0 administrative ownership
-- Configuring domain controller backup immediately after promotion
-- Reviewing time synchronization configuration
-- Applying domain controller hardening baselines
-- Restricting interactive logon to approved administrators
-- Monitoring domain controller security events
-- Creating a post-promotion health report
-- Avoiding unnecessary roles on domain controllers
-- Using formal change control for domain creation
+- Use a namespace based on a registered organizational domain instead of `.local`
+- Follow a formal domain controller promotion checklist
+- Validate the DNS architecture before promotion
+- Confirm domain and forest functional-level requirements
+- Document privileged administrative ownership
+- Restrict interactive sign-in to approved administrators
+- Configure supported System State backups immediately
+- Avoid treating hypervisor checkpoints as domain controller backups
+- Review Windows Time service configuration
+- Apply an approved domain controller security baseline
+- Enable centralized security monitoring
+- Validate replication and domain health
+- Create a formal post-promotion health report
+- Avoid installing unnecessary roles or applications
+- Use formal change management for forest creation
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that domain controller promotion is the point where identity infrastructure becomes operational.
+This lab reinforced that domain controller promotion is the point at which the identity platform becomes operational.
 
-Installing AD DS prepares the server, but promotion activates the domain.
+Installing AD DS prepares the server, but promotion creates the forest, activates directory services, registers DNS records, and enables domain authentication capabilities.
 
-The biggest takeaway is that promotion must be validated from multiple angles: Active Directory visibility, DNS zone creation, service records, IP configuration, domain context, and name resolution.
-
-A domain controller should never be assumed healthy just because the promotion wizard finishes.
+The primary takeaway is that a successful promotion wizard is not enough. Domain health must be reviewed through directory visibility, DNS zones, service records, network configuration, domain context, and name resolution.
 
 ---
 
@@ -396,17 +423,17 @@ A domain controller should never be assumed healthy just because the promotion w
 
 Lab 03 successfully promoted `MRTG-DC01` as the first domain controller in the `mrtg.local` Active Directory forest.
 
-The lab confirmed:
+The lab confirmed that:
 
-- A new forest was configured for `mrtg.local`
+- A new forest was created for `mrtg.local`
 - `MRTG-DC01` became the first domain controller
-- The `mrtg.local` domain was visible in Active Directory Users and Computers
-- AD-integrated DNS zones were created
+- The domain was visible in Active Directory Users and Computers
+- Active Directory-integrated DNS zones were created
 - `_msdcs` service records were present
-- The domain controller used `192.168.10.10` for DNS
-- Domain context was validated
+- The server used `192.168.10.10` for DNS
+- The MRTG domain context was confirmed
 - `mrtg.local` resolved successfully
-- A stable post-promotion checkpoint was created
+- A controlled post-promotion lab checkpoint was created
 
 The MRTG environment now has an operational Active Directory identity foundation.
 
@@ -414,6 +441,6 @@ The MRTG environment now has an operational Active Directory identity foundation
 
 ## Next Lab
 
-[Lab 04 — OU Design and GPO Enforcement](../Lab-04-OU-Design-and-GPO-Enforcement/)
+[Lab 04: OU Design and GPO Enforcement](../Lab-04-OU-Design-and-GPO-Enforcement/)
 
-Lab 04 will build on the activated domain by creating a structured OU design and applying Group Policy controls for centralized identity and endpoint governance.
+Lab 04 creates a structured Organizational Unit design and applies Group Policy controls for centralized identity and endpoint governance.
