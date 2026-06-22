@@ -1,100 +1,57 @@
-# Lab 25 - Service Account Governance Foundation
+# Lab 25: Service Account Governance Foundation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
 ![Focus](https://img.shields.io/badge/Focus-Service%20Account%20Governance-green)
-![Security](https://img.shields.io/badge/Security-Least%20Privilege-red)
-![Validation](https://img.shields.io/badge/Validation-Completed-brightgreen)
-![Documentation](https://img.shields.io/badge/Documentation-Audit%20Ready-purple)
+![Security](https://img.shields.io/badge/Security-Non--Human%20Identity-red)
+![Validation](https://img.shields.io/badge/Validation-Account%20Reviewed-brightgreen)
+![Documentation](https://img.shields.io/badge/Documentation-Governance%20Record-purple)
 
 ---
 
-## Overview
+## Objective
 
-In this lab, I established a service account governance foundation within the Monroe Redstone Technology Group Active Directory environment.
+Establish a governance foundation for a non-human identity in the `mrtg.local` Active Directory domain.
 
-Service accounts are non-human identities used by applications, services, scripts, and scheduled tasks. When these accounts are not properly governed, they can become long-term security risks through excessive permissions, unclear ownership, unmanaged credentials, and limited monitoring.
+This lab creates and documents the `svc-audit-review` service account, reviews its group membership and account settings, records ownership and review frequency, and prepares it for a controlled automation scenario in Lab 26.
 
-This lab focused on creating, documenting, and validating a governed service account using Active Directory Users and Computers.
+The goal is to treat the service account as a governed identity rather than an undocumented technical account.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-MRTG needed a repeatable process for creating and managing service accounts in Active Directory.
+Monroe Redstone Technology Group requires a repeatable process for creating and managing service accounts.
 
-Without a governance standard, service accounts may have:
+Without governance, service accounts may have:
 
 - Unclear ownership
 - Inconsistent naming
-- Undocumented technical purposes
+- Undocumented purpose
 - Excessive permissions
-- Unmanaged passwords
-- No review schedule
-- No documented dependencies
-- No defined retirement process
+- Long-lived unmanaged credentials
+- Interactive sign-in capability
+- Missing dependencies
+- No recurring review
+- No retirement process
 
-These weaknesses can result in orphaned accounts, persistent access, audit findings, operational outages, and unauthorized privilege.
+These weaknesses can produce orphaned identities, persistent access, audit findings, credential exposure, and application outages.
 
-This lab addressed that problem by establishing a basic service account standard covering naming, placement, ownership, purpose, privilege, review frequency, and evidence.
+This lab establishes the initial account record and documents the controls that remain necessary before production use.
 
 ---
 
 ## Lab Summary
 
-I created a service account named `svc-audit-review` in the existing Service Accounts OU.
+In this lab, I created `svc-audit-review` in `_MRTG\Service Accounts`.
 
-The account followed the MRTG service account naming convention and included a description identifying its owner and quarterly review requirement.
+The account followed the MRTG service-account naming standard and included a Description value documenting its purpose, owner team, and quarterly review frequency.
 
-I reviewed the account configuration and confirmed that it belonged only to the default Domain Users group. No privileged group membership was assigned.
+Group membership review showed only the default `Domain Users` membership. No privileged administrative groups were assigned.
 
-Finally, I validated the account in Active Directory Users and Computers and created a post-lab Hyper-V checkpoint.
+The account's password and expiration settings were also reviewed.
 
----
-
-## Objectives
-
-- Create a pre-lab Hyper-V checkpoint
-- Review the existing Service Accounts OU
-- Create a governed service account
-- Apply a consistent naming standard
-- Document account ownership and review frequency
-- Validate the service account logon name
-- Review password and expiration settings
-- Confirm group membership
-- Verify that no privileged access was assigned
-- Create a service account inventory entry
-- Create a post-lab Hyper-V checkpoint
-
----
-
-## Scope
-
-### Included
-
-- Service account naming
-- Dedicated OU placement
-- Ownership documentation
-- Review frequency documentation
-- Account configuration review
-- Group membership review
-- Least-privilege validation
-- Inventory creation
-- Screenshot evidence
-- Hyper-V checkpoints
-
-### Not Included
-
-- Application or service integration
-- Scheduled task configuration
-- Group Managed Service Account deployment
-- Automated password rotation
-- Service account activity monitoring
-- Privileged access assignment
-- Logon restriction configuration
-- Production request and approval workflow
-- Credential vault integration
-- Service dependency testing
+The account was prepared for the Lab 26 scheduled-task scenario, but least privilege was not fully proven because no resource permission, logon-right restriction, activity monitoring, or credential-rotation control was implemented in this lab.
 
 ---
 
@@ -109,44 +66,108 @@ Finally, I validated the account in Active Directory Users and Computers and cre
 | Target OU | `_MRTG\Service Accounts` |
 | Service Account | `svc-audit-review` |
 | Display Name | Service Audit Review |
-| Account Type | Non-human identity |
-| Owner | IT Operations |
+| Identity Type | Non-human user account |
+| Documented Owner Team | IT Operations |
 | Review Frequency | Quarterly |
 | Hypervisor | Hyper-V |
 
 ---
 
-## Scenario
+## Prerequisites
 
-MRTG requires a service account for a future audit-review automation scenario.
-
-Before the account is used by a script, service, or scheduled task, it must be created under a documented governance standard.
-
-The governance model used in this lab was:
-
-```text
-Define Purpose → Assign Owner → Create Account → Restrict Privilege → Document Review → Validate Configuration
-```
-
-The account was intentionally created without privileged group membership.
+- Operational `mrtg.local` domain
+- Dedicated Service Accounts OU
+- Approved service-account naming convention
+- Defined technical purpose
+- Assigned owner team
+- Administrative access to create and review the account
+- Planned downstream use for the account
+- Defined credential and logon-control requirements
 
 ---
 
-## Service Account Governance Standard
+## Scope
+
+### Included
+
+- Service-account creation
+- Naming-standard application
+- Dedicated OU placement
+- Purpose documentation
+- Owner-team documentation
+- Review-frequency documentation
+- Group-membership review
+- Password-setting review
+- Expiration-setting review
+- Initial inventory record
+- Screenshot evidence
+- Temporary Hyper-V checkpoints
+
+### Not Included
+
+- Application integration
+- Scheduled-task configuration
+- Group Managed Service Account deployment
+- Automated password rotation
+- Credential-vault integration
+- Interactive-logon restrictions
+- Log on as a batch job assignment
+- Resource-level permission assignment
+- Activity monitoring
+- Named business-owner assignment
+- Dependency testing
+- Formal request and approval workflow
+- Retirement testing
+
+---
+
+## Governance Workflow
+
+```text
+Define Purpose
+      |
+      v
+Assign Owner
+      |
+      v
+Create Account
+      |
+      v
+Review Default Access
+      |
+      v
+Document Credential Risk
+      |
+      v
+Define Review Schedule
+      |
+      v
+Validate Intended Use
+      |
+      v
+Monitor and Retire
+```
+
+This lab completed the initial governance and review stages. Usage validation, monitoring, credential rotation, and retirement remain future controls.
+
+---
+
+## Service Account Standard
 
 MRTG service accounts should:
 
 - Use a recognizable naming convention
-- Be stored in the dedicated Service Accounts OU
-- Have a documented business or technical purpose
-- Have an assigned business or technical owner
+- Reside in a dedicated OU
+- Have a documented technical purpose
+- Have named business and technical owners
 - Avoid privileged membership unless formally approved
-- Use only the permissions required for the assigned function
-- Be reviewed on a recurring schedule
-- Have documented system and application dependencies
-- Be monitored for abnormal activity
-- Be disabled when no longer required
+- Receive only required resource permissions
+- Be denied unnecessary interactive sign-in
 - Use managed credentials where supported
+- Be monitored for abnormal activity
+- Be reviewed on a defined schedule
+- Have documented dependencies
+- Be disabled when no longer required
 
 Naming standard:
 
@@ -154,21 +175,40 @@ Naming standard:
 svc-[function]-[purpose]
 ```
 
-Account created:
+Account:
 
 ```text
 svc-audit-review
 ```
 
-This naming convention identifies the account as a non-human identity and describes its intended function.
+The prefix identifies the account as a service identity, while the remaining name describes its intended function.
 
 ---
 
-## Implementation Steps
+## Account Governance Record
 
-### Step 1 - Created Pre-Lab Checkpoint
+| Field | Value |
+|---|---|
+| SAM Account Name | `svc-audit-review` |
+| UPN | `svc-audit-review@mrtg.local` |
+| Display Name | Service Audit Review |
+| OU | `_MRTG\Service Accounts` |
+| Purpose | Audit-review simulation and governance documentation |
+| Owner Team | IT Operations |
+| Review Frequency | Quarterly |
+| Privileged Groups | None observed |
+| Primary Group | Domain Users |
+| Credential Rotation | Not automated |
+| Interactive Logon Restriction | Not configured |
+| Current Status | Active for lab use |
 
-A Hyper-V checkpoint was created before making Lab 25 changes.
+A team name provides operational context but does not replace named business and technical accountability.
+
+---
+
+## Implementation and Validation
+
+### 1. Created a Pre-Change Lab Checkpoint
 
 Checkpoint name:
 
@@ -176,15 +216,13 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab25-Service-Account-Governance
 ```
 
-This provided a rollback point before creating the new service account.
+![Pre-Lab 25 checkpoint](screenshots/lab-25-01-pre-lab-checkpoint.png)
 
-![Pre-Lab Checkpoint](screenshots/lab-25-01-pre-lab-checkpoint.png)
+The checkpoint was a temporary lab tool and was not a service-account backup or lifecycle control.
 
 ---
 
-### Step 2 - Reviewed the Service Account Inventory
-
-The existing Service Accounts OU was reviewed in Active Directory Users and Computers.
+### 2. Reviewed the Service Accounts OU
 
 OU path:
 
@@ -192,7 +230,7 @@ OU path:
 mrtg.local\_MRTG\Service Accounts
 ```
 
-The OU contained service-style accounts, including:
+Visible service-style identities included:
 
 ```text
 Service App Deploy
@@ -200,17 +238,15 @@ Service Audit Review
 Service Backup
 ```
 
-A dedicated OU makes non-human identities easier to locate, review, govern, and report on.
+![Service account inventory](screenshots/lab-25-02-service-account-inventory-view.png)
 
-![Service Account Inventory View](screenshots/lab-25-02-service-account-inventory-view.png)
+A dedicated OU improves inventory, policy targeting, delegation, and reporting.
+
+OU placement does not restrict privilege or logon rights by itself.
 
 ---
 
-### Step 3 - Documented the Service Account
-
-The `svc-audit-review` account was created with a descriptive display name and governance information.
-
-Account configuration:
+### 3. Created and Documented the Account
 
 | Field | Value |
 |---|---|
@@ -219,10 +255,9 @@ Account configuration:
 | Display Name | Service Audit Review |
 | User Logon Name | `svc-audit-review` |
 | OU | `_MRTG\Service Accounts` |
-| Account Type | Service account |
-| Owner | IT Operations |
-| Review Frequency | Quarterly |
 | Purpose | Audit-review simulation and governance documentation |
+| Owner Team | IT Operations |
+| Review Frequency | Quarterly |
 
 Description:
 
@@ -230,23 +265,23 @@ Description:
 Lab 25 svc acct. Owner: IT Ops. Review: Qtrly.
 ```
 
-The Description field provides administrators with immediate ownership and review information directly inside Active Directory.
+![Service account description](screenshots/lab-25-03-service-account-description.png)
 
-![Service Account Description](screenshots/lab-25-03-service-account-description.png)
+The Description field provides quick context, but a production inventory should store richer ownership and dependency data in a governed system of record.
 
 ---
 
-### Step 4 - Validated Group Membership
+### 4. Reviewed Group Membership
 
-The service account's group membership was reviewed.
-
-Validated membership:
+Observed membership:
 
 ```text
 Domain Users
 ```
 
-The account was not added to privileged groups such as:
+![Service account group membership](screenshots/lab-25-04-service-account-group-membership.png)
+
+The account was not observed in:
 
 ```text
 Domain Admins
@@ -258,23 +293,21 @@ Server Operators
 Backup Operators
 ```
 
-This confirmed that the account started with standard domain user access and no unnecessary administrative privileges.
+This confirmed that no broad administrative group had been assigned.
 
-![Service Account Group Membership](screenshots/lab-25-04-service-account-group-membership.png)
+`Domain Users` remains a real access group and may receive permissions elsewhere. Group review alone does not prove the account has no effective access.
 
 ---
 
-### Step 5 - Reviewed Logon and Password Settings
+### 5. Reviewed Logon and Password Settings
 
-The service account logon name was confirmed as:
+UPN:
 
 ```text
 svc-audit-review@mrtg.local
 ```
 
-Validated settings:
-
-| Setting | Configuration |
+| Setting | Lab Configuration |
 |---|---|
 | User must change password at next logon | Disabled |
 | User cannot change password | Enabled |
@@ -282,38 +315,36 @@ Validated settings:
 | Store password using reversible encryption | Disabled |
 | Account expires | Never |
 
-The account was configured for lab continuity. These settings are not a blanket production recommendation.
+![Service account logon settings](screenshots/lab-25-05-service-account-logon-settings.png)
 
-![Service Account Logon Settings](screenshots/lab-25-05-service-account-logon-settings.png)
+These settings supported lab continuity but created a long-lived credential.
+
+They are documented findings, not production recommendations.
 
 ---
 
-### Step 6 - Validated the Service Account
+### 6. Reviewed the Final Account State
 
-The Service Accounts OU was reviewed after configuration.
-
-Validation confirmed that Service Audit Review was present alongside the existing service accounts.
-
-Final account state:
+![Service account validation](screenshots/lab-25-06-service-account-validation.png)
 
 | Validation Item | Result |
 |---|---|
 | Account exists | Passed |
-| Account is in the Service Accounts OU | Passed |
+| Account located in Service Accounts OU | Passed |
 | Naming standard followed | Passed |
-| Ownership documented | Passed |
+| Purpose documented | Passed |
+| Owner team documented | Passed |
 | Review frequency documented | Passed |
-| Logon name confirmed | Passed |
+| UPN reviewed | Passed |
 | Group membership reviewed | Passed |
-| No privileged group membership assigned | Passed |
-
-![Service Account Validation](screenshots/lab-25-06-service-account-validation.png)
+| No privileged group membership observed | Passed |
+| Credential rotation implemented | Not implemented |
+| Interactive sign-in restricted | Not implemented |
+| Effective resource access tested | Not tested |
 
 ---
 
-### Step 7 - Created Post-Lab Checkpoint
-
-A post-lab Hyper-V checkpoint was created after validating the service account.
+### 7. Created the Final Lab Checkpoint
 
 Checkpoint name:
 
@@ -321,109 +352,139 @@ Checkpoint name:
 MRTG-DC01_Post-Lab25-Service-Account-Governance-Validated
 ```
 
-This preserved the completed Lab 25 state before beginning the least-privilege scheduled task configuration in Lab 26.
+![Post-Lab 25 checkpoint](screenshots/lab-25-07-post-lab-checkpoint.png)
 
-![Post-Lab Checkpoint](screenshots/lab-25-07-post-lab-checkpoint.png)
-
----
-
-## Service Account Inventory
-
-| Account Name | Display Name | Purpose | Owner | Privilege Level | Review Frequency | Status |
-|---|---|---|---|---|---|---|
-| `svc-audit-review` | Service Audit Review | Audit-review simulation and governance documentation | IT Operations | Standard domain user | Quarterly | Active |
-
-A production inventory should also include:
-
-- Business owner
-- Technical owner
-- Supported application or service
-- Creation date
-- Approval record
-- Credential rotation method
-- Last password rotation date
-- Last successful logon
-- Assigned permissions
-- System dependencies
-- Review date
-- Retirement date
-- Current status
+The checkpoint was a temporary lab recovery point and not part of service-account governance.
 
 ---
 
-## Password Management Consideration
+## Password and Credential Risk
 
-The `Password never expires` option was enabled for lab continuity.
+The account used:
 
-This setting creates risk in production because a compromised password could remain valid indefinitely.
+```text
+Password never expires
+```
 
-Production alternatives should include:
+This setting creates risk because a compromised credential may remain valid indefinitely.
+
+Production alternatives include:
 
 - Group Managed Service Accounts
-- Automated password rotation
-- Privileged access management platforms
-- Enterprise password vaults
-- Long, randomly generated credentials
-- Credential access auditing
-- Documented rotation procedures
-- Dependency testing before rotation
+- Managed password rotation
+- Enterprise credential vaults
+- Long randomly generated credentials
+- Automated dependency testing
+- Rotation monitoring
+- Credential-use auditing
+- Emergency credential-replacement procedures
 
-A Group Managed Service Account is generally preferable when the application or service supports it because Active Directory manages the password automatically.
+A gMSA is generally preferable when the application or scheduled task supports it because Active Directory manages the password.
 
 ---
 
-## Risk Addressed
+## Logon Rights Consideration
 
-Unmanaged service accounts create long-term security risk because they may have unclear ownership, excessive permissions, weak documentation, or no recurring review process.
+This lab did not configure logon restrictions.
 
-This lab addressed risks including:
+A production service identity should be evaluated for:
 
-- Orphaned service accounts
-- Excessive privilege
-- Unclear ownership
-- Poor account documentation
-- Unmanaged credentials
+- Deny log on locally
+- Deny log on through Remote Desktop Services
+- Log on as a batch job
+- Log on as a service
+- Network access requirements
+- Workstation restrictions
+- Authentication-silo or policy requirements
+
+Only the logon types required by the workload should be allowed.
+
+---
+
+## Security and IAM Relevance
+
+Service accounts are non-human identities and require the same lifecycle discipline as user accounts.
+
+This lab supports:
+
+- Non-human identity inventory
+- Naming standards
+- Dedicated OU placement
+- Purpose documentation
+- Owner-team assignment
+- Group-membership review
+- Privileged-group avoidance
+- Review-frequency documentation
+- Credential-risk identification
+- Preparation for controlled use
+
+Creating an account without administrative group membership is a good starting point, but full least privilege requires effective-permission and logon-right validation.
+
+---
+
+## Risks Addressed
+
+This lab reduces the risk of:
+
+- Unidentified non-human accounts
 - Inconsistent naming
-- Missing review schedules
-- Difficult audit reporting
-- Undocumented non-human identities
-- Accounts remaining active after their purpose ends
+- Missing purpose documentation
+- Missing owner-team information
+- Unreviewed administrative membership
+- Missing review schedule
+- Service accounts scattered among standard users
+
+Remaining risks include:
+
+- Long-lived password
+- Missing named owner
+- Missing credential rotation
+- Missing logon restrictions
+- Missing activity monitoring
+- Unknown effective access
+- Missing dependency records
+- No formal retirement date
 
 ---
 
 ## Control Mapping
 
-| Control Area | Lab Implementation |
+| Control Area | Lab Contribution |
 |---|---|
-| Non-human identity governance | Created and documented a service account |
-| Naming standard | Applied the `svc-[function]-[purpose]` format |
-| Organizational control | Placed the account in a dedicated OU |
-| Accountability | Assigned IT Operations as the owner |
-| Access review | Established a quarterly review frequency |
-| Least privilege | Confirmed no privileged group membership |
-| Credential governance | Documented the lab password configuration and production risk |
-| Identity lifecycle | Added the account to a service account inventory |
-| Audit readiness | Captured configuration and validation evidence |
-| Change protection | Created pre-lab and post-lab checkpoints |
+| Non-Human Identity Governance | Creates and documents a service account |
+| Naming Standard | Applies the `svc-[function]-[purpose]` format |
+| Organizational Control | Places the identity in a dedicated OU |
+| Accountability | Records an owner team and review frequency |
+| Privileged Access | Confirms no broad administrative group was assigned |
+| Credential Governance | Documents long-lived password risk |
+| Lifecycle Management | Creates an inventory record and review requirement |
+| Audit Readiness | Captures point-in-time configuration evidence |
+| Gap Analysis | Identifies missing rotation, restrictions, and monitoring |
 
 ---
 
-## Validation Summary
+## Validation Results
 
-| Test | Expected Result | Actual Result | Status |
-|---|---|---|---|
-| Pre-lab checkpoint created | Rollback point exists | Checkpoint created | Passed |
-| Service Accounts OU reviewed | Dedicated OU exists | OU confirmed | Passed |
-| Service account created | `svc-audit-review` exists | Account created | Passed |
-| Correct OU placement | Account stored under Service Accounts | Placement confirmed | Passed |
-| Naming standard followed | Account begins with `svc-` | Standard followed | Passed |
-| Purpose documented | Description explains account use | Purpose documented | Passed |
-| Owner documented | Responsible team identified | IT Operations documented | Passed |
-| Review schedule documented | Review frequency recorded | Quarterly review documented | Passed |
-| Logon name validated | Correct UPN and username configured | Logon name confirmed | Passed |
-| Group membership reviewed | Membership visible | Domain Users only | Passed |
-| Least privilege validated | No privileged groups assigned | No privileged membership found | Passed |
-| Post-lab checkpoint created | Validated rollback point exists | Checkpoint created | Passed |
+| Validation Item | Result |
+|---|---|
+| Temporary pre-change checkpoint created | Passed |
+| Service Accounts OU reviewed | Passed |
+| `svc-audit-review` created | Passed |
+| Correct OU placement confirmed | Passed |
+| Naming standard followed | Passed |
+| Purpose documented | Passed |
+| Owner team documented | Passed |
+| Quarterly review documented | Passed |
+| UPN reviewed | Passed |
+| Group membership reviewed | Passed |
+| No privileged group membership observed | Passed |
+| Named business owner | Not documented |
+| Named technical owner | Not documented |
+| Automated credential rotation | Not implemented |
+| Interactive-logon restriction | Not implemented |
+| Resource-level permission validation | Not tested |
+| Activity monitoring | Not implemented |
+| Temporary final checkpoint created | Passed |
 
 ---
 
@@ -431,153 +492,83 @@ This lab addressed risks including:
 
 | Evidence | Screenshot |
 |---|---|
-| Pre-lab checkpoint | `screenshots/lab-25-01-pre-lab-checkpoint.png` |
-| Service account inventory | `screenshots/lab-25-02-service-account-inventory-view.png` |
-| Service account description | `screenshots/lab-25-03-service-account-description.png` |
-| Group membership validation | `screenshots/lab-25-04-service-account-group-membership.png` |
+| Pre-change checkpoint | `screenshots/lab-25-01-pre-lab-checkpoint.png` |
+| Service Accounts OU inventory | `screenshots/lab-25-02-service-account-inventory-view.png` |
+| Account description | `screenshots/lab-25-03-service-account-description.png` |
+| Group membership | `screenshots/lab-25-04-service-account-group-membership.png` |
 | Logon and password settings | `screenshots/lab-25-05-service-account-logon-settings.png` |
-| Final account validation | `screenshots/lab-25-06-service-account-validation.png` |
-| Post-lab checkpoint | `screenshots/lab-25-07-post-lab-checkpoint.png` |
+| Final account state | `screenshots/lab-25-06-service-account-validation.png` |
+| Final lab checkpoint | `screenshots/lab-25-07-post-lab-checkpoint.png` |
 
 ---
 
-## Troubleshooting Notes
+## What I Would Improve in Production
 
-No major technical errors occurred during this lab.
+In a production environment, I would:
 
-The main design consideration was distinguishing a lab-compatible service account configuration from a production-ready credential strategy.
-
-The account was intentionally kept at the Domain Users privilege level. Any permissions required by a future task should be granted narrowly to the resource or operation rather than through broad administrative group membership.
-
----
-
-## Security Concepts Reinforced
-
-- Non-human identity governance
-- Service account ownership
-- Least privilege
-- Group-based access control
-- Credential governance
-- Identity inventory
-- Access reviews
-- Account lifecycle management
-- Audit evidence
-- Administrative accountability
-- Separation of standard and privileged identities
-
----
-
-## Real-World Relevance
-
-Service accounts are common in enterprise and government-regulated environments.
-
-They may support:
-
-- Windows services
-- Scheduled tasks
-- Application pools
-- Database connections
-- Backup systems
-- Monitoring platforms
-- Deployment tools
-- Integration services
-- Automation scripts
-
-Because service accounts often run without direct user interaction, they can remain unnoticed for long periods.
-
-IAM administrators must be able to identify:
-
-- Why the account exists
-- Who owns it
-- What system uses it
-- What permissions it has
-- How its credential is protected
-- When it was last reviewed
-- Whether it is still required
-
-This lab established the foundation for answering those questions.
-
----
-
-## What I Would Do Differently in Production
-
-In a production or government-regulated environment, I would implement:
-
-- A formal service account request workflow
-- Business and technical owners
-- Manager or system-owner approval
-- Group Managed Service Accounts where supported
-- Automated password rotation
-- Credential vault integration
-- Logon restrictions
-- Deny interactive logon controls
-- Documented service dependencies
-- Centralized activity monitoring
-- Alerts for abnormal authentication
-- Periodic entitlement reviews
-- Service account usage reporting
-- Change control for permission modifications
-- Immediate disablement of unused accounts
-- Formal account retirement procedures
-- Centralized inventory and evidence retention
+- Use a formal service-account request workflow
+- Assign named business and technical owners
+- Require system-owner approval
+- Use gMSAs where supported
+- Store unavoidable static credentials in an approved vault
+- Automate password rotation
+- Test dependencies before credential changes
+- Deny interactive and Remote Desktop sign-in
+- Grant only required logon rights
+- Restrict the account to approved systems
+- Document every resource permission
+- Monitor authentication and use
+- Alert on abnormal source systems or logon types
+- Review effective access regularly
+- Record creation, rotation, review, and retirement dates
+- Disable unused service accounts promptly
+- Maintain a governed non-human identity inventory
+- Use formal change management
+- Avoid relying on Hyper-V checkpoints as governance controls
 
 ---
 
 ## Lessons Learned
 
-- Service accounts should be treated as governed identities
-- Non-human accounts require clear ownership
-- Naming standards improve identification and reporting
-- Dedicated OUs simplify management and review
-- New service accounts should begin without privileged access
-- Permissions should be granted only for the required function
-- Password settings must be evaluated as security controls
-- Lab continuity settings may not be appropriate for production
-- Group Managed Service Accounts can reduce credential-management risk
-- Service account inventories improve audit readiness
-- Recurring reviews help identify unused or overprivileged accounts
+This lab reinforced that service-account governance begins before workload integration.
 
----
+A non-human identity needs:
 
-## Skills Demonstrated
+- A defined purpose
+- Clear ownership
+- Consistent naming
+- Controlled placement
+- Limited privilege
+- Managed credentials
+- Restricted logon rights
+- Monitoring
+- Periodic review
+- Retirement criteria
 
-- Service account governance
-- Active Directory account creation
-- Dedicated OU management
-- Non-human identity documentation
-- Naming standard implementation
-- Account description management
-- Group membership validation
-- Least-privilege validation
-- Password setting review
-- Service account inventory creation
-- Audit evidence collection
-- Hyper-V checkpoint management
-- Production security risk analysis
+The main takeaway is that membership in only Domain Users does not fully prove least privilege. Effective permissions, logon rights, credential controls, and actual use must also be reviewed.
 
 ---
 
 ## Outcome
 
-Lab 25 successfully established a service account governance foundation for the MRTG Active Directory environment.
+Lab 25 successfully established the initial governance record for `svc-audit-review`.
 
-The lab demonstrated:
+The lab confirmed that:
 
-- A dedicated location for service accounts
-- A consistent naming standard
-- Creation of a governed non-human identity
-- Ownership and review documentation
-- Least-privilege validation
-- Service account inventory tracking
-- Audit-ready evidence
-- Pre-lab and post-lab rollback points
+- The account was created in the dedicated Service Accounts OU
+- The naming standard was followed
+- Purpose, owner team, and review frequency were documented
+- Group membership was reviewed
+- No broad administrative group membership was observed
+- Password and expiration settings were documented
+- Missing production controls were identified
 
-The `svc-audit-review` account is now prepared for use in a controlled least-privilege automation scenario.
+The account is prepared for the controlled scheduled-task scenario in Lab 26, where its actual permissions and logon requirements will be tested.
 
 ---
 
 ## Next Lab
 
-[Lab 26 - Scheduled Task with Least-Privilege Service Account](../Lab-26-Scheduled-Task-with-Least-Privilege-Service-Account/)
+[Lab 26: Scheduled Task with Least-Privilege Service Account](../Lab-26-Scheduled-Task-with-Least-Privilege-Service-Account/)
 
-Lab 26 will build on this governance foundation by using the service account in a controlled scheduled task while limiting its permissions to only what the task requires.
+Lab 26 uses `svc-audit-review` in a scheduled task and validates the minimum resource and logon permissions required for the workload.
