@@ -1,4 +1,4 @@
-# Lab 04 — OU Design and GPO Enforcement
+# Lab 04: OU Design and GPO Enforcement
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%20Server%202022-blue)
 ![Technology](https://img.shields.io/badge/Technology-Active%20Directory-blue)
@@ -11,42 +11,40 @@
 
 ## Objective
 
-The objective of this lab is to create a structured Organizational Unit design in the `mrtg.local` Active Directory domain and validate Group Policy enforcement against a domain-joined workstation.
+Create a structured Organizational Unit design in the `mrtg.local` domain and validate Group Policy enforcement against a domain-joined workstation.
 
-This lab builds on the operational domain created in Lab 03 by introducing OU-based organization, scoped Group Policy targeting, and group-based access control.
-
-The focus is on creating a clean directory structure, linking a workstation baseline GPO, validating policy application, and testing Remote Desktop access through security group membership.
+This lab builds on the operational domain created in Lab 03 by introducing OU-based organization, scoped Group Policy targeting, and group-based Remote Desktop access.
 
 ---
 
-## Business Problem
+## Business Scenario
 
-Monroe Redstone Technology Group needs a structured Active Directory layout that supports scalable administration, policy enforcement, and access control.
+Monroe Redstone Technology Group requires an Active Directory structure that supports scalable administration, policy enforcement, and access control.
 
-Without a clean OU structure, systems and users become difficult to manage. Group Policy becomes harder to target, access control becomes inconsistent, and troubleshooting becomes slower.
+Without a clean OU structure, users and computers become difficult to manage. Group Policy becomes harder to target, administrative responsibilities are less clear, and troubleshooting takes longer.
 
 This lab addresses the need to:
 
 - Organize users and computers into logical OUs
 - Separate workstation and server computer objects
-- Prepare the domain for scalable Group Policy targeting
-- Apply a user session lock policy through Group Policy
+- Prepare the directory for scalable Group Policy targeting
+- Apply workstation and user security settings
 - Validate computer-side and user-side policy application
-- Test access denial when a user lacks required rights
-- Grant access through security group membership
-- Confirm successful domain user access after remediation
+- Confirm that unauthorized Remote Desktop access is denied
+- Grant approved access through security group membership
+- Validate successful access after remediation
 
 ---
 
 ## Lab Summary
 
-In this lab, I created the foundational MRTG OU structure inside Active Directory.
+In this lab, I created the foundational MRTG Organizational Unit structure in Active Directory.
 
-The structure separated users, computers, groups, admin accounts, and service accounts into dedicated containers. Under the Users OU, department OUs were created for IT, Security, HR, Finance, Operations, Engineering, and Executives. Under the Computers OU, separate Workstations and Servers OUs were created.
+The structure separated users, computers, groups, administrative accounts, and service accounts. Department OUs were created for IT, Security, HR, Finance, Operations, Engineering, and Executives. Computer objects were separated into Workstations and Servers OUs.
 
-A workstation baseline GPO was linked to the Workstations OU, and a user session lock policy was configured and validated.
+The `MRTG-Workstation-Baseline` GPO was linked to the Workstations OU, and the `MRTG-User-Session-Lock` policy was configured for user session protection.
 
-Policy application was confirmed using `gpresult`, and Remote Desktop access was tested from the user side. The first test failed because the user did not have the required Remote Desktop permission. Access was then granted through the `GG_Remote_Desktop_Users` group, and the domain user successfully logged in.
+Policy application was validated with `gpresult`. Remote Desktop access was initially denied because the test user lacked the required authorization. Access was then granted through the `GG_Remote_Desktop_Users` security group and validated through a successful domain sign-in.
 
 ---
 
@@ -56,13 +54,25 @@ Policy application was confirmed using `gpresult`, and Remote Desktop access was
 |---|---|
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
-| Client Workstation | `CLIENT01` |
-| User Tested | `john.smith` |
-| Security Group | `GG_Remote_Desktop_Users` |
+| Client Workstation | `MRTG-CLIENT-01` |
+| Test User | `john.smith` |
+| Access Group | `GG_Remote_Desktop_Users` |
 | Workstation GPO | `MRTG-Workstation-Baseline` |
-| Tools Used | Active Directory Users and Computers, Group Policy Management, gpresult |
+| User GPO | `MRTG-User-Session-Lock` |
+| Tools | Active Directory Users and Computers, Group Policy Management, and `gpresult` |
 | Virtualization Platform | Hyper-V |
-| Lab Organization | Monroe Redstone Technology Group |
+| Organization | Monroe Redstone Technology Group |
+
+---
+
+## Prerequisites
+
+- Operational `mrtg.local` Active Directory domain
+- `MRTG-DC01` functioning as the domain controller and DNS server
+- `MRTG-CLIENT-01` joined to the domain
+- Test user account `john.smith`
+- Administrative access to Active Directory and Group Policy Management
+- Network connectivity between the domain controller and workstation
 
 ---
 
@@ -76,95 +86,100 @@ Policy application was confirmed using `gpresult`, and Remote Desktop access was
 - Workstations and Servers OU creation
 - Workstation computer object placement
 - Workstation baseline GPO linking
-- GPO scope and security filtering validation
+- GPO scope and security filtering review
 - User session lock policy configuration
 - Computer policy validation with `gpresult`
 - User policy validation with `gpresult`
-- Remote Desktop denied-access test
+- Remote Desktop denied-access testing
 - Group-based Remote Desktop access remediation
-- Successful domain user login validation
+- Successful domain user sign-in validation
 
 ### Not Included
 
 - Password policy hardening
 - Account lockout policy hardening
-- Fine-Grained Password Policies
+- Fine-grained password policies
 - NTFS and share permissions
-- Advanced delegation
+- Advanced administrative delegation
 - SIEM integration
-- Multi-domain-controller replication
+- Additional domain controller deployment
 - Local administrator password management
 
 ---
 
-## Architecture
+## OU Architecture
 
-This lab introduces the foundational MRTG OU structure.
+The `_MRTG` OU provides the administrative structure for the lab environment.
 
 ```text
 mrtg.local
-└── _MRTG
-    ├── Users
-    │   ├── IT
-    │   ├── Security
-    │   ├── HR
-    │   ├── Finance
-    │   ├── Operations
-    │   ├── Engineering
-    │   └── Executives
-    ├── Computers
-    │   ├── Workstations
-    │   │   └── CLIENT01
-    │   └── Servers
-    ├── Groups
-    ├── Admin Accounts
-    └── Service Accounts
+`-- _MRTG
+    |-- Users
+    |   |-- IT
+    |   |-- Security
+    |   |-- HR
+    |   |-- Finance
+    |   |-- Operations
+    |   |-- Engineering
+    |   `-- Executives
+    |-- Computers
+    |   |-- Workstations
+    |   |   `-- MRTG-CLIENT-01
+    |   `-- Servers
+    |-- Groups
+    |-- Admin Accounts
+    `-- Service Accounts
 ```
 
 This structure supports:
 
-- Cleaner identity administration
-- Better Group Policy targeting
-- Separation between users and computers
-- Separation between workstations and servers
-- Scalable role-based access control
-- Future lifecycle, permissions, and delegation labs
+- Logical organization of directory objects
+- Targeted Group Policy application
+- Separation of users and computers
+- Separation of workstations and servers
+- Department-based identity administration
+- Future delegation and lifecycle workflows
+- Scalable access-control design
 
 ---
 
 ## Group Policy Design
 
-The workstation policy was scoped to the Workstations OU.
+### Workstation Policy
+
+The workstation baseline was linked to the Workstations OU.
 
 ```text
 _MRTG
-└── Computers
-    └── Workstations
-        ├── CLIENT01
-        └── MRTG-Workstation-Baseline
+`-- Computers
+    `-- Workstations
+        |-- MRTG-CLIENT-01
+        `-- MRTG-Workstation-Baseline
 ```
 
-| GPO | Linked OU | Purpose |
+| GPO | Target | Purpose |
 |---|---|---|
-| `MRTG-Workstation-Baseline` | `_MRTG > Computers > Workstations` | Applies baseline workstation policy settings |
+| `MRTG-Workstation-Baseline` | Workstations OU | Applies baseline workstation settings |
+| `MRTG-User-Session-Lock` | Applicable user OU scope | Enforces password protection for user sessions |
 
-The GPO was scoped using the default `Authenticated Users` security filtering.
+The workstation GPO used the default `Authenticated Users` security filtering.
 
-This allows the policy to apply to authenticated domain systems in the linked OU.
+For computer-side settings, the workstation computer account must have permission to read and apply the GPO.
 
 ---
 
 ## Access Control Model
 
-Remote Desktop access was controlled through security group membership.
+Remote Desktop access was managed through security group membership.
 
-| Access Requirement | Control |
+| Condition | Result |
 |---|---|
-| User needs Remote Desktop access | Add user to approved RDP access group |
-| User lacks required rights | RDP connection denied |
-| Access granted through group | User can sign in successfully |
+| User is not in the approved access group | Remote Desktop sign-in is denied |
+| User is added to the approved access group | Access becomes authorized |
+| User starts a new authentication session | Updated group membership is included in the access token |
+| User signs in successfully | Access control is validated |
 
-Security group used:
+Security group:
 
 ```text
 GG_Remote_Desktop_Users
@@ -176,19 +191,17 @@ Test user:
 john.smith
 ```
 
-This reinforces a key IAM principle: access should be granted through groups, not one-off manual decisions.
+This follows a core IAM principle: assign access through approved groups instead of granting permissions directly to individual users.
 
 ---
 
 ## Implementation and Validation
 
-### 1. MRTG User OU Structure Created
+### 1. Created the MRTG User OU Structure
 
-The `_MRTG` OU structure was reviewed in Active Directory Users and Computers.
+The `_MRTG` structure was created and reviewed in Active Directory Users and Computers.
 
-Department OUs were created under `_MRTG > Users`.
-
-Departments included:
+Department OUs included:
 
 - IT
 - Security
@@ -200,15 +213,13 @@ Departments included:
 
 ![OU structure](screenshots/lab-04-01-ou-structure.png)
 
-This created a clean structure for future identity lifecycle and access management labs.
+This established a logical structure for future identity lifecycle and access-management workflows.
 
 ---
 
-### 2. Computer OU Structure Created
+### 2. Created the Computer OU Structure
 
-The Computers OU was organized into separate endpoint categories.
-
-Created OUs:
+The Computers OU was divided into separate endpoint categories.
 
 ```text
 Workstations
@@ -217,23 +228,23 @@ Servers
 
 ![Computer OU structure](screenshots/lab-04-02-computer-ou-structure.png)
 
-This separated workstation and server objects so each category can receive different policies.
+This separation allows workstations and servers to receive different policies and administrative controls.
 
 ---
 
-### 3. Workstation Object Placed in Workstations OU
+### 3. Placed the Workstation in the Correct OU
 
-The `CLIENT01` computer object was placed in the Workstations OU.
+The `MRTG-CLIENT-01` computer object was placed in the Workstations OU.
 
 ![Workstation OU membership](screenshots/lab-04-03-workstation-ou-membership.png)
 
-This ensured workstation policies could be targeted correctly through OU placement.
+Correct OU placement ensured that workstation-targeted Group Policy settings could apply to the computer.
 
 ---
 
-### 4. User Session Lock Policy Configured
+### 4. Configured the User Session Lock Policy
 
-The `MRTG-User-Session-Lock` policy was configured to require password protection for the screen saver.
+The `MRTG-User-Session-Lock` GPO was configured to require password protection for the screen saver.
 
 Configured setting:
 
@@ -243,25 +254,25 @@ Password protect the screen saver = Enabled
 
 ![User session lock GPO setting](screenshots/lab-04-04-user-session-lock-gpo-setting.png)
 
-This supports basic workstation session protection by reducing the chance of unattended user sessions remaining accessible.
+This reduces the risk of an unattended authenticated session remaining accessible.
 
 ---
 
-### 5. Workstation Baseline GPO Linked
+### 5. Linked the Workstation Baseline GPO
 
 The `MRTG-Workstation-Baseline` GPO was linked to the Workstations OU.
 
 ![Workstation baseline GPO linked](screenshots/lab-04-05-workstation-baseline-gpo-linked.png)
 
-This confirmed that workstation policy targeting was based on OU placement.
+This targeted the workstation baseline according to the computer object's OU placement.
 
 ---
 
-### 6. GPO Scope and Security Filtering Reviewed
+### 6. Reviewed GPO Scope and Security Filtering
 
-The GPO scope was reviewed in Group Policy Management.
+The scope of `MRTG-Workstation-Baseline` was reviewed in Group Policy Management.
 
-Security filtering showed:
+Security filtering:
 
 ```text
 Authenticated Users
@@ -269,13 +280,13 @@ Authenticated Users
 
 ![GPO scope and security filtering](screenshots/lab-04-06-gpo-scope-and-security-filtering.png)
 
-This confirmed that the GPO was linked to the correct OU and had valid security filtering.
+This confirmed that the GPO was linked to the intended OU and had valid security filtering.
 
 ---
 
-### 7. Computer Policy Application Validated
+### 7. Validated Computer Policy Application
 
-Computer-side Group Policy application was validated on `CLIENT01`.
+Computer-side Group Policy application was validated on `MRTG-CLIENT-01`.
 
 Command used:
 
@@ -283,7 +294,7 @@ Command used:
 gpresult /r
 ```
 
-Confirmed applied GPOs included:
+Applied GPOs included:
 
 ```text
 MRTG-Workstation-Baseline
@@ -292,13 +303,13 @@ Default Domain Policy
 
 ![Computer policy applied](screenshots/lab-04-07-computer-policy-applied.png)
 
-This confirmed that the workstation received the intended computer policy from Active Directory.
+This confirmed that the workstation received the intended computer policy.
 
 ---
 
-### 8. User Policy Application Validated
+### 8. Validated User Policy Application
 
-User-side Group Policy application was validated for:
+User-side Group Policy application was reviewed for:
 
 ```text
 MRTG\john.smith
@@ -308,35 +319,37 @@ The result showed that `MRTG-User-Session-Lock` applied to the user session.
 
 ![User policy applied](screenshots/lab-04-08-user-policy-applied.png)
 
-This confirmed that user-targeted policy was applying successfully.
+This confirmed that the user-targeted policy was within the correct scope and applied successfully.
 
 ---
 
-### 9. Remote Desktop Access Denied
+### 9. Confirmed Remote Desktop Access Was Denied
 
-A Remote Desktop sign-in attempt was tested for `John Smith`.
+A Remote Desktop sign-in was attempted using the `john.smith` account.
 
-The sign-in failed because the user did not have the required right to sign in through Remote Desktop Services.
+The sign-in failed because the user did not have the required authorization to sign in through Remote Desktop Services.
 
 ![RDP access denied](screenshots/lab-04-09-rdp-access-denied.png)
 
-This validated that access was denied when the user lacked the required permission.
+This confirmed that access was denied by default when the required entitlement was absent.
 
 ---
 
-### 10. Remote Desktop Group Membership Updated
+### 10. Updated Remote Desktop Group Membership
 
-`John Smith` was added to the `GG_Remote_Desktop_Users` security group.
+`john.smith` was added to the `GG_Remote_Desktop_Users` security group.
 
 ![Remote Desktop Users group membership](screenshots/lab-04-10-remote-desktop-users-group-membership.png)
 
-This remediated the access issue using group-based access control instead of direct user-level permission assignment.
+This remediated the access issue through group-based authorization rather than a direct user permission.
+
+A new authentication session was required for the updated group membership to appear in the user's access token.
 
 ---
 
-### 11. Successful Domain User Login Validated
+### 11. Validated the Successful Domain Sign-In
 
-After access was remediated through group membership, `John Smith` successfully logged in.
+After the group membership update, the user successfully signed in.
 
 Command used:
 
@@ -352,87 +365,82 @@ mrtg\john.smith
 
 ![Successful domain user login](screenshots/lab-04-11-successful-domain-user-login.png)
 
-This confirmed that access was granted correctly after group membership was updated.
+This confirmed that the group-based access change produced the intended result.
 
 ---
 
-## Security Perspective
+## Security and IAM Relevance
 
-This lab demonstrates how Active Directory structure supports identity governance.
+This lab demonstrates how directory structure, policy scope, and security groups work together to support identity governance.
 
-A clean OU design allows administrators to apply policy by system type, department, and administrative boundary. Group Policy allows settings to be enforced centrally instead of relying on manual local configuration.
+Organizational Units provide logical organization and Group Policy scope. Security groups represent access entitlements. Validation tools confirm that the intended control reached the correct user or computer.
 
-From a security and IAM perspective, this lab supports:
+This lab supports:
 
 - OU-based policy targeting
 - Department-based identity organization
 - Workstation and server separation
-- User session protection
+- Centralized user session protection
 - Group-based access control
-- Least privilege validation
-- Access denial and remediation testing
-- Policy validation using native Windows tools
+- Deny-by-default behavior
+- Least-privilege access assignment
+- Native policy validation
+- Evidence-based access remediation
 
-The important lesson is that structure matters. Good access control depends on clean identity organization.
+Organizational Units are useful for policy application and administrative delegation, but they are not security boundaries by themselves.
 
 ---
 
-## Risk Addressed
-
-Without OU design and GPO enforcement, Active Directory becomes harder to manage and easier to misconfigure.
+## Risks Addressed
 
 This lab reduces the risk of:
 
 - Unstructured directory growth
-- Poor Group Policy targeting
-- Workstations and servers receiving incorrect policies
+- Incorrect Group Policy targeting
+- Workstations and servers receiving the same controls
 - Manual endpoint configuration drift
-- Users receiving direct access instead of group-based access
-- Unvalidated policy enforcement
+- Direct user-level permission assignments
+- Unvalidated access changes
 - Inconsistent access remediation
-- Poor evidence during troubleshooting or review
+- Weak evidence during troubleshooting or access reviews
 
 ---
 
 ## Control Mapping
 
-| Control Area | How This Lab Supports It |
+| Control Area | Lab Contribution |
 |---|---|
-| Directory organization | Creates structured MRTG OUs |
-| Policy targeting | Links workstation GPO to Workstations OU |
-| Endpoint governance | Applies workstation baseline policy |
-| Session protection | Enables password-protected screen saver policy |
-| Access control | Tests and remediates RDP access through group membership |
-| Least privilege | Validates denied access before granting access |
-| Operational validation | Uses `gpresult` and login testing |
-| Audit readiness | Captures evidence of OU design, GPO scope, and access results |
+| Directory Organization | Creates the structured MRTG OU hierarchy |
+| Policy Targeting | Links workstation policy to the Workstations OU |
+| Endpoint Governance | Applies and validates the workstation baseline |
+| Session Protection | Requires password protection for user sessions |
+| Access Control | Manages Remote Desktop authorization through group membership |
+| Least Privilege | Confirms denial before approved access is granted |
+| Operational Validation | Uses `gpresult` and user sign-in testing |
+| Audit Readiness | Captures OU, GPO, membership, denial, and success evidence |
 
 ---
 
-## Validation
-
-The following validation checks were completed:
+## Validation Results
 
 | Validation Item | Result |
 |---|---|
 | Department user OUs created | Passed |
 | Workstations OU created | Passed |
 | Servers OU created | Passed |
-| `CLIENT01` placed in Workstations OU | Passed |
+| `MRTG-CLIENT-01` placed in Workstations OU | Passed |
 | User session lock policy configured | Passed |
 | `MRTG-Workstation-Baseline` linked to Workstations OU | Passed |
 | GPO scope and security filtering reviewed | Passed |
-| Computer-side policy applied to `CLIENT01` | Passed |
+| Computer-side policy applied to `MRTG-CLIENT-01` | Passed |
 | User-side policy applied to `john.smith` | Passed |
-| RDP access denied before group membership | Passed |
+| Remote Desktop access denied before authorization | Passed |
 | `john.smith` added to `GG_Remote_Desktop_Users` | Passed |
-| Successful domain user login validated | Passed |
+| Successful domain user sign-in validated | Passed |
 
 ---
 
 ## Evidence Collected
-
-The following evidence was collected during the lab:
 
 | Evidence | File |
 |---|---|
@@ -440,71 +448,73 @@ The following evidence was collected during the lab:
 | Computer OU structure | `screenshots/lab-04-02-computer-ou-structure.png` |
 | Workstation OU membership | `screenshots/lab-04-03-workstation-ou-membership.png` |
 | User session lock GPO setting | `screenshots/lab-04-04-user-session-lock-gpo-setting.png` |
-| Workstation baseline GPO linked | `screenshots/lab-04-05-workstation-baseline-gpo-linked.png` |
+| Workstation baseline GPO link | `screenshots/lab-04-05-workstation-baseline-gpo-linked.png` |
 | GPO scope and security filtering | `screenshots/lab-04-06-gpo-scope-and-security-filtering.png` |
-| Computer policy applied | `screenshots/lab-04-07-computer-policy-applied.png` |
-| User policy applied | `screenshots/lab-04-08-user-policy-applied.png` |
-| RDP access denied | `screenshots/lab-04-09-rdp-access-denied.png` |
-| Remote Desktop Users group membership | `screenshots/lab-04-10-remote-desktop-users-group-membership.png` |
-| Successful domain user login | `screenshots/lab-04-11-successful-domain-user-login.png` |
+| Computer policy application | `screenshots/lab-04-07-computer-policy-applied.png` |
+| User policy application | `screenshots/lab-04-08-user-policy-applied.png` |
+| Remote Desktop access denial | `screenshots/lab-04-09-rdp-access-denied.png` |
+| Remote Desktop group membership | `screenshots/lab-04-10-remote-desktop-users-group-membership.png` |
+| Successful domain user sign-in | `screenshots/lab-04-11-successful-domain-user-login.png` |
 
 ---
 
 ## What I Would Improve in Production
 
-In a production environment, I would improve this process by:
+In a production environment, I would:
 
-- Documenting an approved OU design standard
-- Separating production, test, and administrative systems
-- Using formal naming standards for all OUs and groups
-- Creating dedicated GPOs for specific control purposes
-- Avoiding broad GPO changes without testing
-- Using pilot OUs before applying policies broadly
-- Reviewing GPO inheritance and blocking rules carefully
-- Auditing Remote Desktop group membership regularly
-- Monitoring privileged and remote access group changes
-- Using change management for GPO updates
-- Documenting access request and approval workflows
-- Reviewing RDP access against least privilege requirements
+- Document and approve an enterprise OU design standard
+- Separate production, testing, server, workstation, and administrative systems
+- Use organization-approved naming standards
+- Create focused GPOs with clearly defined purposes
+- Test GPO changes in pilot OUs before broader deployment
+- Review GPO inheritance, enforcement, and blocked inheritance
+- Minimize broad security filtering
+- Document the mapping between access groups and endpoint permissions
+- Require an approved access request before adding users to remote-access groups
+- Review Remote Desktop access regularly
+- Monitor changes to privileged and remote-access groups
+- Use time-bound access where supported
+- Use formal change management for GPO modifications
+- Maintain rollback and recovery procedures for policy changes
 
 ---
 
 ## Lessons Learned
 
-This lab reinforced that Active Directory governance starts with structure.
+This lab reinforced that Active Directory governance begins with structure.
 
-OUs are not just folders. They are policy targeting and administrative boundary tools.
+Organizational Units are not simply folders. They provide scope for policy application and administrative delegation. Security groups provide the authorization layer for access entitlements.
 
-The biggest takeaway is that Group Policy and access control both need validation. A GPO should be confirmed with `gpresult`, and access should be tested from the user side.
+The main takeaway is that both policy and access changes require validation. Group Policy should be confirmed with tools such as `gpresult`, while access should be tested from the user's perspective.
 
-The RDP test also reinforced an important security principle: access should fail by default until the user is placed into the correct approved group.
+The Remote Desktop test also demonstrated deny-by-default behavior: access failed until the user received the approved group membership.
 
 ---
 
 ## Outcome
 
-Lab 04 successfully implemented foundational OU design, Group Policy enforcement, and group-based access control in the MRTG Active Directory environment.
+Lab 04 successfully established the foundational OU design, Group Policy enforcement, and group-based access control for the MRTG environment.
 
-The lab confirmed:
+The lab confirmed that:
 
-- The MRTG OU structure was created
-- Department user OUs were established
+- The MRTG OU hierarchy was created
+- Department-based user OUs were established
 - Workstations and Servers OUs were created
-- `CLIENT01` was placed in the Workstations OU
-- A workstation baseline GPO was linked
-- A user session lock policy was configured
+- `MRTG-CLIENT-01` was placed in the Workstations OU
+- The workstation baseline GPO was linked
+- The user session lock policy was configured
 - Computer-side policy applied successfully
 - User-side policy applied successfully
-- Remote Desktop access was denied before proper group membership
-- Access was remediated through `GG_Remote_Desktop_Users`
-- Successful domain user login was validated
+- Remote Desktop access was denied before authorization
+- Access was granted through `GG_Remote_Desktop_Users`
+- The domain user sign-in succeeded after remediation
 
-The environment now has a structured foundation for future identity lifecycle, access control, and policy governance labs.
+The environment now has a structured foundation for identity lifecycle management, access control, delegation, and policy governance.
 
 ---
 
 ## Next Lab
 
-[Lab 05 — Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management/)
+[Lab 05: Identity Lifecycle Management](../Lab-05-Identity-Lifecycle-Management/)
 
-Lab 05 will build on the OU and access control foundation by implementing joiner, mover, and leaver workflows for managing user identities across the MRTG environment.
+Lab 05 implements Joiner, Mover, and Leaver workflows for managing user identities throughout the MRTG environment.
