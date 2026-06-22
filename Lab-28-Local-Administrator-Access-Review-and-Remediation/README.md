@@ -1,19 +1,19 @@
-# Lab 28 - Local Administrator Access Review and Remediation
+# Lab 28: Local Administrator Access Review and Remediation
 
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)
 ![Technology](https://img.shields.io/badge/Technology-Local%20Users%20and%20Groups-blue)
 ![Focus](https://img.shields.io/badge/Focus-Local%20Admin%20Review-green)
 ![Security](https://img.shields.io/badge/Security-Least%20Privilege-red)
-![Validation](https://img.shields.io/badge/Validation-Completed-brightgreen)
-![Documentation](https://img.shields.io/badge/Documentation-Audit%20Ready-purple)
+![Validation](https://img.shields.io/badge/Validation-Remediation%20Verified-brightgreen)
+![Documentation](https://img.shields.io/badge/Documentation-Evidence%20Captured-purple)
 
 ---
 
 ## Overview
 
-In this lab, I reviewed local administrator access on `MRTG-CLIENT-01`, identified unnecessary privileged access, completed remediation, and validated the corrected state.
+This lab reviewed local administrator access on the Windows 11 client hosted in `MRTG-CLIENT-01`, identified unnecessary privileged membership, completed remediation, and validated the resulting state.
 
-The initial review found the following members in the local Administrators group:
+The initial local Administrators group contained:
 
 ```text
 Administrator
@@ -21,24 +21,40 @@ localadmin
 MRTG\Domain Admins
 ```
 
-The standalone `localadmin` account was identified as unnecessary and removed.
+The standalone `localadmin` account was identified as unnecessary for the approved lab configuration and removed from the local Administrators group.
 
-After remediation, the local Administrators group contained:
+After remediation, the group contained:
 
 ```text
 Administrator
 MRTG\Domain Admins
 ```
 
-This lab demonstrated a complete privileged access review workflow: establish a baseline, identify a finding, remediate the finding, and validate the result.
+The lab demonstrated a complete access-review workflow:
+
+```text
+Establish baseline
+        |
+        v
+Assess membership
+        |
+        v
+Identify finding
+        |
+        v
+Remove access
+        |
+        v
+Validate final state
+```
 
 ---
 
 ## Business Problem
 
-MRTG needed to periodically review local administrator access on endpoints to ensure privileged access remained limited, justified, and controlled.
+MRTG needed to review local administrator access on endpoints to determine whether privileged membership remained necessary, justified, and controlled.
 
-Local administrators can:
+Members of the local Administrators group can potentially:
 
 - Install software
 - Modify system settings
@@ -47,41 +63,48 @@ Local administrators can:
 - Create additional privileged accounts
 - Change file permissions
 - Establish persistence
-- Support credential theft or lateral movement
+- Access locally stored credentials
+- Support lateral movement
 
-Unnecessary membership in the local Administrators group increases endpoint risk and weakens least privilege.
+Unnecessary local administrator membership increases endpoint risk and weakens least privilege.
 
-This lab addressed that problem by reviewing the current membership, removing an unnecessary account, and preserving before-and-after evidence.
+This lab addressed that risk by reviewing current membership, removing one unnecessary member, and preserving before-and-after evidence.
 
 ---
 
 ## Lab Summary
 
-I created pre-lab checkpoints for `MRTG-DC01` and `MRTG-CLIENT-01`.
+Pre-lab checkpoints were created for `MRTG-DC01` and the `MRTG-CLIENT-01` virtual machine.
 
-I reviewed the client’s local Administrators group through Local Users and Groups and confirmed its membership with `net localgroup administrators`.
+The local Administrators group on the Windows client was reviewed through Local Users and Groups and validated with:
 
-The `localadmin` account was identified as unnecessary. The first remediation attempt failed with an access-denied error because the active session lacked the required administrative context.
+```powershell
+net localgroup administrators
+```
 
-After using the correct administrative context, I removed `localadmin` and validated the resulting membership through both the command line and graphical interface.
+The `localadmin` account was identified as unnecessary for the approved lab baseline.
 
-Finally, I created post-lab checkpoints for both systems.
+The first remediation attempt returned an access-denied error, indicating that the active management context lacked sufficient effective authority or elevation to modify the group. After using an authorized elevated context, `localadmin` was removed.
+
+The final membership was validated through both the command line and graphical interface. Post-lab checkpoints were then created for both virtual machines.
 
 ---
 
 ## Objectives
 
-- Create pre-lab checkpoints
+- Create pre-lab Hyper-V checkpoints
 - Review the local Administrators group
 - Establish a command-line membership baseline
-- Identify unnecessary local administrator access
-- Document the initial remediation failure
-- Use the correct administrative context
-- Remove the unnecessary account
-- Validate the corrected membership with PowerShell
+- Assess each identified member
+- Identify unnecessary privileged membership
+- Document the initial access-denied result
+- Use an authorized elevated context
+- Remove the unnecessary membership
+- Validate the corrected membership through the command line
 - Validate the corrected membership through the GUI
-- Document before-and-after evidence
-- Create post-lab checkpoints
+- Preserve before-and-after evidence
+- Document residual privileged-access risks
+- Create post-lab Hyper-V checkpoints
 
 ---
 
@@ -93,24 +116,28 @@ Finally, I created post-lab checkpoints for both systems.
 - Local Administrators group review
 - GUI-based membership validation
 - Command-line membership validation
-- Privileged access finding documentation
-- Local administrator removal
-- Administrative context troubleshooting
+- Privileged-access finding documentation
+- Local administrator membership removal
+- Administrative-context troubleshooting
 - Before-and-after comparison
 - Least-privilege analysis
-- Audit evidence collection
+- Evidence collection
 
 ### Not Included
 
 - Removal of `MRTG\Domain Admins`
+- Built-in Administrator account hardening
 - Windows LAPS reconfiguration
 - Local administrator password rotation
-- Group Policy enforcement of approved membership
-- Microsoft Intune account protection policies
+- Group Policy membership enforcement
+- Microsoft Intune account-protection policies
 - Enterprise-wide endpoint scanning
 - Just-in-time privilege
 - Privileged access management deployment
 - SIEM alert creation
+- Review of every local group
+- Nested group expansion
+- Effective-access analysis outside the local Administrators group
 - Production change approval
 
 ---
@@ -122,9 +149,10 @@ Finally, I created post-lab checkpoints for both systems.
 | Organization | Monroe Redstone Technology Group |
 | Domain | `mrtg.local` |
 | Domain Controller | `MRTG-DC01` |
-| Endpoint | `MRTG-CLIENT-01` |
+| Hyper-V Virtual Machine | `MRTG-CLIENT-01` |
+| Windows Guest | `CLIENT01` |
 | Local Group | `Administrators` |
-| Account Removed | `localadmin` |
+| Membership Removed | `localadmin` |
 | Retained Local Account | `Administrator` |
 | Retained Domain Group | `MRTG\Domain Admins` |
 | Management Tools | Local Users and Groups, PowerShell |
@@ -139,32 +167,48 @@ MRTG needs to review privileged access on a Windows endpoint.
 
 The review must determine:
 
-- Who currently has local administrator access
-- Whether each member is still required
-- Which access should be removed
+- Who currently belongs to the local Administrators group
+- Whether each member is identifiable
+- Whether each membership is required
+- Which membership should be removed
 - Whether the reviewer has authority to perform remediation
 - Whether the final state matches the approved lab baseline
 
-The review model used in this lab was:
+The lab followed this review model:
 
 ```text
-Establish Baseline → Assess Membership → Attempt Remediation → Correct Administrative Context → Remove Access → Validate Final State
+Establish baseline
+        |
+        v
+Assess membership
+        |
+        v
+Attempt remediation
+        |
+        v
+Correct administrative context
+        |
+        v
+Remove membership
+        |
+        v
+Validate final state
 ```
 
 ---
 
 ## Review Criteria
 
-Each local Administrators group member was evaluated against the following criteria:
+Each identified member was evaluated against the following criteria:
 
 | Criterion | Review Question |
 |---|---|
 | Identity | Is the account or group clearly identifiable? |
-| Purpose | Is there a documented reason for local administrator access? |
+| Purpose | Is there a documented reason for administrator access? |
 | Ownership | Is a person or team responsible for the access? |
-| Necessity | Does the identity still require local administrator rights? |
-| Privilege | Is local administrator access broader than required? |
-| Governance | Is the account controlled through an approved process? |
+| Necessity | Does the identity still require administrator rights? |
+| Privilege | Is local administrator membership broader than required? |
+| Governance | Is the membership controlled through an approved process? |
 | Monitoring | Can privileged activity be reviewed? |
 | Lifecycle | Will the access be removed when no longer required? |
 
@@ -172,7 +216,7 @@ Each local Administrators group member was evaluated against the following crite
 
 ## Implementation Steps
 
-### Step 1 - Created DC01 Pre-Lab Checkpoint
+### Step 1: Create the DC01 Pre-Lab Checkpoint
 
 A checkpoint was created for `MRTG-DC01` before beginning the review.
 
@@ -182,13 +226,17 @@ Checkpoint name:
 MRTG-DC01_Pre-Lab28-Local-Admin-Access-Review
 ```
 
+The domain controller was not the remediation target. Its checkpoint preserved the broader lab environment state.
+
+> Hyper-V checkpoints are temporary lab recovery tools. They are not substitutes for tested backups.
+
 ![DC01 Pre-Lab Checkpoint](screenshots/lab-28-01-dc01-pre-lab-checkpoint.png)
 
 ---
 
-### Step 2 - Created CLIENT-01 Pre-Lab Checkpoint
+### Step 2: Create the Client Pre-Lab Checkpoint
 
-A checkpoint was created for `MRTG-CLIENT-01` before modifying local administrator membership.
+A checkpoint was created for the `MRTG-CLIENT-01` virtual machine before modifying local administrator membership.
 
 Checkpoint name:
 
@@ -200,7 +248,7 @@ MRTG-CLIENT-01_Pre-Lab28-Local-Admin-Access-Review
 
 ---
 
-### Step 3 - Reviewed the Local Administrators Group
+### Step 3: Review the Local Administrators Group
 
 The local Administrators group was reviewed through Local Users and Groups.
 
@@ -228,19 +276,21 @@ MRTG\Domain Admins
 
 | Account or Group | Identity Type | Finding | Lab Decision |
 |---|---|---|---|
-| `Administrator` | Built-in local account | Expected privileged account | Retain and control |
-| `localadmin` | Standalone local account | No longer required | Remove |
-| `MRTG\Domain Admins` | Domain security group | Retained for current lab administration | Retain for lab only |
+| `Administrator` | Built-in local account | Present in the expected built-in group | Retain for this lab |
+| `localadmin` | Standalone local account | Membership not required by the approved lab baseline | Remove from Administrators |
+| `MRTG\Domain Admins` | Domain security group | Retained for current lab administration | Retain for lab use only |
 
-The primary remediation target was:
+The remediation target was:
 
 ```text
 localadmin
 ```
 
+> Retention in this lab does not establish that the remaining memberships represent a preferred production configuration.
+
 ---
 
-### Step 4 - Documented the Access-Denied Error
+### Step 4: Document the Access-Denied Error
 
 The first attempt to remove `localadmin` failed.
 
@@ -252,7 +302,7 @@ The following error occurred while attempting to save properties for group Admin
 Access is denied.
 ```
 
-The active session could view membership but did not have sufficient effective rights to modify the local Administrators group.
+The result indicated that the active management context lacked sufficient effective authority or elevation to modify the local Administrators group.
 
 ![Local Admin Remediation Access Denied](screenshots/lab-28-04-local-admin-remediation-access-denied.png)
 
@@ -266,21 +316,21 @@ The error demonstrated an important distinction:
 Visibility does not equal modification authority.
 ```
 
-A user may be able to open a management console and inspect membership without having permission to change it.
+A user may be able to open a management console and inspect group membership without having sufficient effective rights to change it.
 
 Privileged remediation requires:
 
-- The correct administrative account
-- An elevated process
+- An authorized administrative identity
+- An elevated management process
 - Authority on the target endpoint
-- A valid change or remediation purpose
-- Evidence of the resulting state
+- An approved remediation purpose
+- Validation of the resulting state
 
-The error was resolved by performing the remediation under the correct administrative context.
+The remediation was completed after using the required administrative context.
 
 ---
 
-### Step 5 - Validated Membership Before Remediation
+### Step 5: Validate Membership Before Remediation
 
 The baseline membership was confirmed from an elevated PowerShell session.
 
@@ -290,7 +340,7 @@ Command used:
 net localgroup administrators
 ```
 
-Command output confirmed:
+Observed membership:
 
 ```text
 Administrator
@@ -298,15 +348,15 @@ localadmin
 MRTG\Domain Admins
 ```
 
-This command-line evidence matched the graphical baseline.
+The command-line result matched the graphical baseline.
 
 ![Net Localgroup Administrators Before Remediation](screenshots/lab-28-05-net-localgroup-administrators-before-remediation.png)
 
 ---
 
-### Step 6 - Removed the Unnecessary Local Administrator
+### Step 6: Remove the Unnecessary Membership
 
-After using the correct administrative context, `localadmin` was removed from the local Administrators group.
+After using an authorized elevated context, `localadmin` was removed from the local Administrators group.
 
 Remediation performed:
 
@@ -314,15 +364,15 @@ Remediation performed:
 Remove localadmin from the local Administrators group
 ```
 
-The account itself was not documented as deleted. This lab removed its privileged group membership.
+The account itself was not documented as disabled or deleted.
 
-That distinction matters because removing group membership reduces privilege, while deleting or disabling the account is a separate lifecycle action.
+Removing group membership reduced the account's documented local privilege. Account disablement, deletion, credential rotation, and dependency review are separate lifecycle actions.
 
 ---
 
-### Step 7 - Validated Membership After Remediation
+### Step 7: Validate Membership After Remediation
 
-The corrected group membership was validated with PowerShell.
+The corrected group membership was validated from PowerShell.
 
 Command used:
 
@@ -337,30 +387,32 @@ Administrator
 MRTG\Domain Admins
 ```
 
-The `localadmin` account was no longer listed.
+The `localadmin` account was no longer listed as a direct member of the local Administrators group.
+
+> This result does not independently prove that the account lacks privilege through another local group, domain group, delegated permission, service, scheduled task, or other access path.
 
 ![Net Localgroup Administrators After Remediation](screenshots/lab-28-06-net-localgroup-administrators-after-remediation.png)
 
 ---
 
-### Step 8 - Confirmed the Final State Through the GUI
+### Step 8: Confirm the Final State Through the GUI
 
 Local Users and Groups was reviewed again after remediation.
 
-The graphical view confirmed the final membership:
+The graphical view showed:
 
 ```text
 Administrator
 MRTG\Domain Admins
 ```
 
-This provided a second validation method for the completed change.
+This provided a second validation method for the direct membership change.
 
 ![Local Administrators Group After Review](screenshots/lab-28-07-local-administrators-group-after-review.png)
 
 ---
 
-### Step 9 - Created DC01 Post-Lab Checkpoint
+### Step 9: Create the DC01 Post-Lab Checkpoint
 
 A post-lab checkpoint was created for `MRTG-DC01`.
 
@@ -374,9 +426,9 @@ MRTG-DC01_Post-Lab28-Local-Admin-Access-Review-Validated
 
 ---
 
-### Step 10 - Created CLIENT-01 Post-Lab Checkpoint
+### Step 10: Create the Client Post-Lab Checkpoint
 
-A post-lab checkpoint was created for `MRTG-CLIENT-01`.
+A post-lab checkpoint was created for the `MRTG-CLIENT-01` virtual machine.
 
 Checkpoint name:
 
@@ -390,7 +442,7 @@ MRTG-CLIENT-01_Post-Lab28-Local-Admin-Access-Review-Validated
 
 ## Before and After Comparison
 
-| Review Stage | Administrator | localadmin | MRTG\Domain Admins |
+| Review Stage | `Administrator` | `localadmin` | `MRTG\Domain Admins` |
 |---|---|---|---|
 | Before remediation | Present | Present | Present |
 | After remediation | Present | Removed | Present |
@@ -399,31 +451,33 @@ MRTG-CLIENT-01_Post-Lab28-Local-Admin-Access-Review-Validated
 
 ## Access Review Results
 
-| Account or Group | Before | After | Final Decision |
+| Account or Group | Before | After | Lab Decision |
 |---|---|---|---|
-| `Administrator` | Local administrator | Local administrator | Retained |
-| `localadmin` | Local administrator | Standard local account | Privileged membership removed |
-| `MRTG\Domain Admins` | Local administrator | Local administrator | Retained for lab administration |
+| `Administrator` | Direct local Administrators member | Direct member retained | Retained for this lab |
+| `localadmin` | Direct local Administrators member | Direct membership removed | Remediated |
+| `MRTG\Domain Admins` | Direct local Administrators member | Direct member retained | Retained for lab administration |
+
+The evidence validates direct membership in the local Administrators group. It does not provide a complete effective-access assessment.
 
 ---
 
 ## Important Production Finding
 
-Retaining `MRTG\Domain Admins` in the local Administrators group was acceptable for this lab’s current management model, but it is not the strongest production design.
+Retaining `MRTG\Domain Admins` in the local Administrators group supported the current lab administration model, but it is not the preferred design for routine workstation management.
 
-Domain Admin credentials should generally not be used for routine workstation administration.
+Highly privileged domain credentials should generally be protected from workstation logon exposure.
 
 A stronger model would use:
 
 - A dedicated workstation administrator group
-- Separate privileged administrator accounts
-- Windows LAPS for local administrator recovery
+- Separate administrator identities
+- Windows LAPS for local administrator password management
 - Just-in-time privileged access
 - Privileged access workstations
 - Restricted Domain Admin logon rights
-- Tiered administrative boundaries
+- Administrative tier boundaries
 
-This reduces the chance that a compromised workstation exposes highly privileged domain credentials.
+This reduces the chance that a compromised workstation exposes credentials with broad domain authority.
 
 ---
 
@@ -431,7 +485,7 @@ This reduces the chance that a compromised workstation exposes highly privileged
 
 This lab did not repeat the Windows LAPS deployment completed in Lab 17.
 
-Instead, it demonstrated the review and remediation process that should operate alongside LAPS.
+Instead, it demonstrated a review and remediation process that should operate alongside LAPS.
 
 A mature local administrator control model includes:
 
@@ -439,30 +493,40 @@ A mature local administrator control model includes:
 - Restricted Administrators group membership
 - Separate administrator identities
 - Periodic access reviews
-- Removal of unnecessary accounts
+- Removal of unnecessary memberships
 - Monitoring for privileged logons
 - Alerts for group membership changes
 - Documented business justification
 - Account ownership
 - Defined access expiration
 
-LAPS protects local administrator credentials. It does not automatically determine who should belong to the local Administrators group.
+LAPS manages local administrator passwords. It does not independently determine who should belong to the local Administrators group.
 
 ---
 
 ## Risk Addressed
 
-This lab addressed risks including:
+This lab addressed risks associated with:
 
 - Excessive local administrator access
-- Unnecessary privileged local accounts
+- Unnecessary privileged local-account membership
 - Weak endpoint privilege governance
 - Unreviewed administrator membership
 - Privileged access persistence
-- Lack of remediation evidence
+- Missing remediation evidence
 - Failure to validate changes
 - Confusion between visibility and modification authority
-- Use of overly broad domain privileges on endpoints
+
+Residual risks included:
+
+- Retention of `MRTG\Domain Admins`
+- Unknown built-in Administrator account status
+- No nested group or effective-access analysis
+- No review of other local groups
+- No demonstrated account disablement or deletion
+- No centralized membership enforcement
+- No membership-change monitoring
+- No production approval workflow
 
 ---
 
@@ -470,34 +534,38 @@ This lab addressed risks including:
 
 | Control Area | Lab Implementation |
 |---|---|
-| Least privilege | Removed unnecessary local administrator membership |
-| Privileged access review | Reviewed every member of the local Administrators group |
-| Endpoint security | Reduced privileged exposure on the workstation |
+| Least privilege | Removed unnecessary direct administrator membership |
+| Privileged access review | Reviewed direct members of the local Administrators group |
+| Endpoint security | Reduced documented privileged exposure |
 | Access remediation | Removed `localadmin` from Administrators |
-| Administrative authorization | Used the correct context to complete remediation |
+| Administrative authorization | Used an authorized elevated context |
 | Dual validation | Confirmed the result through PowerShell and the GUI |
-| Audit readiness | Captured baseline, error, remediation, and final evidence |
-| Local admin governance | Connected the review to LAPS and recurring access controls |
-| Change protection | Created pre-lab and post-lab checkpoints |
+| Evidence collection | Captured baseline, error, and final-state evidence |
+| Local administrator governance | Connected membership review with LAPS controls |
+| Lab-state preservation | Created pre-lab and post-lab checkpoints |
+
+> This mapping describes the controls demonstrated in the lab. It does not represent certification against a specific security or regulatory framework.
 
 ---
 
 ## Validation Summary
 
-| Test | Expected Result | Actual Result | Status |
+| Test | Expected Result | Observed Result | Status |
 |---|---|---|---|
-| DC01 pre-lab checkpoint created | Rollback point exists | Checkpoint created | Passed |
-| CLIENT-01 pre-lab checkpoint created | Client rollback point exists | Checkpoint created | Passed |
-| GUI baseline reviewed | Current members visible | Three members identified | Passed |
-| Access finding documented | Unnecessary access identified | `localadmin` identified | Passed |
-| Initial failure documented | Incorrect context produces error | Access denied captured | Passed |
-| Command-line baseline validated | CLI matches GUI | Three members confirmed | Passed |
-| Correct administrative context used | Remediation permitted | Access removed | Passed |
-| `localadmin` remediated | Account no longer privileged | Membership removed | Passed |
-| Command-line final state validated | `localadmin` absent | Two members confirmed | Passed |
-| GUI final state validated | GUI matches CLI | Two members confirmed | Passed |
-| DC01 post-lab checkpoint created | Final state preserved | Checkpoint created | Passed |
-| CLIENT-01 post-lab checkpoint created | Client state preserved | Checkpoint created | Passed |
+| DC01 pre-lab checkpoint | Temporary lab state preserved | Checkpoint created | Passed |
+| Client pre-lab checkpoint | Client state preserved | Checkpoint created | Passed |
+| GUI baseline review | Direct members visible | Three members identified | Passed |
+| Access finding | Unnecessary membership identified | `localadmin` identified | Passed |
+| Initial failure | Insufficient context produces an error | Access denied captured | Passed |
+| Command-line baseline | CLI matches GUI | Three direct members confirmed | Passed |
+| Authorized context | Remediation can be completed | Membership removed | Passed |
+| `localadmin` remediation | Direct membership removed | Account no longer listed | Passed |
+| Command-line final state | `localadmin` absent | Two direct members confirmed | Passed |
+| GUI final state | GUI matches CLI | Two direct members confirmed | Passed |
+| Effective-access review | Other privilege paths evaluated | Not performed | Not Validated |
+| Account lifecycle review | Disablement or deletion assessed | Not documented | Not Validated |
+| DC01 post-lab checkpoint | Lab environment state preserved | Checkpoint created | Passed |
+| Client post-lab checkpoint | Client state preserved | Checkpoint created | Passed |
 
 ---
 
@@ -506,52 +574,65 @@ This lab addressed risks including:
 | Evidence | Screenshot |
 |---|---|
 | DC01 pre-lab checkpoint | `screenshots/lab-28-01-dc01-pre-lab-checkpoint.png` |
-| CLIENT-01 pre-lab checkpoint | `screenshots/lab-28-02-client01-pre-lab-checkpoint.png` |
+| Client pre-lab checkpoint | `screenshots/lab-28-02-client01-pre-lab-checkpoint.png` |
 | Local Administrators group before review | `screenshots/lab-28-03-local-administrators-group-before-review.png` |
 | Access-denied remediation attempt | `screenshots/lab-28-04-local-admin-remediation-access-denied.png` |
 | Command-line membership before remediation | `screenshots/lab-28-05-net-localgroup-administrators-before-remediation.png` |
 | Command-line membership after remediation | `screenshots/lab-28-06-net-localgroup-administrators-after-remediation.png` |
 | Local Administrators group after review | `screenshots/lab-28-07-local-administrators-group-after-review.png` |
 | DC01 post-lab checkpoint | `screenshots/lab-28-08-dc01-post-lab-checkpoint.png` |
-| CLIENT-01 post-lab checkpoint | `screenshots/lab28-client01-post-lab-checkpoint.png` |
+| Client post-lab checkpoint | `screenshots/lab28-client01-post-lab-checkpoint.png` |
 
 ---
 
 ## Troubleshooting Notes
 
-The first removal attempt failed with:
+The first removal attempt returned:
 
 ```text
 Access is denied.
 ```
 
-The failure occurred because the active session did not have sufficient effective administrative rights on `MRTG-CLIENT-01`.
+The result indicated insufficient effective authority or elevation in the active management context.
 
 The remediation workflow was:
 
 ```text
-Review Error → Confirm Administrative Context → Elevate Correctly → Remove Membership → Validate Result
+Review error
+     |
+     v
+Confirm administrative context
+     |
+     v
+Use authorized elevation
+     |
+     v
+Remove membership
+     |
+     v
+Validate result
 ```
 
-The error was not bypassed by granting broader permanent access. The change was completed through an authorized administrative context.
+The error was resolved by using an appropriate administrative context. No broader permanent membership was documented as part of the remediation.
 
 ---
 
 ## Security Considerations
 
-Removing `localadmin` from the Administrators group reduced its privilege but did not necessarily disable or delete the account.
+Removing `localadmin` from the Administrators group reduced its documented direct privilege but did not disable or delete the account.
 
 A production review should also determine:
 
 - Whether the account is still required
 - Whether it should be disabled
-- Whether it should be deleted after retention requirements are met
-- Whether it has other local group memberships
+- Whether it should be deleted after applicable retention requirements
+- Whether it belongs to other local or domain groups
 - Whether it has active sessions
 - Whether it owns files, services, or scheduled tasks
 - Whether it has recently authenticated
-- Whether its password is still valid
+- Whether its password remains valid
 - Whether related credentials exist elsewhere
+- Whether it has another path to elevated access
 
 Privilege removal and account lifecycle management are related but separate processes.
 
@@ -568,38 +649,40 @@ Local administrator reviews are common in:
 - Compliance assessments
 - Incident response
 - Cybersecurity maturity reviews
-- Government and defense environments
+- Government-regulated environments
 
 A complete review should answer:
 
 - Who has local administrator access?
-- Why do they have it?
+- Why is the access required?
 - Who approved it?
-- Is the access still required?
+- Is the access still necessary?
 - When was it last reviewed?
-- Can the access be reduced?
+- Can the privilege be reduced?
 - Was remediation validated?
-- Is evidence available for an auditor?
+- Is evidence available for review?
 
-This lab demonstrated that complete workflow on a single endpoint.
+This lab demonstrated the direct-membership review and remediation workflow on one endpoint.
 
 ---
 
-## What I Would Do Differently in Production
+## Production Improvements
 
-In a production or government-regulated environment, I would implement:
+A production implementation should include:
 
 - Centralized local administrator inventory
 - Recurring access reviews
 - Windows LAPS enforcement
 - Dedicated workstation administrator groups
 - Removal of Domain Admins from routine workstation administration
-- Separate privileged accounts
+- Separate privileged identities
 - Restricted privileged logon paths
 - Just-in-time access
 - Just-enough administration
 - Privileged access workstations
 - Group Policy or Intune membership enforcement
+- Nested group expansion
+- Effective-access analysis
 - Alerts for additions to local Administrators
 - SIEM monitoring for privileged local logons
 - Change tickets for membership changes
@@ -613,15 +696,16 @@ In a production or government-regulated environment, I would implement:
 
 - Local administrator access requires recurring review
 - LAPS does not replace membership governance
-- Viewing privileged membership does not provide authority to change it
+- Viewing privileged membership does not grant authority to change it
 - Administrative context must be validated before remediation
 - Access-denied errors should not automatically lead to broader permissions
 - Privileged findings require remediation and validation
 - GUI and command-line evidence should agree
 - Removing group membership is different from deleting an account
+- Direct membership review does not establish complete effective access
 - Domain Admins should not be the default workstation administration model
-- Before-and-after evidence improves audit readiness
-- Least privilege is an ongoing process
+- Before-and-after evidence improves review quality
+- Least privilege is an ongoing governance process
 
 ---
 
@@ -632,11 +716,11 @@ In a production or government-regulated environment, I would implement:
 - Windows Local Users and Groups management
 - `net localgroup` validation
 - Least-privilege remediation
-- Administrative context troubleshooting
+- Administrative-context troubleshooting
 - Before-and-after validation
 - Endpoint privilege governance
 - Windows LAPS governance analysis
-- Audit evidence collection
+- Evidence collection
 - Hyper-V checkpoint management
 - Production security planning
 
@@ -644,26 +728,28 @@ In a production or government-regulated environment, I would implement:
 
 ## Outcome
 
-Lab 28 successfully reviewed and remediated local administrator exposure on `MRTG-CLIENT-01`.
+Lab 28 reviewed and remediated direct local administrator membership on the Windows 11 client hosted in `MRTG-CLIENT-01`.
 
 The lab demonstrated:
 
-- Pre-change rollback planning
+- Pre-change state preservation
 - GUI and command-line membership review
-- Identification of unnecessary local administrator access
-- Administrative context troubleshooting
-- Removal of `localadmin`
+- Identification of unnecessary direct administrator membership
+- Administrative-context troubleshooting
+- Removal of `localadmin` from Administrators
 - Dual-method final validation
 - Local administrator governance analysis
-- Audit-ready before-and-after evidence
-- Post-change rollback planning
+- Before-and-after evidence
+- Post-change state preservation
 
-The endpoint finished the lab with the unnecessary `localadmin` membership removed from the local Administrators group.
+The final validation confirmed that `localadmin` was no longer a direct member of the local Administrators group.
+
+The account's broader effective access, lifecycle status, and other possible privilege paths were not validated and remain separate review requirements.
 
 ---
 
 ## Next Lab
 
-[Lab 29 - SIEM Identity Monitoring with Splunk](../Lab-29-SIEM-Identity-Monitoring-with-Splunk/)
+[Lab 29: SIEM Identity Monitoring with Splunk](../Lab-29-SIEM-Identity-Monitoring-with-Splunk/)
 
-Lab 29 will focus on collecting identity-related Windows events, searching security logs, and using Splunk to identify authentication and account activity patterns.
+Lab 29 focuses on collecting identity-related Windows events, searching security logs, and using Splunk to identify authentication and account activity patterns.
